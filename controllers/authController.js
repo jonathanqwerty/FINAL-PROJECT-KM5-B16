@@ -54,7 +54,7 @@ module.exports = {
         });
       }
       return res.status(403).json({
-        error: "Invalid Credentials",
+        error: "Invalid Password",
       });
     } catch (error) {
       console.log(error);
