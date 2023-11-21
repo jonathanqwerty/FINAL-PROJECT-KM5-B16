@@ -148,7 +148,9 @@ module.exports = {
           id: findUser.id,
         },
       });
-      return res.json("succes");
+      return res.json({
+        data,
+      });
     } catch (error) {
       console.log(error);
       return res.status(500).json({
