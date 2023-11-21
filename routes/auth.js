@@ -10,5 +10,7 @@ router.post(
   controller.register
 );
 router.post("/login", validate(schema.loginValidator), controller.login);
+router.post("/reset-password", controller.resetPassword);
+router.post("/set-password", controller.setPassword);
 
 module.exports = router;
