@@ -12,6 +12,7 @@ app.use("/api/v1", router);
 
 // Handle 404 route
 app.get("*", (req, res) => {
+  res.setHeader("Access-Control-Allow-Origin", "*");
   return res.status(404).json({
     error: "berhasi, tetapi endpoint tidak ada",
   });
