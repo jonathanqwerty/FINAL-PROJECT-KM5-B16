@@ -102,7 +102,7 @@ module.exports = {
         },
       });
 
-      const resetPasswordLink = `http://localhost:${process.env.PORT}/set-password/${bcryptToken}`;
+      const resetPasswordLink = `https://oneacademy-staging.pemudasukses.tech/forgot/${bcryptToken}`;
       const mailOption = {
         from: process.env.EMAIL_USER,
         to: req.body.email,
