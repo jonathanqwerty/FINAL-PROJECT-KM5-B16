@@ -5,7 +5,7 @@ const express = require("express"),
   schema = require("../validatorSchema/authValidatorSchema");
 
 router.post("/register", controller.register);
-router.post("/login", controller.login);
+router.post("/login", validate(schema.loginValidator), controller.login);
 router.post("/reset-password", controller.resetPassword);
 router.post("/set-password", controller.setPassword);
 
