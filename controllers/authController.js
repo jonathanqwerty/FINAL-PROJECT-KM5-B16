@@ -84,7 +84,7 @@ module.exports = {
       );
       await users.update({
         data: {
-          resetpasswordToken: bcryptToken,
+          resetPasswordToken: bcryptToken,
         },
         where: {
           id: findUser.id,

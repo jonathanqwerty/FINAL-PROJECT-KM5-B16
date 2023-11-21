@@ -16,7 +16,7 @@ model users {
   email              String   @unique
   phone              String   @unique
   password           String
-  reserPasswordToken String?  @map("reset_password_token")
+  resetPasswordToken String?  @map("reset_password_token")
   isActive           Boolean  @map("is_active")
   createAt           DateTime @default(now()) @map("create_at")
   updatedAt          DateTime @updatedAt @map("updated_at")
