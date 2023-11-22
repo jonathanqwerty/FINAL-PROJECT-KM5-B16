@@ -80,7 +80,7 @@ module.exports = {
       }
 
       const bcryptToken = await utils.cryptPassword(
-        req.body.email.replace(/\s+/g, ".")
+        req.body.email.replace(/\s+/, "-")
       );
       await users.update({
         data: {
