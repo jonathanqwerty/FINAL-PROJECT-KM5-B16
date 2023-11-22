@@ -22,7 +22,7 @@ router.get("/set-password/:key", async (req, res) => {
       });
     }
 
-    return res.status(201).json("Password has been change");
+    return res.json("set-password", { user: findData });
   } catch (error) {
     console.log(error);
     return res.status(500).json({
@@ -30,6 +30,6 @@ router.get("/set-password/:key", async (req, res) => {
     });
   }
 });
-router.post("/set-password", controller.setPassword);
+router.post("/set-password/:key", controller.setPassword);
 
 module.exports = router;

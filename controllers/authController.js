@@ -129,25 +129,27 @@ module.exports = {
     try {
       const findUser = await users.findFirst({
         where: {
-          resetpasswordToken: req.body.key,
+          resetPasswordToken: req.params.key,
         },
       });
 
-      if (findUser) {
+      if (!findUser) {
         return res.json({
           error: "Your email is not registered in our system",
         });
       }
 
-      await users.update({
-        data: {
-          password: await utils.cryptPassword(req.body.password),
-          reserPasswordToken: null,
-        },
+      console.log("Password from req.body:", req.body.password);
+      const data = await users.update({
         where: {
           id: findUser.id,
         },
+        data: {
+          password: await utils.cryptPassword(req.body.password),
+          resetPasswordToken: null,
+        },
       });
+
       return res.json({
         data,
       });
