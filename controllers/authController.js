@@ -14,7 +14,7 @@ module.exports = {
           email: req.body.email,
           phone: req.body.phone,
           password: await utils.cryptPassword(req.body.password),
-          // otpToken: generate,
+          otpToken: generate,
           isActive: false,
         },
       });
