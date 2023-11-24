@@ -14,7 +14,8 @@ module.exports = {
           email: req.body.email,
           phone: req.body.phone,
           password: await utils.cryptPassword(req.body.password),
-          isActive: true,
+          // otpToken: generate,
+          isActive: false,
         },
       });
       return res.status(201).json({
@@ -43,7 +44,7 @@ module.exports = {
 
       if (bcrypt.compareSync(req.body.password, findUser.password)) {
         const token = jwt.sign(
-          { id: findUser.email, email: findUser.phone },
+          { email: findUser.email, phone: findUser.phone },
           secret_key,
           { expiresIn: "6h" }
         );

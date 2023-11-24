@@ -12,14 +12,191 @@ datasource db {
 
 // table users
 model users {
-  id                 Int      @id @default(autoincrement())
-  email              String   @unique
-  phone              String   @unique
+  id                 Int             @id @default(autoincrement())
+  email              String          @unique
+  phone              String          @unique
   password           String
-  resetPasswordToken String?  @map("reset_password_token")
-  isActive           Boolean  @map("is_active")
-  createAt           DateTime @default(now()) @map("create_at")
-  updatedAt          DateTime @updatedAt @map("updated_at")
+  profile            Int
+  role               roles           @default(user)
+  validasi           String?         @map("validasi")
+  resetPasswordToken String?         @map("reset_password_token")
+  isActive           Boolean         @map("is_active")
+  createdAt          DateTime        @default(now()) @map("create_at")
+  updatedAt          DateTime        @updatedAt @map("updated_at")
+  profiles           profiles        @relation(fields: [profile], references: [id])
+  myCourse           myCourse[]
+  reviews            reviews[]
+  notifications      notifications[]
 
   @@map("users")
+}
+
+model profiles {
+  id        Int      @id @default(autoincrement())
+  name      String
+  image     String?
+  country   String?
+  city      String?
+  createdAt DateTime @default(now()) @map("create_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  users     users[]
+
+  @@map("profiles")
+}
+
+model courses {
+  id          Int        @id @default(autoincrement())
+  category    Int
+  chapter     Int
+  goal        Int
+  title       String
+  author      String
+  telegram    String
+  description String
+  price       Int
+  image       String
+  createdAt   DateTime   @default(now()) @map("create_at")
+  updatedAt   DateTime   @updatedAt @map("updated_at")
+  categories  categories @relation(fields: [category], references: [id])
+  goals       goals      @relation(fields: [goal], references: [id])
+  myCourse    myCourse[]
+  reviews     reviews[]
+
+  @@map("courses")
+}
+
+model categories {
+  id        Int       @id @default(autoincrement())
+  name      String
+  image     String
+  createdAt DateTime  @default(now()) @map("create_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+  courses   courses[]
+
+  @@map("categories")
+}
+
+model goals {
+  id      Int       @id @default(autoincrement())
+  name    Int
+  detail  String
+  courses courses[]
+
+  @@map("goals")
+}
+
+model chapters {
+  id        Int      @id @default(autoincrement())
+  source    Int
+  title     String
+  duration  String
+  createdAt DateTime @default(now()) @map("create_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  sources   sources  @relation(fields: [source], references: [id])
+
+  @@map("chapters")
+}
+
+model sources {
+  id        Int        @id @default(autoincrement())
+  name      String
+  link      String
+  createdAt DateTime   @default(now()) @map("create_at")
+  updatedAt DateTime   @updatedAt @map("updated_at")
+  chapters  chapters[]
+
+  @@map("sources")
+}
+
+model progres {
+  id        Int      @id @default(autoincrement())
+  source    Int
+  myCourse  Int      @map("my_course")
+  createdAt DateTime @default(now()) @map("create_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  myCourses myCourse @relation(fields: [myCourse], references: [id])
+
+  @@map("progres")
+}
+
+model myCourse {
+  id        Int       @id @default(autoincrement())
+  user      Int
+  course    Int
+  order     Int
+  progress  progress  @default(inProgress)
+  createdAt DateTime  @default(now()) @map("create_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+  users     users     @relation(fields: [user], references: [id])
+  courses   courses   @relation(fields: [course], references: [id])
+  progres   progres[]
+
+  @@map("my_course")
+}
+
+model orders {
+  id        Int      @id @default(autoincrement())
+  status    Int
+  createdAt DateTime @default(now()) @map("create_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("orders")
+}
+
+model reviews {
+  int     Int     @id @default(autoincrement())
+  rating  Int
+  user    Int
+  course  Int
+  comment String
+  users   users   @relation(fields: [user], references: [id])
+  courses courses @relation(fields: [course], references: [id])
+  ratings ratings @relation(fields: [rating], references: [id])
+
+  @@map("reviews")
+}
+
+model notifications {
+  id      Int    @id @default(autoincrement())
+  user    Int
+  massage String
+  isRead  String
+  users   users  @relation(fields: [user], references: [id])
+
+  @@map("notifications")
+}
+
+model ratings {
+  id      Int       @id @default(autoincrement())
+  value   Int
+  name    String
+  reviews reviews[]
+
+  @@map("ratings")
+}
+
+enum roles {
+  admin
+  user
+}
+
+enum type {
+  free
+  paid
+}
+
+enum level {
+  beginer
+  intermediate
+  expert
+}
+
+enum progress {
+  inProgress
+  completed
+}
+
+enum status {
+  paid
+  notPaid
 }
