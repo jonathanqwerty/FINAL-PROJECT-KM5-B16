@@ -3,7 +3,7 @@ const { body } = require("express-validator");
 const registerValidator = [
   body("email").notEmpty().isEmail(),
   body("phone").notEmpty().isMobilePhone(),
-  body("password").notEmpty,
+  body("password").notEmpty(),
 ];
 
 const loginValidator = [

@@ -2,21 +2,53 @@ const { users } = require("../models"),
   utils = require("../utils/index"),
   jwt = require("jsonwebtoken"),
   bcrypt = require("bcrypt"),
-  nodemailer = require("nodemailer");
+  nodemailer = require("nodemailer"),
+  otp = require("../utils/otp");
 
 require("dotenv").config();
 const secret_key = process.env.JWT_KEY || "no_secrest";
 module.exports = {
   register: async (req, res) => {
     try {
+      const generateOTP = otp.generateOTP();
       const data = await users.create({
         data: {
           email: req.body.email,
           phone: req.body.phone,
           password: await utils.cryptPassword(req.body.password),
-          otpToken: generate,
+          validasi: generateOTP,
           isActive: false,
+          profiles: {
+            create: {
+              name: req.body.name,
+            },
+          },
         },
+      });
+
+      const transporter = nodemailer.createTransport({
+        pool: true,
+        host: "smtp.gmail.com",
+        port: 465,
+        secure: true,
+        auth: {
+          user: process.env.EMAIL_USER,
+          pass: process.env.EMAIL_PASS,
+        },
+      });
+      const mailOption = {
+        from: process.env.EMAIL_USER,
+        to: req.body.email,
+        subject: "OTP",
+        html: `<p>${generateOTP}</p>`,
+      };
+      transporter.sendMail(mailOption, (error, info) => {
+        if (error) {
+          return res.json({
+            error: "Your email is not registered in our system",
+          });
+        }
+        console.log("Email sent: " + info.response);
       });
       return res.status(201).json({
         data,
@@ -28,7 +60,6 @@ module.exports = {
       });
     }
   },
-
   login: async (req, res) => {
     try {
       const findUser = await users.findFirst({
