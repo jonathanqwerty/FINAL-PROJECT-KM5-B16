@@ -2,19 +2,22 @@ const { users } = require("../models"),
   utils = require("../utils/index"),
   jwt = require("jsonwebtoken"),
   bcrypt = require("bcrypt"),
-  nodemailer = require("nodemailer");
+  nodemailer = require("nodemailer"),
+  otp = require("../utils/otp");
 
 require("dotenv").config();
 const secret_key = process.env.JWT_KEY || "no_secrest";
+
 module.exports = {
   register: async (req, res) => {
     try {
+      const generatedOTP = otp.generateOTP(); 
       const data = await users.create({
         data: {
           email: req.body.email,
           phone: req.body.phone,
           password: await utils.cryptPassword(req.body.password),
-          otpToken: generate,
+          validasi: generatedOTP,
           isActive: false,
         },
       });
