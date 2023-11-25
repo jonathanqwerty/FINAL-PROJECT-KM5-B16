@@ -1,10 +1,7 @@
-const otpGenerator = require("otp-generator");
+const otp = require("otp-generator");
+
 module.exports = {
-  otp: otpGenerator.generate({
-    OTP_LENGTH: 6,
-    OTP_CONFIG: {
-      upperCaseAlphabets: false,
-      specialChars: false,
-    },
-  }),
+  generateOTP: function () {
+    return otp.generate(6, { lowerCaseAlphabets: false, upperCaseAlphabets: false, specialChars: false });
+  },
 };

@@ -16,14 +16,14 @@ model users {
   email              String          @unique
   phone              String          @unique
   password           String
-  profile            Int
+  profileId          Int?
   role               roles           @default(user)
   validasi           String?         @map("validasi")
   resetPasswordToken String?         @map("reset_password_token")
   isActive           Boolean         @map("is_active")
   createdAt          DateTime        @default(now()) @map("create_at")
   updatedAt          DateTime        @updatedAt @map("updated_at")
-  profiles           profiles        @relation(fields: [profile], references: [id])
+  profile            profiles?       @relation(fields: [profileId], references: [id])
   myCourse           myCourse[]
   reviews            reviews[]
   notifications      notifications[]
@@ -43,7 +43,6 @@ model profiles {
 
   @@map("profiles")
 }
-
 model courses {
   id          Int        @id @default(autoincrement())
   category    Int
