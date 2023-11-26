@@ -9,6 +9,7 @@ router.post(
   validate(schema.registerValidator),
   controller.register
 );
+router.post("/otp/:key", controller.verifyUser);
 router.post("/login", validate(schema.loginValidator), controller.login);
 router.post("/reset-password", controller.resetPassword);
 router.post("/set-password/:key", controller.setPassword);
