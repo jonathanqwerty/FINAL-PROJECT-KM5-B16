@@ -8,6 +8,7 @@ const { users } = require("../models"),
 
 require("dotenv").config();
 const secret_key = process.env.JWT_KEY || "no_secrest";
+
 module.exports = {
   register: async (req, res) => {
     try {

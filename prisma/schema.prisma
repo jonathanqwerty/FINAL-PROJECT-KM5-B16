@@ -16,6 +16,7 @@ model users {
   email              String          @unique
   phone              String          @unique
   password           String
+
   profileId          Int?            @map("profile_id")
   role               roles           @default(user)
   validasi           String?         @map("validasi")
@@ -43,7 +44,6 @@ model profiles {
 
   @@map("profiles")
 }
-
 model courses {
   id          Int        @id @default(autoincrement())
   categoryId  Int
