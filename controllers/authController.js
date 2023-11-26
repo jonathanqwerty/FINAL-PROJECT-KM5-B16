@@ -1,3 +1,4 @@
+const validate = require("../middlewares/validate");
 const { users } = require("../models"),
   utils = require("../utils/index"),
   jwt = require("jsonwebtoken"),
@@ -11,17 +12,86 @@ const secret_key = process.env.JWT_KEY || "no_secrest";
 module.exports = {
   register: async (req, res) => {
     try {
-      const generatedOTP = otp.generateOTP(); 
+      const generateOTP = otp.generateOTP();
       const data = await users.create({
         data: {
           email: req.body.email,
           phone: req.body.phone,
           password: await utils.cryptPassword(req.body.password),
-          validasi: generatedOTP,
+          validasi: generateOTP,
           isActive: false,
+          profiles: {
+            create: {
+              name: req.body.name,
+            },
+          },
         },
       });
+
+      const transporter = nodemailer.createTransport({
+        pool: true,
+        host: "smtp.gmail.com",
+        port: 465,
+        secure: true,
+        auth: {
+          user: process.env.EMAIL_USER,
+          pass: process.env.EMAIL_PASS,
+        },
+      });
+      const mailOption = {
+        from: process.env.EMAIL_USER,
+        to: req.body.email,
+        subject: "OTP-VERIFICATION",
+        html: `<p>This Your OTP</p><p><b>${generateOTP}</b></p>`,
+      };
+      transporter.sendMail(mailOption, (error, info) => {
+        if (error) {
+          return res.status(403).json({
+            error: "Your email is not registered in our system",
+          });
+        }
+        console.log("Email sent: " + info.response);
+      });
       return res.status(201).json({
+        data,
+      });
+    } catch (error) {
+      console.log(error);
+      return res.status(500).json({
+        error,
+        message: "Internal server error",
+      });
+    }
+  },
+
+  verifyUser: async (req, res) => {
+    try {
+      const findUser = await users.findFirst({
+        where: {
+          email: req.params.key,
+        },
+      });
+      if (!findUser) {
+        return res.status(403).json({
+          error: "Your email is not registered in our system",
+        });
+      }
+      console.log(findUser.validasi);
+      if (findUser && findUser.validasi !== req.body.validasi) {
+        return res.status(403).json({
+          error: "Your OTP not valid",
+        });
+      }
+      const data = await users.update({
+        data: {
+          isActive: true,
+        },
+        where: {
+          id: findUser.id,
+        },
+      });
+
+      return res.status(200).json({
         data,
       });
     } catch (error) {
@@ -31,7 +101,6 @@ module.exports = {
       });
     }
   },
-
   login: async (req, res) => {
     try {
       const findUser = await users.findFirst({
@@ -40,8 +109,13 @@ module.exports = {
         },
       });
       if (!findUser) {
-        return res.status(404).json({
+        return res.status(403).json({
           error: "Your email is not registered in our system",
+        });
+      }
+      if (findUser && findUser.isActive === false) {
+        return res.status(403).json({
+          error: "Please verify you account first",
         });
       }
 
@@ -78,7 +152,7 @@ module.exports = {
       });
 
       if (!findUser) {
-        return res.status(404).json({
+        return res.status(403).json({
           error: "Your email is not registered in our system",
         });
       }
@@ -115,11 +189,14 @@ module.exports = {
       };
       transporter.sendMail(mailOption, (error, info) => {
         if (error) {
-          return res.json({
+          return res.status(403).json({
             error: "Your email is not registered in our system",
           });
         }
         console.log("Email sent: " + info.response);
+      });
+      return res.status(201).json({
+        message: "The reset password link has been sent to your email",
       });
     } catch (error) {
       console.log(error);
@@ -138,7 +215,7 @@ module.exports = {
       });
 
       if (!findUser) {
-        return res.json({
+        return res.status(403).json({
           error: "Your email is not registered in our system",
         });
       }
@@ -154,7 +231,7 @@ module.exports = {
         },
       });
 
-      return res.json({
+      return res.status(200).json({
         data,
       });
     } catch (error) {

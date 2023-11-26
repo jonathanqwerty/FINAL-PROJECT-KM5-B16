@@ -16,14 +16,15 @@ model users {
   email              String          @unique
   phone              String          @unique
   password           String
-  profileId          Int?
+
+  profileId          Int?            @map("profile_id")
   role               roles           @default(user)
   validasi           String?         @map("validasi")
   resetPasswordToken String?         @map("reset_password_token")
   isActive           Boolean         @map("is_active")
   createdAt          DateTime        @default(now()) @map("create_at")
   updatedAt          DateTime        @updatedAt @map("updated_at")
-  profile            profiles?       @relation(fields: [profileId], references: [id])
+  profiles           profiles?       @relation(fields: [profileId], references: [id])
   myCourse           myCourse[]
   reviews            reviews[]
   notifications      notifications[]
@@ -45,8 +46,8 @@ model profiles {
 }
 model courses {
   id          Int        @id @default(autoincrement())
-  category    Int
-  chapter     Int
+  categoryId  Int
+  chapterId   Int
   goal        Int
   title       String
   author      String
@@ -56,7 +57,7 @@ model courses {
   image       String
   createdAt   DateTime   @default(now()) @map("create_at")
   updatedAt   DateTime   @updatedAt @map("updated_at")
-  categories  categories @relation(fields: [category], references: [id])
+  categories  categories @relation(fields: [categoryId], references: [id])
   goals       goals      @relation(fields: [goal], references: [id])
   myCourse    myCourse[]
   reviews     reviews[]
