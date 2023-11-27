@@ -14,8 +14,8 @@ datasource db {
 model users {
   id                 Int             @id @default(autoincrement())
   email              String          @unique
-  phone              String          @unique
-  password           String
+  phone              String?         @unique
+  password           String?
   profileId          Int?            @map("profile_id")
   role               roles           @default(user)
   validasi           String?         @map("validasi")
