@@ -6,6 +6,8 @@ const registerValidator = [
   body("password").notEmpty(),
 ];
 
+const verifyValidator = [body("validasi").notEmpty()];
+
 const loginValidator = [
   body("email").notEmpty().isEmail(),
   body("password").notEmpty(),
@@ -18,6 +20,7 @@ const changePasswordValidator = [
 
 module.exports = {
   registerValidator,
+  verifyValidator,
   loginValidator,
   changePasswordValidator,
 };

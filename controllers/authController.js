@@ -42,7 +42,11 @@ module.exports = {
         from: process.env.EMAIL_USER,
         to: req.body.email,
         subject: "OTP-VERIFICATION",
-        html: `<p>This Your OTP</p><p><b>${generateOTP}</b></p>`,
+        html: `<div style="border: 1px solid #6148FF; border-radius: 10px; width: 45vw; flex-direction: column; padding: 2rem; background-color: #ffff; font-family:calibri; font-weight:600; font-size:18px;">
+            <p>Hi ! ${req.body.email} <br/> We've received an OTP request from your ${req.body.name}. <br/> Please input the 6 digit code below to authenticate your account</p> <br/>
+            <center><h1 style= " color: #6148FF; letter-spacing: .5rem; font-weight:900">${generateOTP}</h1> <br /></center>
+            <p>If you didn't make this request, you may ignore this email, <br />email us at <q>nathanaeljonathan09@gmail.com</q> on Monday - Friday, 09.00 - 18.00 WIB | Saturday, 09.00 - 15.00 WIB </p>
+        </div>`,
       };
       transporter.sendMail(mailOption, (error, info) => {
         if (error) {
@@ -158,7 +162,7 @@ module.exports = {
       }
 
       const bcryptToken = await utils.cryptPassword(
-        req.body.email.replace(/[\/\s]+/g, "-")
+        req.body.email.replace(/[\/\s]+/g, "@")
       );
       await users.update({
         data: {
@@ -185,7 +189,11 @@ module.exports = {
         from: process.env.EMAIL_USER,
         to: req.body.email,
         subject: "Reset-Password",
-        html: `<p>Click <a href="${resetPasswordLink}">here</a> to reset your password</p>`,
+        html: `<div style="border: 1px solid #6148FF; border-radius: 10px; width: 45vw; flex-direction: column; padding: 2rem; background-color: #ffff; font-family:calibri; font-weight:600; font-size:18px;">
+            <p>Hi ! ${req.body.email} <br/> We've received an Reset Password Request. <br/> click link below to reset your password</p> <br/>
+            <center><a style="border: 1px solid transparant; border-radius: 10px; padding: 1rem; background-color: #00aeff; color:white; hover: cursor; text-decoration:none;" href="${resetPasswordLink}">Reset-Password</a></center><br/>
+            <p>If you didn't make this request, you may ignore this email, <br />email us at <q>nathanaeljonathan09@gmail.com</q> on Monday - Friday, 09.00 - 18.00 WIB | Saturday, 09.00 - 15.00 WIB </p>
+        </div>`,
       };
       transporter.sendMail(mailOption, (error, info) => {
         if (error) {
