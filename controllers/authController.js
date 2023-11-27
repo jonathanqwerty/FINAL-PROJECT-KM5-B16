@@ -63,7 +63,7 @@ module.exports = {
       transporter.sendMail(mailOption, (error, info) => {
         if (error) {
           return res.status(403).json({
-            error: "Your email is not registered in our system",
+            message: "Your email is not registered in our system",
           });
         }
         console.log("Email sent: " + info.response);
@@ -95,7 +95,7 @@ module.exports = {
       console.log(findUser.validasi);
       if (findUser && findUser.validasi !== req.body.validasi) {
         return res.status(403).json({
-          error: "Your OTP not valid",
+          message: "Your OTP not valid",
         });
       }
       const data = await users.update({
@@ -117,6 +117,7 @@ module.exports = {
       });
     }
   },
+
   login: async (req, res) => {
     try {
       const findUser = await users.findFirst({
@@ -131,7 +132,7 @@ module.exports = {
       }
       if (findUser && findUser.isActive === false) {
         return res.status(403).json({
-          error: "Please verify you account first",
+          message: "Please verify you account first",
         });
       }
 
@@ -149,7 +150,7 @@ module.exports = {
         });
       }
       return res.status(403).json({
-        error: "Invalid Password",
+        message: "Invalid Password",
       });
     } catch (error) {
       console.log(error);
@@ -163,51 +164,63 @@ module.exports = {
     res.redirect(authorizationUrl);
   },
   callbackLogin: async (req, res) => {
-    const { code } = req.query;
-    const { tokens } = await Oauth2.getToken(code);
-    Oauth2.setCredentials(tokens);
+    try {
+      const { code } = req.query;
+      const { tokens } = await Oauth2.getToken(code);
+      Oauth2.setCredentials(tokens);
 
-    console.log(code);
+      console.log(code);
 
-    const oauth2 = google.oauth2({
-      auth: Oauth2,
-      version: "v2",
-    });
-    const { data } = await oauth2.userinfo.get();
-    if (!data) {
-      return res.json({
-        data: data,
+      const oauth2 = google.oauth2({
+        auth: Oauth2,
+        version: "v2",
       });
-    }
+      const { data } = await oauth2.userinfo.get();
+      if (!data) {
+        return res.json({
+          data: data,
+        });
+      }
 
-    let user = await prisma.users.findFirst({
-      where: {
-        email: data.email,
-      },
-    });
-    if (!user) {
-      user = await prisma.users.create({
-        data: {
-          username: data.name,
+      console.log(data);
+      let user = await users.findFirst({
+        where: {
           email: data.email,
         },
       });
+      if (!user) {
+        user = await users.create({
+          data: {
+            isActive: true,
+            email: data.email,
+            profiles: {
+              create: {
+                name: data.name,
+                image: data.picture,
+              },
+            },
+          },
+        });
+      }
+      user = await users.findFirst({
+        where: {
+          email: data.email,
+        },
+      });
+
+      const token = jwt.sign({ id: user.id }, "secret_key", {
+        expiresIn: "6h",
+      });
+
+      return res.status(200).json({
+        data: {
+          token,
+        },
+      });
+    } catch (error) {
+      console.log(error);
+      error;
     }
-    user = await prisma.users.findFirst({
-      where: {
-        email: data.email,
-      },
-    });
-
-    const token = jwt.sign({ id: user.id }, "secret_key", {
-      expiresIn: "6h",
-    });
-
-    return res.status(200).json({
-      data: {
-        token,
-      },
-    });
   },
 
   resetPassword: async (req, res) => {
@@ -220,7 +233,7 @@ module.exports = {
 
       if (!findUser) {
         return res.status(403).json({
-          error: "Your email is not registered in our system",
+          message: "Your email is not registered in our system",
         });
       }
 
@@ -261,7 +274,7 @@ module.exports = {
       transporter.sendMail(mailOption, (error, info) => {
         if (error) {
           return res.status(403).json({
-            error: "Your email is not registered in our system",
+            message: "Your email is not registered in our system",
           });
         }
         console.log("Email sent: " + info.response);
@@ -287,7 +300,7 @@ module.exports = {
 
       if (!findUser) {
         return res.status(403).json({
-          error: "Your email is not registered in our system",
+          message: "Your email is not registered in our system",
         });
       }
 

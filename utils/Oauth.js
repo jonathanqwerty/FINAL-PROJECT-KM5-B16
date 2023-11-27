@@ -3,7 +3,7 @@ const { google } = require("googleapis");
 const Oauth2 = new google.auth.OAuth2(
   process.env.GOOGLE_CLIENT_ID,
   process.env.GOOGLE_CLIENT_SECRET,
-  "http://localhost:3000/auth/api/v1/google/callback"
+  "http://localhost:3000/api/v1/auth/google/callback"
 );
 
 const scopes = [
