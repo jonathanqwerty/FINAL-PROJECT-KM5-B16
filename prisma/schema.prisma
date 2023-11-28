@@ -14,8 +14,8 @@ datasource db {
 model users {
   id                 Int             @id @default(autoincrement())
   email              String          @unique
-  phone              String          @unique
-  password           String
+  phone              String?         @unique
+  password           String?
   profileId          Int?            @map("profile_id")
   role               roles           @default(user)
   validasi           String?         @map("validasi")
@@ -47,7 +47,6 @@ model profiles {
 model courses {
   id          Int        @id @default(autoincrement())
   categoryId  Int
-  chapterId   Int
   goal        Int
   title       String
   author      String
@@ -61,6 +60,7 @@ model courses {
   goals       goals      @relation(fields: [goal], references: [id])
   myCourse    myCourse[]
   reviews     reviews[]
+  chapters    chapters[]
 
   @@map("courses")
 }
@@ -87,12 +87,14 @@ model goals {
 
 model chapters {
   id        Int      @id @default(autoincrement())
-  source    Int
   title     String
   duration  String
+  courseId  Int     
+  courses   courses  @relation(fields: [courseId], references: [id])
   createdAt DateTime @default(now()) @map("create_at")
   updatedAt DateTime @updatedAt @map("updated_at")
-  sources   sources  @relation(fields: [source], references: [id])
+
+  sources sources[]
 
   @@map("chapters")
 }
@@ -101,20 +103,23 @@ model sources {
   id        Int        @id @default(autoincrement())
   name      String
   link      String
+  chapterId Int
+  chapters  chapters   @relation(fields: [chapterId], references: [id])
   createdAt DateTime   @default(now()) @map("create_at")
   updatedAt DateTime   @updatedAt @map("updated_at")
-  chapters  chapters[]
+  progres progres[]
 
   @@map("sources")
 }
 
 model progres {
   id        Int      @id @default(autoincrement())
-  source    Int
+  sourceId  Int
   myCourse  Int      @map("my_course")
   createdAt DateTime @default(now()) @map("create_at")
   updatedAt DateTime @updatedAt @map("updated_at")
   myCourses myCourse @relation(fields: [myCourse], references: [id])
+  sources   sources @relation(fields: [sourceId], references: [id])
 
   @@map("progres")
 }
@@ -130,15 +135,18 @@ model myCourse {
   users     users     @relation(fields: [user], references: [id])
   courses   courses   @relation(fields: [course], references: [id])
   progres   progres[]
+  orders    orders[]
 
   @@map("my_course")
 }
 
 model orders {
-  id        Int      @id @default(autoincrement())
-  status    Int
-  createdAt DateTime @default(now()) @map("create_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
+  id          Int      @id @default(autoincrement())
+  status      status @default(notPaid)
+  myCourseId  Int 
+  myCourse    myCourse @relation(fields: [myCourseId], references: [id])
+  createdAt   DateTime @default(now()) @map("create_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
 
   @@map("orders")
 }
@@ -151,28 +159,20 @@ model reviews {
   comment String
   users   users   @relation(fields: [user], references: [id])
   courses courses @relation(fields: [course], references: [id])
-  ratings ratings @relation(fields: [rating], references: [id])
 
   @@map("reviews")
 }
 
 model notifications {
   id      Int    @id @default(autoincrement())
-  user    Int
-  massage String
-  isRead  String
-  users   users  @relation(fields: [user], references: [id])
+  userId  Int
+  message String
+  isRead  Boolean @default(false)
+  createdAt DateTime @default(now()) @map("create_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  users   users  @relation(fields: [userId], references: [id])
 
   @@map("notifications")
-}
-
-model ratings {
-  id      Int       @id @default(autoincrement())
-  value   Int
-  name    String
-  reviews reviews[]
-
-  @@map("ratings")
 }
 
 enum roles {

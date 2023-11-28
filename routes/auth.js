@@ -4,6 +4,7 @@ const express = require("express"),
   validate = require("../middlewares/validate"),
   schema = require("../validatorSchema/authValidatorSchema");
 
+// auth
 router.post(
   "/register",
   validate(schema.registerValidator),
@@ -17,5 +18,9 @@ router.post(
 router.post("/login", validate(schema.loginValidator), controller.login);
 router.post("/reset-password", controller.resetPassword);
 router.post("/set-password/:key", controller.setPassword);
+
+//Oauth
+router.get("/google", controller.loginGoogle);
+router.get("/google/callback", controller.callbackLogin);
 
 module.exports = router;

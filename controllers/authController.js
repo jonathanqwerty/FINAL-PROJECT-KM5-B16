@@ -1,10 +1,12 @@
 const validate = require("../middlewares/validate");
-const { users } = require("../models"),
+const { users, notifications, prisma } = require("../models"),
   utils = require("../utils/index"),
   jwt = require("jsonwebtoken"),
   bcrypt = require("bcrypt"),
   nodemailer = require("nodemailer"),
-  otp = require("../utils/otp");
+  otp = require("../utils/otp"),
+  { google } = require("googleapis"),
+  { Oauth2, authorizationUrl } = require("../utils/Oauth");
 
 require("dotenv").config();
 const secret_key = process.env.JWT_KEY || "no_secrest";
@@ -12,53 +14,72 @@ const secret_key = process.env.JWT_KEY || "no_secrest";
 module.exports = {
   register: async (req, res) => {
     try {
-      const generateOTP = otp.generateOTP();
-      const data = await users.create({
-        data: {
+      const findUser = await users.findFirst({
+        where: {
           email: req.body.email,
-          phone: req.body.phone,
-          password: await utils.cryptPassword(req.body.password),
-          validasi: generateOTP,
-          isActive: false,
-          profiles: {
-            create: {
-              name: req.body.name,
+        },
+      });
+      if (findUser) {
+        return res.status(403).json({
+          error: "Your email already exist",
+        });
+      }
+      if (!findUser) {
+        const generateOTP = otp.generateOTP();
+        const data = await users.create({
+          data: {
+            email: req.body.email,
+            phone: req.body.phone,
+            password: await utils.cryptPassword(req.body.password),
+            validasi: generateOTP,
+            isActive: false,
+            profiles: {
+              create: {
+                name: req.body.name,
+              },
             },
           },
-        },
-      });
+        });
 
-      const transporter = nodemailer.createTransport({
-        pool: true,
-        host: "smtp.gmail.com",
-        port: 465,
-        secure: true,
-        auth: {
-          user: process.env.EMAIL_USER,
-          pass: process.env.EMAIL_PASS,
-        },
-      });
-      const mailOption = {
-        from: process.env.EMAIL_USER,
-        to: req.body.email,
-        subject: "OTP-VERIFICATION",
-        html: `<div style="border: 1px solid #6148FF; border-radius: 10px; width: 45vw; flex-direction: column; padding: 2rem; background-color: #ffff; font-family:calibri; font-weight:600; font-size:18px;">
+        const transporter = nodemailer.createTransport({
+          pool: true,
+          host: "smtp.gmail.com",
+          port: 465,
+          secure: true,
+          auth: {
+            user: process.env.EMAIL_USER,
+            pass: process.env.EMAIL_PASS,
+          },
+        });
+        const mailOption = {
+          from: process.env.EMAIL_USER,
+          to: req.body.email,
+          subject: "OTP-VERIFICATION",
+          html: `<div style="border: 1px solid #6148FF; border-radius: 10px; width: 45vw; flex-direction: column; padding: 2rem; background-color: #ffff; font-family:calibri; font-weight:600; font-size:18px;">
             <p>Hi ! ${req.body.email} <br/> We've received an OTP request from your ${req.body.name}. <br/> Please input the 6 digit code below to authenticate your account</p> <br/>
             <center><h1 style= " color: #6148FF; letter-spacing: .5rem; font-weight:900">${generateOTP}</h1> <br /></center>
             <p>If you didn't make this request, you may ignore this email, <br />email us at <q>nathanaeljonathan09@gmail.com</q> on Monday - Friday, 09.00 - 18.00 WIB | Saturday, 09.00 - 15.00 WIB </p>
         </div>`,
-      };
-      transporter.sendMail(mailOption, (error, info) => {
-        if (error) {
-          return res.status(403).json({
-            error: "Your email is not registered in our system",
-          });
-        }
-        console.log("Email sent: " + info.response);
-      });
-      return res.status(201).json({
-        data,
-      });
+        };
+        transporter.sendMail(mailOption, (error, info) => {
+          if (error) {
+            return res.status(403).json({
+              message: "Your email is not registered in our system",
+            });
+          }
+          console.log("Email sent: " + info.response);
+        });
+        await prisma.notifications.create({
+          data: {
+            userId: data.id,
+            message: 'Welcome! You have successfully registered.',
+          },
+        });
+        return res.status(201).json({
+          email: data.email,
+          message: "Check your email for verify",
+        });
+      }
     } catch (error) {
       console.log(error);
       return res.status(500).json({
@@ -83,7 +104,7 @@ module.exports = {
       console.log(findUser.validasi);
       if (findUser && findUser.validasi !== req.body.validasi) {
         return res.status(403).json({
-          error: "Your OTP not valid",
+          message: "Your OTP not valid",
         });
       }
       const data = await users.update({
@@ -94,9 +115,22 @@ module.exports = {
           id: findUser.id,
         },
       });
-
+      console.log(req.body.validasi);
+      const token = jwt.sign(
+        { id: findUser.id, email: findUser.email, phone: findUser.phone },
+        secret_key,
+        { expiresIn: "6h" }
+      );
+      await prisma.notifications.create({
+        data: {
+          userId: findUser.id,
+          message: 'Your account has been successfully verified.',
+        },
+      });
       return res.status(200).json({
-        data,
+        data: {
+          token,
+        },
       });
     } catch (error) {
       console.log(error);
@@ -105,6 +139,7 @@ module.exports = {
       });
     }
   },
+
   login: async (req, res) => {
     try {
       const findUser = await users.findFirst({
@@ -119,17 +154,22 @@ module.exports = {
       }
       if (findUser && findUser.isActive === false) {
         return res.status(403).json({
-          error: "Please verify you account first",
+          message: "Please verify you account first",
         });
       }
 
       if (bcrypt.compareSync(req.body.password, findUser.password)) {
         const token = jwt.sign(
-          { email: findUser.email, phone: findUser.phone },
+          { id: findUser.id, email: findUser.email, phone: findUser.phone },
           secret_key,
           { expiresIn: "6h" }
         );
-
+        await prisma.notifications.create({
+          data: {
+            userId: findUser.id,
+            message: 'You have successfully logged in.',
+          },
+        });
         return res.status(200).json({
           data: {
             token,
@@ -137,13 +177,81 @@ module.exports = {
         });
       }
       return res.status(403).json({
-        error: "Invalid Password",
+        message: "Invalid Password",
       });
     } catch (error) {
       console.log(error);
       return res.status(500).json({
         error,
       });
+    }
+  },
+
+  loginGoogle: (req, res) => {
+    res.redirect(authorizationUrl);
+  },
+  callbackLogin: async (req, res) => {
+    try {
+      const { code } = req.query;
+      const { tokens } = await Oauth2.getToken(code);
+      Oauth2.setCredentials(tokens);
+
+      console.log(code);
+
+      const oauth2 = google.oauth2({
+        auth: Oauth2,
+        version: "v2",
+      });
+      const { data } = await oauth2.userinfo.get();
+      if (!data) {
+        return res.json({
+          data: data,
+        });
+      }
+
+      console.log(data);
+      let user = await users.findFirst({
+        where: {
+          email: data.email,
+        },
+      });
+      if (!user) {
+        user = await users.create({
+          data: {
+            isActive: true,
+            email: data.email,
+            profiles: {
+              create: {
+                name: data.name,
+                image: data.picture,
+              },
+            },
+          },
+        });
+      }
+      user = await users.findFirst({
+        where: {
+          email: data.email,
+        },
+      });
+
+      const token = jwt.sign({ id: user.id }, "secret_key", {
+        expiresIn: "6h",
+      });
+      await prisma.notifications.create({
+        data: {
+          userId: findUser.id,
+          message: 'You have successfully logged in.',
+        },
+      });
+      return res.status(200).json({
+        data: {
+          token,
+        },
+      });
+    } catch (error) {
+      console.log(error);
+      error;
     }
   },
 
@@ -157,7 +265,7 @@ module.exports = {
 
       if (!findUser) {
         return res.status(403).json({
-          error: "Your email is not registered in our system",
+          message: "Your email is not registered in our system",
         });
       }
 
@@ -198,10 +306,16 @@ module.exports = {
       transporter.sendMail(mailOption, (error, info) => {
         if (error) {
           return res.status(403).json({
-            error: "Your email is not registered in our system",
+            message: "Your email is not registered in our system",
           });
         }
         console.log("Email sent: " + info.response);
+      });
+      await prisma.notifications.create({
+        data: {
+          userId: findUser.id,
+          message: 'The reset password link has been sent to your email.',
+        },
       });
       return res.status(201).json({
         message: "The reset password link has been sent to your email",
@@ -224,7 +338,7 @@ module.exports = {
 
       if (!findUser) {
         return res.status(403).json({
-          error: "Your email is not registered in our system",
+          message: "Your email is not registered in our system",
         });
       }
 
@@ -238,7 +352,12 @@ module.exports = {
           resetPasswordToken: null,
         },
       });
-
+      await prisma.notifications.create({
+        data: {
+          userId: findUser.id,
+          message: 'Your password has been changed successfully.',
+        },
+      });
       return res.status(200).json({
         data,
       });
