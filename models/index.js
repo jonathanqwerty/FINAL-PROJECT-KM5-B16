@@ -7,4 +7,5 @@ module.exports = {
   profiles: prisma.profiles,
   notifications: prisma.notifications,
   prisma,
+
 };

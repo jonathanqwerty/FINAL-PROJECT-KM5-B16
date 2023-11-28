@@ -1,4 +1,5 @@
 const validate = require("../middlewares/validate");
+
 const { users, notifications, prisma } = require("../models"),
   utils = require("../utils/index"),
   jwt = require("jsonwebtoken"),
@@ -75,6 +76,7 @@ module.exports = {
             message: 'Welcome! You have successfully registered.',
           },
         });
+
         return res.status(201).json({
           email: data.email,
           message: "Check your email for verify",
