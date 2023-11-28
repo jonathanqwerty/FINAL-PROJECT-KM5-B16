@@ -70,7 +70,8 @@ module.exports = {
           console.log("Email sent: " + info.response);
         });
         return res.status(201).json({
-          data,
+          email: data.email,
+          message: "Check your email for verify",
         });
       }
     } catch (error) {
@@ -108,9 +109,17 @@ module.exports = {
           id: findUser.id,
         },
       });
+      console.log(req.body.validasi);
+      const token = jwt.sign(
+        { id: findUser.id, email: findUser.email, phone: findUser.phone },
+        secret_key,
+        { expiresIn: "6h" }
+      );
 
       return res.status(200).json({
-        data,
+        data: {
+          token,
+        },
       });
     } catch (error) {
       console.log(error);
@@ -140,7 +149,7 @@ module.exports = {
 
       if (bcrypt.compareSync(req.body.password, findUser.password)) {
         const token = jwt.sign(
-          { email: findUser.email, phone: findUser.phone },
+          { id: findUser.id, email: findUser.email, phone: findUser.phone },
           secret_key,
           { expiresIn: "6h" }
         );
