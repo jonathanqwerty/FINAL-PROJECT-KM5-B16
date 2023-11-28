@@ -165,10 +165,12 @@ model reviews {
 
 model notifications {
   id      Int    @id @default(autoincrement())
-  user    Int
-  massage String
-  isRead  String
-  users   users  @relation(fields: [user], references: [id])
+  userId  Int
+  message String
+  isRead  Boolean @default(false)
+  createdAt DateTime @default(now()) @map("create_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  users   users  @relation(fields: [userId], references: [id])
 
   @@map("notifications")
 }
