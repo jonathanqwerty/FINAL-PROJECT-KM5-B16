@@ -2,7 +2,6 @@ const express = require("express"),
   router = express.Router(),
   authRouter = require("./auth"),
   profileRouter = require("./profile"),
-  profileRouter = require("./profile"),
   notifRouter = require("./notif");
 
 router.use("/auth", authRouter);
