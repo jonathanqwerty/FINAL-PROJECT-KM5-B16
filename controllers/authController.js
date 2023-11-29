@@ -73,12 +73,13 @@ module.exports = {
         await prisma.notifications.create({
           data: {
             userId: data.id,
-            message: 'Welcome! You have successfully registered.',
+            message: "Welcome! You have successfully registered.",
           },
         });
 
         return res.status(201).json({
           email: data.email,
+          otp: data.validasi,
           message: "Check your email for verify",
         });
       }
@@ -123,10 +124,11 @@ module.exports = {
         secret_key,
         { expiresIn: "6h" }
       );
+
       await prisma.notifications.create({
         data: {
           userId: findUser.id,
-          message: 'Your account has been successfully verified.',
+          message: "Your account has been successfully verified.",
         },
       });
       return res.status(200).json({
@@ -169,7 +171,7 @@ module.exports = {
         await prisma.notifications.create({
           data: {
             userId: findUser.id,
-            message: 'You have successfully logged in.',
+            message: "You have successfully logged in.",
           },
         });
         return res.status(200).json({
@@ -243,7 +245,7 @@ module.exports = {
       await prisma.notifications.create({
         data: {
           userId: findUser.id,
-          message: 'You have successfully logged in.',
+          message: "You have successfully logged in.",
         },
       });
       return res.status(200).json({
@@ -316,7 +318,7 @@ module.exports = {
       await prisma.notifications.create({
         data: {
           userId: findUser.id,
-          message: 'The reset password link has been sent to your email.',
+          message: "The reset password link has been sent to your email.",
         },
       });
       return res.status(201).json({
@@ -357,7 +359,7 @@ module.exports = {
       await prisma.notifications.create({
         data: {
           userId: findUser.id,
-          message: 'Your password has been changed successfully.',
+          message: "Your password has been changed successfully.",
         },
       });
       return res.status(200).json({
