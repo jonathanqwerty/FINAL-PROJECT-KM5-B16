@@ -1,5 +1,6 @@
 const validate = require("../middlewares/validate");
-const { users } = require("../models"),
+
+const { users, notifications, prisma } = require("../models"),
   utils = require("../utils/index"),
   jwt = require("jsonwebtoken"),
   bcrypt = require("bcrypt"),
@@ -69,6 +70,13 @@ module.exports = {
           }
           console.log("Email sent: " + info.response);
         });
+        await prisma.notifications.create({
+          data: {
+            userId: data.id,
+            message: 'Welcome! You have successfully registered.',
+          },
+        });
+
         return res.status(201).json({
           email: data.email,
           message: "Check your email for verify",
@@ -115,7 +123,12 @@ module.exports = {
         secret_key,
         { expiresIn: "6h" }
       );
-
+      await prisma.notifications.create({
+        data: {
+          userId: findUser.id,
+          message: 'Your account has been successfully verified.',
+        },
+      });
       return res.status(200).json({
         data: {
           token,
@@ -153,7 +166,12 @@ module.exports = {
           secret_key,
           { expiresIn: "6h" }
         );
-
+        await prisma.notifications.create({
+          data: {
+            userId: findUser.id,
+            message: 'You have successfully logged in.',
+          },
+        });
         return res.status(200).json({
           data: {
             token,
@@ -222,7 +240,12 @@ module.exports = {
       const token = jwt.sign({ id: user.id }, "secret_key", {
         expiresIn: "6h",
       });
-
+      await prisma.notifications.create({
+        data: {
+          userId: findUser.id,
+          message: 'You have successfully logged in.',
+        },
+      });
       return res.status(200).json({
         data: {
           token,
@@ -290,6 +313,12 @@ module.exports = {
         }
         console.log("Email sent: " + info.response);
       });
+      await prisma.notifications.create({
+        data: {
+          userId: findUser.id,
+          message: 'The reset password link has been sent to your email.',
+        },
+      });
       return res.status(201).json({
         message: "The reset password link has been sent to your email",
       });
@@ -325,7 +354,12 @@ module.exports = {
           resetPasswordToken: null,
         },
       });
-
+      await prisma.notifications.create({
+        data: {
+          userId: findUser.id,
+          message: 'Your password has been changed successfully.',
+        },
+      });
       return res.status(200).json({
         data,
       });
