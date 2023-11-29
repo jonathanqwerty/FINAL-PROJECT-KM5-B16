@@ -47,17 +47,17 @@ model profiles {
 model courses {
   id          Int        @id @default(autoincrement())
   categoryId  Int
-  goal        Int
   title       String
   author      String
   telegram    String
   description String
   price       Int
   image       String
+  available   Boolean    @default(true)
   createdAt   DateTime   @default(now()) @map("create_at")
   updatedAt   DateTime   @updatedAt @map("updated_at")
   categories  categories @relation(fields: [categoryId], references: [id])
-  goals       goals      @relation(fields: [goal], references: [id])
+  goals       goals[]
   myCourse    myCourse[]
   reviews     reviews[]
   chapters    chapters[]
@@ -78,9 +78,9 @@ model categories {
 
 model goals {
   id      Int       @id @default(autoincrement())
-  name    Int
-  detail  String
-  courses courses[]
+  name    String
+  course  Int       
+  courses courses @relation(fields: [course], references: [id])
 
   @@map("goals")
 }
@@ -165,10 +165,12 @@ model reviews {
 
 model notifications {
   id      Int    @id @default(autoincrement())
-  user    Int
-  massage String
-  isRead  String
-  users   users  @relation(fields: [user], references: [id])
+  userId  Int
+  message String
+  isRead  Boolean @default(false)
+  createdAt DateTime @default(now()) @map("create_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  users   users  @relation(fields: [userId], references: [id])
 
   @@map("notifications")
 }
