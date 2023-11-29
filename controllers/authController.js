@@ -79,6 +79,7 @@ module.exports = {
 
         return res.status(201).json({
           email: data.email,
+          otp: data.validasi,
           message: "Check your email for verify",
         });
       }
