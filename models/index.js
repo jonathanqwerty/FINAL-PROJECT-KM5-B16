@@ -6,5 +6,6 @@ module.exports = {
   users: prisma.users,
   profiles: prisma.profiles,
   notifications: prisma.notifications,
-
+  myCourse: prisma.myCourse,
+  orders: prisma.orders,
 };
