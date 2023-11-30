@@ -6,4 +6,5 @@ const express = require("express"),
 router.get("/profile", checkToken, controller.profile);
 router.put("/profile/update", checkToken, controller.profileUpdate);
 
+
 module.exports = router;
