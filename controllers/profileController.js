@@ -1,5 +1,6 @@
 const { users, profiles } = require("../models"),
-  jwt = require("jsonwebtoken");
+  jwt = require("jsonwebtoken"),
+  utils = require("../utils/index");
 
 module.exports = {
   profile: async (req, res) => {
@@ -12,11 +13,6 @@ module.exports = {
           email: res.user.email,
         },
       });
-      if (jwt.TokenExpiredError) {
-        return res.status(400).json({
-          message: "Your session has ended, please login again",
-        });
-      }
       return res.status(200).json({
         user,
       });
@@ -28,15 +24,29 @@ module.exports = {
     }
   },
   profileUpdate: async (req, res) => {
-    const profileUpdate = await users.findUnique({
-      where: {
-        email: res.user.email,
-      },
-    });
+    try {
+      const user = await users.findUnique({
+        where: {
+          email: res.user.email,
+        },
+        include: {
+          profiles: true,
+        },
+      });
 
-    return res.status(200).json({
-      data: profileUpdate,
-      message: "success update your profile",
-    });
+      const profileUpdate = await profiles.update({
+        where: {
+          id: user.profiles.id,
+        },
+        data,
+      });
+
+      return res.status(200).json({
+        profileUpdate,
+      });
+    } catch (error) {
+      console.error("Error updating profile:", error);
+      res.status(500).json({ success: false, error: "Internal Server Error" });
+    }
   },
 };

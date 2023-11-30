@@ -18,8 +18,6 @@ module.exports = {
             where: {
               id: notification.id,
             },
-
-            as,
             data: {
               isRead: true,
             },
