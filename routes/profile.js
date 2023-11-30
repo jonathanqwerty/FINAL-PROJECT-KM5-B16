@@ -4,6 +4,7 @@ const express = require("express"),
   checkToken = require("../middlewares/checkToken");
 
 router.get("/profile", checkToken, controller.profile);
-router.put("/profile", checkToken, controller.profileUpdate);
+router.put("/profile/update", checkToken, controller.profileUpdate);
+
 
 module.exports = router;

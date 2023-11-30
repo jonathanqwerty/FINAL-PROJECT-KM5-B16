@@ -37,14 +37,11 @@ module.exports = {
         include: {
           profiles: true,
         },
-      });
-  
       if (!user) {
         return res.status(404).json({
           message: "User not found",
         });
       }
-  
       const updatedProfile = await profiles.update({
         where: {
           id: user.profiles.id, 
@@ -54,7 +51,7 @@ module.exports = {
           country: req.body.country || user.profiles.country,
           city: req.body.city || user.profiles.city,
         },
-      });
+
       await notifications.create({
         data: {
           message: "Your profile has been updated successfully.",
