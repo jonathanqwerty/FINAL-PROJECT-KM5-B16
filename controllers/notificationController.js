@@ -1,15 +1,15 @@
-const { notifications} = require('../models');
+const { notifications } = require("../models");
 
 module.exports = {
   getUserNotifications: async (req, res) => {
-    const userId = req.user.id; 
+    const userId = req.user.id;
     try {
       const userNotifications = await notifications.findMany({
         where: {
           userId: parseInt(userId),
         },
         orderBy: {
-          createdAt: 'desc',
+          createdAt: "desc",
         },
       });
       await Promise.all(
@@ -18,6 +18,8 @@ module.exports = {
             where: {
               id: notification.id,
             },
+
+            as,
             data: {
               isRead: true,
             },
@@ -31,7 +33,7 @@ module.exports = {
       console.log(error);
       return res.status(500).json({
         error,
-        message: 'Internal server error',
+        message: "Internal server error",
       });
     }
   },
