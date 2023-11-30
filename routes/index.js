@@ -5,9 +5,8 @@ const express = require("express"),
   notifRouter = require("./notif");
 
 router.use("/auth", authRouter);
-router.use("/profile", profileRouter);
+router.use("/me", notifRouter,profileRouter);
 router.use("/auth", authRouter);
-router.use("/profile", profileRouter);
-router.use("/me", notifRouter);
+
 
 module.exports = router;
