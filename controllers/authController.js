@@ -1,6 +1,5 @@
 const validate = require("../middlewares/validate");
-
-const { users, notifications, prisma } = require("../models"),
+const { users, notifications } = require("../models"),
   utils = require("../utils/index"),
   jwt = require("jsonwebtoken"),
   bcrypt = require("bcrypt"),
@@ -70,7 +69,7 @@ module.exports = {
           }
           console.log("Email sent: " + info.response);
         });
-        await prisma.notifications.create({
+        await notifications.create({
           data: {
             userId: data.id,
             message: "Welcome! You have successfully registered.",
@@ -125,7 +124,7 @@ module.exports = {
         { expiresIn: "6h" }
       );
 
-      await prisma.notifications.create({
+      await notifications.create({
         data: {
           userId: findUser.id,
           message: "Your account has been successfully verified.",
@@ -168,7 +167,7 @@ module.exports = {
           secret_key,
           { expiresIn: "6h" }
         );
-        await prisma.notifications.create({
+        await notifications.create({
           data: {
             userId: findUser.id,
             message: "You have successfully logged in.",
@@ -242,7 +241,7 @@ module.exports = {
       const token = jwt.sign({ id: user.id }, "secret_key", {
         expiresIn: "6h",
       });
-      await prisma.notifications.create({
+      await notifications.create({
         data: {
           userId: findUser.id,
           message: "You have successfully logged in.",
@@ -315,7 +314,7 @@ module.exports = {
         }
         console.log("Email sent: " + info.response);
       });
-      await prisma.notifications.create({
+      await notifications.create({
         data: {
           userId: findUser.id,
           message: "The reset password link has been sent to your email.",
@@ -356,7 +355,7 @@ module.exports = {
           resetPasswordToken: null,
         },
       });
-      await prisma.notifications.create({
+      await notifications.create({
         data: {
           userId: findUser.id,
           message: "Your password has been changed successfully.",
