@@ -1,4 +1,4 @@
-const { users, profiles } = require("../models");
+const { users, profiles, notifications } = require("../models");
 
 module.exports = {
   profile: async (req, res) => {
@@ -17,7 +17,6 @@ module.exports = {
           message: "User not found",
         });
       }
-
       return res.status(200).json({
         user,
       });
@@ -56,7 +55,16 @@ module.exports = {
           city: req.body.city || user.profiles.city,
         },
       });
-  
+      await notifications.create({
+        data: {
+          message: "Your profile has been updated successfully.",
+          users: {
+            connect: {
+              id: user.id,
+            },
+          },
+        },
+      });
       return res.status(200).json({
         success: true,
         profile: updatedProfile,
