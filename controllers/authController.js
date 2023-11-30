@@ -1,5 +1,4 @@
 const validate = require("../middlewares/validate");
-
 const { users, notifications } = require("../models"),
   utils = require("../utils/index"),
   jwt = require("jsonwebtoken"),
