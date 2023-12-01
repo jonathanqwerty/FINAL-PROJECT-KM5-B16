@@ -21,7 +21,7 @@ async function seed() {
 
   await prisma.$transaction([prisma.myCourse.deleteMany()]);
   // await prisma.$executeRaw `ALTER TABLE my_Course AUTO_INCREMENT = 1`;
-  await prisma.$executeRaw`ALTER SEQUENCE "my_Course_id_seq" RESTART WITH 1`;
+  await prisma.$executeRaw`ALTER SEQUENCE "my_course_id_seq" RESTART WITH 1`;
 
   await prisma.$transaction([prisma.profiles.deleteMany()]);
   // await prisma.$executeRaw `ALTER TABLE profiles AUTO_INCREMENT = 1`;
@@ -54,14 +54,12 @@ async function seed() {
       "nelanjoe@gmail.com",
       "email3@gmail.com",
       "email4@gmail.com",
-      "email4@gmail.com",
       "email5@gmail.com",
       "email6@gmail.com",
       "email7@gmail.com",
       "email8@gmail.com",
       "email9@gmail.com",
       "email10@gmail.com",
-      "email1@gmail.com",
     ];
     // console.log(data)
 
