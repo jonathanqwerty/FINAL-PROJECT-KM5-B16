@@ -1,4 +1,5 @@
-const { users, profiles, notifications } = require("../models");
+const { users, profiles, notifications } = require("../models"),
+  utils = require("../utils/index");
 
 module.exports = {
   profile: async (req, res) => {
@@ -50,9 +51,26 @@ module.exports = {
           id: user.profiles.id,
         },
         data: {
+          name: req.body.name || user.profile.name,
           image: req.body.image || user.profiles.image,
           country: req.body.country || user.profiles.country,
           city: req.body.city || user.profiles.city,
+          users: {
+            update: {
+              where: {
+                id: user.id,
+              },
+              data: {
+                password:
+                  (await utils.cryptPassword(req.body.password)) ||
+                  user.password,
+                phone: req.body.phone || user.phone,
+              },
+            },
+          },
+        },
+        include: {
+          users: true,
         },
       });
 
