@@ -1,8 +1,8 @@
 const express = require("express"),
   router = express.Router(),
   notificationsController = require("../controllers/notificationController"),
-  checkToken = require("../middlewares/checkToken");
+  notifToken = require("../middlewares/notifToken");
 
-  router.get('/:userId/notifications',checkToken, notificationsController.getUserNotifications);
+  router.get('/notifications',notifToken, notificationsController.getUserNotifications);
 
   module.exports = router;

@@ -78,9 +78,9 @@ model categories {
 }
 
 model goals {
-  id      Int       @id @default(autoincrement())
+  id      Int     @id @default(autoincrement())
   name    String
-  course  Int       
+  course  Int
   courses courses @relation(fields: [course], references: [id])
 
   @@map("goals")
@@ -90,7 +90,7 @@ model chapters {
   id        Int      @id @default(autoincrement())
   title     String
   duration  String
-  courseId  Int     
+  courseId  Int
   courses   courses  @relation(fields: [courseId], references: [id])
   createdAt DateTime @default(now()) @map("create_at")
   updatedAt DateTime @updatedAt @map("updated_at")
@@ -101,14 +101,14 @@ model chapters {
 }
 
 model sources {
-  id        Int        @id @default(autoincrement())
+  id        Int       @id @default(autoincrement())
   name      String
   link      String
   chapterId Int
-  chapters  chapters   @relation(fields: [chapterId], references: [id])
-  createdAt DateTime   @default(now()) @map("create_at")
-  updatedAt DateTime   @updatedAt @map("updated_at")
-  progres progres[]
+  chapters  chapters  @relation(fields: [chapterId], references: [id])
+  createdAt DateTime  @default(now()) @map("create_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+  progres   progres[]
 
   @@map("sources")
 }
@@ -120,7 +120,7 @@ model progres {
   createdAt DateTime @default(now()) @map("create_at")
   updatedAt DateTime @updatedAt @map("updated_at")
   myCourses myCourse @relation(fields: [myCourse], references: [id])
-  sources   sources @relation(fields: [sourceId], references: [id])
+  sources   sources  @relation(fields: [sourceId], references: [id])
 
   @@map("progres")
 }
@@ -142,12 +142,12 @@ model myCourse {
 }
 
 model orders {
-  id          Int      @id @default(autoincrement())
-  status      status @default(notPaid)
-  myCourseId  Int 
-  myCourse    myCourse @relation(fields: [myCourseId], references: [id])
-  createdAt   DateTime @default(now()) @map("create_at")
-  updatedAt   DateTime @updatedAt @map("updated_at")
+  id         Int      @id @default(autoincrement())
+  status     status   @default(notPaid)
+  myCourseId Int
+  myCourse   myCourse @relation(fields: [myCourseId], references: [id])
+  createdAt  DateTime @default(now()) @map("create_at")
+  updatedAt  DateTime @updatedAt @map("updated_at")
 
   @@map("orders")
 }
@@ -165,13 +165,13 @@ model reviews {
 }
 
 model notifications {
-  id      Int    @id @default(autoincrement())
-  userId  Int
-  message String
-  isRead  Boolean @default(false)
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  message   String
+  isRead    Boolean  @default(false)
   createdAt DateTime @default(now()) @map("create_at")
   updatedAt DateTime @updatedAt @map("updated_at")
-  users   users  @relation(fields: [userId], references: [id])
+  users     users    @relation(fields: [userId], references: [id])
 
   @@map("notifications")
 }
