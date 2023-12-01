@@ -1,48 +1,43 @@
 const { categories, reviews, courses, myCourse } = require("../models");
+const {Course} = require('../utils/course')
 
 module.exports = {
   popularCourse: async (req, res) => {
+    // find seluruh course, urut berdasarkan popularitas
     try {
+      let filter
+      let categori = req.body.categories
+      let user = res.user ? res.user.id : null
+
+      const page = parseInt(req.query.page) || 1;
+      const itemsPerPage = 5;
+      const skip = (page - 1) * itemsPerPage; 
+
+      // filtering & pagingnation course 
       const data = await courses.findMany({
+        skip,
+        take : itemsPerPage,
+        where: {
+          categories: categori !== null ?  { name: categori } : {},
+        },
         include: {
           categories: true,
         },
       });
-      const course = await Promise.all(
-        data.map(async (item) => {
-          const review = await reviews.aggregate({
-            where: {
-              course: item.id,
-            },
-            _avg: {
-              rating: true,
-            },
-          });
+      if(!data){return res.status(404).json({message : "not found data"})}
 
-          const order = await myCourse.count({
-            where: {
-              course: item.id,
-            }
-          });
 
-          const modifiedItem = {
-            id : item.id,
-            title: item.title,
-            outhor :item.author,
-            price : item.price,
-            image : item.image,
-            categories : item.categories.name,
-            reviewAverage: review._avg.rating || 0,
-            orders : order
-          };
-          return modifiedItem;
-        })
-      );
+      // count popularity dan return yg dibutuhkan 
+      let course = await Course(data, user)
+
+      // sort desc popularity by order 
       course.sort((a, b) => b.orders - a.orders);
 
+      // return
       return res.status(200).json({
-        data: course,
+        popular : course,
       });
+
     } catch (error) {
       console.log(error);
       return res.status(500).json({
@@ -51,17 +46,21 @@ module.exports = {
       });
     }
   },
-
   categories: async (req, res) => {
+    // find seluruh kategori yang tersedia
     try {
-      const page = 1;
+      const page = parseInt(req.query.page) || 1;
       const itemsPerPage = 5;
       const skip = (page - 1) * itemsPerPage;
+
+      // pagingnation
       const data = await categories.findMany({
         skip,
         take: itemsPerPage,
       });
+      if(!data){return res.status(404).json({message : "not found data"})}
 
+      // return yg dibutuhkan 
       const category = data.map((item) => {
         return {
           id: item.id,
@@ -70,6 +69,7 @@ module.exports = {
         };
       });
 
+      // return 
       return res.status(200).json({
         categories: category,
       });

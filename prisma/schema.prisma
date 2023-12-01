@@ -53,6 +53,7 @@ model courses {
   description String
   price       Int
   image       String
+  level       level      @default(beginer)
   available   Boolean    @default(true)
   createdAt   DateTime   @default(now()) @map("create_at")
   updatedAt   DateTime   @updatedAt @map("updated_at")
