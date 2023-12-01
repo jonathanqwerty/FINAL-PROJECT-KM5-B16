@@ -37,20 +37,30 @@ module.exports = {
         include: {
           profiles: true,
         },
+      });
+
       if (!user) {
         return res.status(404).json({
           message: "User not found",
         });
       }
+
       const updatedProfile = await profiles.update({
         where: {
-          id: user.profiles.id, 
+          id: user.profiles.id,
         },
         data: {
           image: req.body.image || user.profiles.image,
           country: req.body.country || user.profiles.country,
           city: req.body.city || user.profiles.city,
         },
+      });
+
+      if (!updatedProfile) {
+        return res.status(404).json({
+          message: "Profile not found",
+        });
+      }
 
       await notifications.create({
         data: {
@@ -62,6 +72,7 @@ module.exports = {
           },
         },
       });
+
       return res.status(200).json({
         success: true,
         profile: updatedProfile,
