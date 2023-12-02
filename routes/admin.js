@@ -9,6 +9,7 @@ const express = require("express"),
   router.get("/active-user", adminToken, controller.activeUser );
   router.get("/active-class", adminToken, controller.activeClass );
   router.get("/active-premium", adminToken, controller.activePremium );
-
+  router.get("/dashboard", adminToken, controller.dashboardData );
+  router.get("/kelola-kelas", adminToken, controller.kelolaKelas );
 
   module.exports = router;

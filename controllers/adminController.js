@@ -115,5 +115,95 @@ module.exports = {
             });
           }
     },
+    dashboardData: async (req, res) => {
+      try {
+        const searchQuery = req.query.filter || ''; 
+        const page = parseInt(req.query.page) || 1; 
+        const pageSize = parseInt(req.query.pageSize) || 10; 
+        const skip = (page - 1) * pageSize; 
   
-    };      
+        const dashboardData = await orders.findMany({
+          select: {
+            status: true,
+            createdAt: true,
+            updatedAt: true,
+            myCourse: {
+              include: {
+                users: {
+                  select: {
+                    email: true,
+                    profiles:{
+                      select: {
+                        name: true,
+                      }
+                    }
+                  },
+                },
+                courses: {
+                  select: {
+                    price: true,
+                    categories: { 
+                      select: {
+                        name: true,
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
+          where: {
+            myCourse: {
+              courses: {
+                title: {
+                  contains: searchQuery,
+                },
+              },
+            },
+          },
+          orderBy: {
+            createdAt: 'desc',
+          },
+          take: pageSize,
+          skip: skip,
+        });
+        return res.status(200).json({
+          data: dashboardData,
+        });
+      } catch (error) {
+        console.error('Error:', error);
+        return res.status(500).json({
+          error: 'Internal Server Error',
+        });
+      }
+    },
+    kelolaKelas: async (req, res) => {
+      try {
+        const searchQuery = req.query.filter || ''; 
+        const kelas = await courses.findMany({
+          where: {
+            OR: [
+              {
+                title: {
+                  contains: searchQuery, 
+                  mode: 'insensitive',// Huruf Besar dan Kecil tidak berpengaruh
+                },
+              },
+            ],
+          },
+          include: {
+            categories: true,
+          },
+        });
+    
+        res.status(200).json({ 
+          data: kelas 
+        });
+      } catch (error) {
+        console.error(error);
+        res.status(500).json({ 
+          error: 'Internal server error' 
+        });
+      }
+    },
+  };
