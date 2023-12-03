@@ -51,7 +51,7 @@ module.exports = {
           id: user.profiles.id,
         },
         data: {
-          name: req.body.name || user.profile.name,
+          name: req.body.name || user.profiles.name,
           image: req.body.image || user.profiles.image,
           country: req.body.country || user.profiles.country,
           city: req.body.city || user.profiles.city,
