@@ -11,6 +11,12 @@ router.use("/auth", authRouter);
 router.use("/home", homeRouter);
 router.use("/course", courseRouter);
 router.use("/me", notifRouter, profileRouter, historyRouter);
-router.use("/admin", adminRouter);
+=========
+  courseRouter = require("./course");
+router.use("/auth", authRouter);
+router.use("/home", homeRouter);
+router.use("/course", courseRouter);
+router.use("/me", notifRouter, profileRouter);
+>>>>>>>>> Temporary merge branch 2
 
 module.exports = router;
