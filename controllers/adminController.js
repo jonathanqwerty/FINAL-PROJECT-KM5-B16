@@ -133,11 +133,12 @@ module.exports = {
 
       const dashboardData = await orders.findMany({
         select: {
+          id: true,
           status: true,
           createdAt: true,
-          updatedAt: true,
           myCourse: {
-            include: {
+            select: {
+              progress: true,
               users: {
                 select: {
                   email: true,
@@ -150,7 +151,7 @@ module.exports = {
               },
               courses: {
                 select: {
-                  price: true,
+                  title: true,
                   categories: {
                     select: {
                       name: true,
@@ -189,24 +190,45 @@ module.exports = {
   kelolaKelas: async (req, res) => {
     try {
       const searchQuery = req.query.filter || "";
+      const page = parseInt(req.query.page) || 1;
+      const pageSize = parseInt(req.query.pageSize) || 10;
+      const skip = (page - 1) * pageSize;
+
       const kelas = await courses.findMany({
+        select: {
+          id: true,
+          categories: {
+            select: {
+              name: true,
+            },
+          },
+          title: true,
+          price: true,
+          level: true,
+        },
         where: {
           OR: [
             {
               title: {
                 contains: searchQuery,
-                mode: "insensitive", // Huruf Besar dan Kecil tidak berpengaruh
+                mode: "insensitive",
               },
             },
           ],
         },
-        include: {
-          categories: true,
+        orderBy: {
+          createdAt: "desc",
         },
+        take: pageSize,
+        skip: skip,
       });
-
+      const filteredKelas = kelas.map((kelolakelas) => ({
+        kelolakelas,
+        priceType: kelolakelas.price === 0 ? "free" : "paid",
+      }));
+  
       res.status(200).json({
-        data: kelas,
+        data: filteredKelas,
       });
     } catch (error) {
       console.error(error);
