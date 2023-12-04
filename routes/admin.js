@@ -14,8 +14,10 @@ router.get("/kelola-kelas", adminToken, controller.kelolaKelas);
 // course
 router.get("/course", controller.listCourse);
 router.post("/course/create/:key", controller.createCourse);
+router.put("/course/edit/:key", controller.editCourse);
 // category
 router.get("/category", controller.listCategory);
-router.post("/category/create", controller.createCategory);
+router.post("/category/create", adminToken, controller.createCategory);
+router.put("/category/edit/:key", controller.editCategory);
 
 module.exports = router;

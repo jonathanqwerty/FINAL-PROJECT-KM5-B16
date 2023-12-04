@@ -258,6 +258,34 @@ module.exports = {
     }
   },
 
+  editCourse: async (req, res) => {
+    try {
+      const editCourse = await courses.update({
+        where: {
+          id: parseInt(req.params.key),
+        },
+        data: {
+          title: req.body.title || courses.title,
+          author: req.body.author || courses.author,
+          telegram: req.body.telegram || courses.telegram,
+          image: req.body.image || courses.image,
+          description: req.body.description || courses.description,
+          price: parseInt(req.body.price) || courses.price,
+        },
+      });
+      return res.status(200).json({
+        success: true,
+        editCourse,
+      });
+    } catch (error) {
+      console.log(error);
+      return res.status(500).json({
+        error,
+        message: "Internal server error",
+      });
+    }
+  },
+
   // category
   createCategory: async (req, res) => {
     try {
@@ -285,6 +313,30 @@ module.exports = {
       const category = await categories.findMany();
       return res.status(200).json({
         category,
+      });
+    } catch (error) {
+      console.log(error);
+      return res.status(500).json({
+        error,
+        message: "Internal server error",
+      });
+    }
+  },
+
+  editCategory: async (req, res) => {
+    try {
+      const editCategory = await categories.update({
+        where: {
+          id: parseInt(req.params.key),
+        },
+        data: {
+          name: req.body.name || categories.name,
+          image: req.body.image || categories.image,
+        },
+      });
+      return res.status(200).json({
+        success: true,
+        editCategory,
       });
     } catch (error) {
       console.log(error);
