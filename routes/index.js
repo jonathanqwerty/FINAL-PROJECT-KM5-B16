@@ -5,8 +5,8 @@ const express = require("express"),
   notifRouter = require("./notif"),
   homeRouter = require("./home"),
   courseRouter = require("./course"),
-  historyRouter = require('./history'),
-  adminRouter = require('./admin');
+  historyRouter = require("./history"),
+  adminRouter = require("./admin");
 router.use("/auth", authRouter);
 router.use("/home", homeRouter);
 router.use("/course", courseRouter);
