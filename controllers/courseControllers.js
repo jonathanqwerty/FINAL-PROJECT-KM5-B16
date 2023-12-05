@@ -9,7 +9,7 @@ module.exports = {
         const search = req.query.search;
         const filter = req.query.filter;
         const level = req.query.level;
-        const type = req.body.type;
+        const type = req.query.type;
         let user = res.user ? res.user.id : null
 
         const page = parseInt(req.query.page) || 1;
@@ -17,7 +17,7 @@ module.exports = {
         const skip = (page - 1) * itemsPerPage;
 
 
-        // filter
+        // get data course
         let data = await courses.findMany({
           skip,
           take : itemsPerPage,
@@ -29,6 +29,7 @@ module.exports = {
           },
           include: {
             categories: true,
+            chapters : true
           },
           
         });
