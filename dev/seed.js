@@ -76,7 +76,7 @@ async function seed() {
 
   // chapter
   arrayChapter = ["Chapter 1", "Chapter 2"];
-  arrayDuration = ["120mnt", "60mnt", "45mnt", "30mnt"];
+  arrayDuration = [60, 50, 40, 30];
   for (let i = 1; i <= x2; i++) {
     for (let a = 1; a <= x3; a++) {
       const chapter = {

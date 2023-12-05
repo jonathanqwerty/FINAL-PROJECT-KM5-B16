@@ -89,7 +89,7 @@ model goals {
 model chapters {
   id        Int      @id @default(autoincrement())
   title     String
-  duration  String
+  duration  Int
   courseId  Int
   courses   courses  @relation(fields: [courseId], references: [id])
   createdAt DateTime @default(now()) @map("create_at")
