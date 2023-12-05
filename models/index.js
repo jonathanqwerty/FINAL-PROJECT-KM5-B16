@@ -11,4 +11,8 @@ module.exports = {
   reviews: prisma.reviews,
   orders: prisma.orders,
   myCourse: prisma.myCourse,
+  progres : prisma.progres,
+  chapters: prisma.chapters,
+  sources : prisma.sources
+  
 };
