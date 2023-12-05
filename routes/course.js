@@ -5,6 +5,6 @@ const express = require("express"),
   schema = require("../validatorSchema/authValidatorSchema"),
   TokenFlex = require('../middlewares/TokenFlex')
 
-router.post('/', TokenFlex,controller.FilterCourse)
+router.get('/', TokenFlex,controller.FilterCourse)
 
 module.exports = router
