@@ -308,6 +308,25 @@ module.exports = {
     }
   },
 
+  destroyCourse: async (req, res) => {
+    try {
+      const course = await courses.delete({
+        where: {
+          id: parseInt(req.params.id),
+        },
+      });
+      return res.status(204).json({
+        message: "success delete course",
+      });
+    } catch (error) {
+      console.log(error);
+      return res.status(500).json({
+        error,
+        message: "Internal server error",
+      });
+    }
+  },
+
   // category
   createCategory: async (req, res) => {
     try {
@@ -359,6 +378,25 @@ module.exports = {
       return res.status(200).json({
         success: true,
         editCategory,
+      });
+    } catch (error) {
+      console.log(error);
+      return res.status(500).json({
+        error,
+        message: "Internal server error",
+      });
+    }
+  },
+
+  destroyCategory: async (req, res) => {
+    try {
+      const data = await categories.delete({
+        where: {
+          id: parseInt(req.params.id),
+        },
+      });
+      return res.status(204).json({
+        message: "success delete category",
       });
     } catch (error) {
       console.log(error);
