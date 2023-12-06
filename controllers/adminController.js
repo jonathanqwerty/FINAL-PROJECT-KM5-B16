@@ -5,10 +5,14 @@ const {
     courses,
     orders,
     categories,
+    chapters,
+    sources,
   } = require("../models"),
   utils = require("../utils/index"),
   jwt = require("jsonwebtoken"),
   bcrypt = require("bcrypt");
+const { link, trace } = require("../routes");
+const course = require("../utils/course");
 
 require("dotenv").config();
 const secret_key = process.env.JWT_KEY || "no_secrest";
@@ -42,7 +46,6 @@ module.exports = {
           {
             id: findUser.id,
             email: findUser.email,
-            phone: findUser.phone,
             role: findUser.role,
           },
           secret_key,
@@ -226,7 +229,7 @@ module.exports = {
         kelolakelas,
         priceType: kelolakelas.price === 0 ? "free" : "paid",
       }));
-  
+
       res.status(200).json({
         data: filteredKelas,
       });
@@ -267,7 +270,11 @@ module.exports = {
 
   listCourse: async (req, res) => {
     try {
-      const course = await courses.findMany();
+      const course = await courses.findMany({
+        where: {
+          categoryId: parseInt(req.params.categoryId),
+        },
+      });
       return res.status(200).json({
         course,
       });
@@ -298,6 +305,25 @@ module.exports = {
       return res.status(200).json({
         success: true,
         editCourse,
+      });
+    } catch (error) {
+      console.log(error);
+      return res.status(500).json({
+        error,
+        message: "Internal server error",
+      });
+    }
+  },
+
+  destroyCourse: async (req, res) => {
+    try {
+      const course = await courses.delete({
+        where: {
+          id: parseInt(req.params.id),
+        },
+      });
+      return res.status(204).json({
+        message: "success delete course",
       });
     } catch (error) {
       console.log(error);
@@ -359,6 +385,197 @@ module.exports = {
       return res.status(200).json({
         success: true,
         editCategory,
+      });
+    } catch (error) {
+      console.log(error);
+      return res.status(500).json({
+        error,
+        message: "Internal server error",
+      });
+    }
+  },
+
+  destroyCategory: async (req, res) => {
+    try {
+      const data = await categories.delete({
+        where: {
+          id: parseInt(req.params.id),
+        },
+      });
+      return res.status(204).json({
+        message: "success delete category",
+      });
+    } catch (error) {
+      console.log(error);
+      return res.status(500).json({
+        error,
+        message: "Internal server error",
+      });
+    }
+  },
+
+  // chapter
+  createChapter: async (req, res) => {
+    try {
+      const chapter = await chapters.create({
+        data: {
+          courseId: parseInt(req.params.id),
+          title: req.body.title,
+          duration: parseInt(req.body.duration),
+        },
+      });
+      return res.status(201).json({
+        chapter,
+        message: "success create new chapter",
+      });
+    } catch (error) {
+      console.log(error);
+      return res.status(500).json({
+        error,
+        message: "Internal server error",
+      });
+    }
+  },
+
+  listChapter: async (req, res) => {
+    try {
+      const chapter = await chapters.findMany({
+        where: {
+          courseId: parseInt(req.params.id),
+        },
+      });
+      return res.status(200).json({
+        chapter,
+      });
+    } catch (error) {
+      console.log(error);
+      return res.status(500).json({
+        error,
+        message: "Internal server error",
+      });
+    }
+  },
+
+  editChapter: async (req, res) => {
+    try {
+      const chapterEdit = await chapters.update({
+        where: {
+          id: parseInt(req.params.id),
+        },
+        data: {
+          courseId: chapters.courseId,
+          title: req.body.title || chapters.title,
+          duration: parseInt(req.body.duration) || chapters.duration,
+        },
+      });
+      return res.status(200).json({
+        message: "success edit Chapter",
+        chapterEdit,
+      });
+    } catch (error) {
+      console.log(error);
+      return res.status(500).json({
+        error,
+        message: "Internal server error",
+      });
+    }
+  },
+
+  destroyChapter: async (req, res) => {
+    try {
+      const data = await chapters.delete({
+        where: {
+          id: parseInt(req.params.id),
+        },
+      });
+      return res.status(204).json({
+        message: "success delete category",
+      });
+    } catch (error) {
+      console.log(error);
+      return res.status(500).json({
+        error,
+        message: "Internal server error",
+      });
+    }
+  },
+
+  // Source
+  createSource: async (req, res) => {
+    try {
+      const source = await sources.create({
+        data: {
+          chapterId: parseInt(req.params.id),
+          name: req.body.name,
+          link: req.body.link,
+        },
+      });
+      return res.status(201).json({
+        message: "success create source",
+        source,
+      });
+    } catch (error) {
+      console.log(error);
+      return res.status(500).json({
+        error,
+        message: "Internal server error",
+      });
+    }
+  },
+
+  listSource: async (req, res) => {
+    try {
+      const source = await sources.findMany({
+        where: {
+          chapterId: parseInt(req.params.id),
+        },
+      });
+      return res.status(200).json({
+        source,
+      });
+    } catch (error) {
+      console.log(error);
+      return res.status(500).json({
+        error,
+        message: "Internal server error",
+      });
+    }
+  },
+
+  editSource: async (req, res) => {
+    try {
+      const sourceEdit = await sources.update({
+        where: {
+          id: parseInt(req.params.id),
+        },
+        data: {
+          chapterId: sources.chapterId,
+          name: req.boy.name || sources.name,
+          link: req.body.link || sources.link,
+        },
+      });
+      return res.status(200).json({
+        message: "success edit source",
+        sourceEdit,
+      });
+    } catch (error) {
+      console.log(error);
+      return res.status(500).json({
+        error,
+        message: "Internal server error",
+      });
+    }
+  },
+
+  destroySource: async (req, res) => {
+    try {
+      const data = await sources.delete({
+        where: {
+          id: parseInt(req.params.id),
+        },
+      });
+      return res.status(204).json({
+        message: "success delete source",
       });
     } catch (error) {
       console.log(error);
