@@ -5,11 +5,17 @@ const { users, notifications } = require("../models"),
   bcrypt = require("bcrypt"),
   nodemailer = require("nodemailer"),
   otp = require("../utils/otp"),
+  axios = require("axios"),
+  https = require("https"),
   { google } = require("googleapis"),
   { Oauth2, authorizationUrl } = require("../utils/Oauth");
 
 require("dotenv").config();
 const secret_key = process.env.JWT_KEY || "no_secret";
+
+const agent = new https.Agent({
+  rejectUnauthorized: false,
+});
 
 module.exports = {
   register: async (req, res) => {
@@ -190,123 +196,63 @@ module.exports = {
     }
   },
 
-  // loginGoogle: (req, res) => {
-  //   res.redirect(authorizationUrl);
-  // },
-  // callbackLogin: async (req, res) => {
-  //   try {
-  //     const { code } = req.query;
-  //     const { tokens } = await Oauth2.getToken(code);
-  //     Oauth2.setCredentials(tokens);
+  loginGoogle: (req, res) => {
+    res.redirect(authorizationUrl);
+  },
 
-  //     console.log(code);
+  callbackLogin: async (req, res) => {
+    try {
+      const { access_token } = req.body;
+      const data = await axios.get(
+        `https://www.googleapis.com/oauth2/v3/userinfo?access_token=${access_token}`,
+        { httpsAgent: agent }
+      );
 
-  //     const oauth2 = google.oauth2({
-  //       auth: Oauth2,
-  //       version: "v2",
-  //     });
-  //     const { data } = await oauth2.userinfo.get();
-  //     if (!data) {
-  //       return res.json({
-  //         data: data,
-  //       });
-  //     }
+      console.log(data);
+      let user = await users.findFirst({
+        where: {
+          email: data.email,
+        },
+      });
+      if (!user) {
+        user = await users.create({
+          data: {
+            isActive: true,
+            email: data.email,
+            profiles: {
+              create: {
+                name: data.name,
+                image: data.picture,
+              },
+            },
+          },
+        });
+      }
+      user = await users.findFirst({
+        where: {
+          email: data.email,
+        },
+      });
 
-  //     console.log(data);
-  //     let user = await users.findFirst({
-  //       where: {
-  //         email: data.email,
-  //       },
-  //     });
-  //     if (!user) {
-  //       user = await users.create({
-  //         data: {
-  //           isActive: true,
-  //           email: data.email,
-  //           profiles: {
-  //             create: {
-  //               name: data.name,
-  //               image: data.picture,
-  //             },
-  //           },
-  //         },
-  //       });
-  //     }
-  //     user = await users.findFirst({
-  //       where: {
-  //         email: data.email,
-  //       },
-  //     });
-
-  //     const token = jwt.sign({ id: user.id }, "secret_key", {
-  //       expiresIn: "6h",
-  //     });
-  //     await notifications.create({
-  //       data: {
-  //         userId: user.id,
-  //         message: "You have successfully logged in.",
-  //       },
-  //     });
-  //     return res.status(200).json({
-  //       data: {
-  //         token,
-  //       },
-  //     });
-  //   } catch (error) {
-  //     console.log(error);
-  //     error;
-  //   }
-  // },
-
-  // loginGoogle: async (req, res) => {
-  //   try {
-  //     const { access_token } = req.body;
-
-  //     if (!access_token) {
-  //       return res.status(400).json({ message: "Access Token is required" });
-  //     }
-
-  //     const response = await axios.get(
-  //       `https://www.googleapis.com/oauth2/v3/userinfo?access_token=${access_token}`,
-  //       { httpsAgent: agent }
-  //     );
-  //     const { sub, email, name } = response.data;
-
-  //     let user = await user.findOne({
-  //       where: { [Op.or]: [{ googleId: sub }, { email }] },
-  //     });
-  //     if (!user)
-  //       user = await user.create({
-  //         isActive: true,
-  //         email: data.email,
-  //         profiles: {
-  //           create: {
-  //             name: data.name,
-  //             image: data.picture,
-  //           },
-  //         },
-  //       });
-
-  //     const token = createToken(user);
-
-  //     res.status(200).json({ data: { token } });
-  //   } catch (error) {
-  //     console.error(error);
-
-  //     let status = 500;
-
-  //     if (NODE_ENV === "production") {
-  //       error.message = "Your token is not valid";
-  //     }
-
-  //     if (axios.isAxiosError(error)) {
-  //       error.message = error.response.data.error_description;
-  //       status = error.response.status;
-  //     }
-
-  //     res.status(status).json({ message: error.message });
-  //   }
-  // },
+      const token = jwt.sign({ id: user.id }, "secret_key", {
+        expiresIn: "6h",
+      });
+      await notifications.create({
+        data: {
+          userId: user.id,
+          message: "You have successfully logged in.",
+        },
+      });
+      return res.status(200).json({
+        data: {
+          token,
+        },
+      });
+    } catch (error) {
+      console.log(error);
+      error;
+    }
+  },
 
   resetPassword: async (req, res) => {
     try {
