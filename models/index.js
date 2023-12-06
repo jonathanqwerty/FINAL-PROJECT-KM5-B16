@@ -13,6 +13,7 @@ module.exports = {
   myCourse: prisma.myCourse,
   progres : prisma.progres,
   chapters: prisma.chapters,
-  sources : prisma.sources
+  sources : prisma.sources,
+  goals : prisma.goals
   
 };
