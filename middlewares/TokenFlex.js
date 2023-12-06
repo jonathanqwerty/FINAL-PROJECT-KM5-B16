@@ -7,18 +7,25 @@ const TokenFlex = (req, res, next) => {
 
   if (!token) {
     res.user = null;
+    next();
   }else{
     if (token.toLowerCase().startsWith("bearer")) {
       token = token.slice("bearer".length).trim();
     }
-    const jwtPayload = jwt.verify(token, secret_key);
-    if (!jwtPayload) {
-      return res.status(403).json({
-        error: "unauthenticated",
-      });
-    }else{
-      res.user = jwtPayload;
-    }
+  
+    jwt.verify(token, secret_key, (err, decoded) => {
+      if (err) {
+        if (err.name === "TokenExpiredError") {
+          return res.status(401).json({ message: "Token has expired" });
+        } else {
+          return res.status(500).json({ message: "unauthenticated" });
+        }
+      }
+  
+      // Jika token valid, simpan informasi pengguna di objek req.user
+      req.user = decoded;
+      next();
+    });
   }
   next();
 };
