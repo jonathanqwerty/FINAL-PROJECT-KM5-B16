@@ -9,7 +9,7 @@ const { users, notifications } = require("../models"),
   { Oauth2, authorizationUrl } = require("../utils/Oauth");
 
 require("dotenv").config();
-const secret_key = process.env.JWT_KEY || "no_secrest";
+const secret_key = process.env.JWT_KEY || "no_secret";
 
 module.exports = {
   register: async (req, res) => {
