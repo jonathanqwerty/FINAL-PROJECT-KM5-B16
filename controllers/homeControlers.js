@@ -5,12 +5,11 @@ module.exports = {
   popularCourse: async (req, res) => {
     // find seluruh course, urut berdasarkan popularitas
     try {
-      let filter
-      let categori = req.body.categories
+      let categori = req.query.categories
       let user = res.user ? res.user.id : null
 
       const page = parseInt(req.query.page) || 1;
-      const itemsPerPage = 5;
+      const itemsPerPage = 12;
       const skip = (page - 1) * itemsPerPage; 
 
       // filtering & pagingnation course 
@@ -22,6 +21,7 @@ module.exports = {
         },
         include: {
           categories: true,
+          chapters : true
         },
       });
       if(!data){return res.status(404).json({message : "not found data"})}

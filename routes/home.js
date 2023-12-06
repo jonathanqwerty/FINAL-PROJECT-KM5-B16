@@ -7,6 +7,6 @@ const express = require("express"),
 
 
 router.get('/category', controller.categories)
-router.post('/popular',TokenFlex, controller.popularCourse)
+router.get('/popular',TokenFlex, controller.popularCourse)
 
 module.exports = router

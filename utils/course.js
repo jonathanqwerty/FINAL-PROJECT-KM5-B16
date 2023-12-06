@@ -1,11 +1,10 @@
-const { categories, reviews, courses, myCourse, users } = require("../models");
+const { categories, reviews, courses, myCourse, users ,chapters,sources} = require("../models");
 
 module.exports ={
     Course : async(data,data2) => {
       let MyCourse 
       data2 !== null ? MyCourse = await myCourse.findMany({where : {user : data2 }})
-      :   
-      console.log(MyCourse)
+      :   console.log('not login')
         let Data = await Promise.all(
             data.map(async (item) => {
               const review = await reviews.aggregate({
@@ -15,6 +14,17 @@ module.exports ={
               const order = await myCourse.count({
                 where: {course: item.id,}
               });
+
+              //modul 
+              const chapter = await chapters.findMany({where:{courseId : item.id}}) 
+              const idChapters = chapter.map((obj) => obj.id);
+              const modul = await sources.count({where :{chapterId : {in: idChapters}}})
+
+              //duration
+              const duration = await chapters.aggregate({
+                _sum:{duration:true},
+                where:{id :{in:idChapters}}
+              })
               
               let pembelian = 'tidak terbeli'
               if (MyCourse){
@@ -36,8 +46,11 @@ module.exports ={
                 categories : item.categories.name,
                 outhor :item.author,
                 price : item.price,
-                type : type,
                 rating: review._avg.rating || 0,
+                level : item.level,
+                duration : `${duration._sum.duration} mnt`,
+                modul : modul,
+                type : type,
                 orders : order,
                 image : item.image,
                 rilis : item.createdAt,
