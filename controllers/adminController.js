@@ -10,8 +10,6 @@ const {
   } = require("../models"),
   jwt = require("jsonwebtoken"),
   bcrypt = require("bcrypt");
-const { link, trace } = require("../routes");
-const course = require("../utils/course");
 
 require("dotenv").config();
 const secret_key = process.env.JWT_KEY || "no_secret";
