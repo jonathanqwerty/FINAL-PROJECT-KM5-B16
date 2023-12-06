@@ -1,4 +1,4 @@
-const { categories, reviews, courses, myCourse, orders,  progres, chapters,sources} = require("../models");
+const { categories, reviews, courses, myCourse, orders,  progres, chapters,sources,goals} = require("../models");
 
 module.exports = {
     MyCourse : async (req, res) => {
