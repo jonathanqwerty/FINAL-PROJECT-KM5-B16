@@ -15,17 +15,29 @@ const CheckToken = (req, res, next) => {
     token = token.slice("bearer".length).trim();
   }
 
-  const jwtPayload = jwt.verify(token, secret_key);
+  jwt.verify(token, secret_key, (err, decoded) => {
+    if (err) {
+      if (err.name === "TokenExpiredError") {
+        return res.status(401).json({ message: "Token has expired" });
+      } else {
+        return res.status(500).json({ message: "unauthenticated" });
+      }
+    }
 
-  if (!jwtPayload) {
-    return res.status(403).json({
-      error: "unauthenticated",
-    });
-  }
+    // Jika token valid, simpan informasi pengguna di objek req.user
+    req.user = decoded;
+    next();
+  });
 
-  res.user = jwtPayload;
+  // if (!jwtPayload) {
+  //   return res.status(403).json({
+  //     error: "unauthenticated",
+  //   });
+  // }
 
-  next();
+  // res.user = jwtPayload;
+
+  // next();
 };
 
 module.exports = CheckToken;

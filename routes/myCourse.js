@@ -3,7 +3,8 @@ const express = require("express"),
   controller = require("../controllers/myCourseControllers"),
   validate = require("../middlewares/validate"),
   schema = require("../validatorSchema/authValidatorSchema"),
-  checkToken = require('../middlewares/checkToken')
+  checkToken = require("../middlewares/checkToken");
 
-router.get('/', checkToken,controller.MyCourse)
-module.exports = router
+router.get("/", checkToken, controller.MyCourse);
+
+module.exports = router;

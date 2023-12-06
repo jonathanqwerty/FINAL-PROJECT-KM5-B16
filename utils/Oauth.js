@@ -3,7 +3,7 @@ const { google } = require("googleapis");
 const Oauth2 = new google.auth.OAuth2(
   process.env.GOOGLE_CLIENT_ID,
   process.env.GOOGLE_CLIENT_SECRET,
-  "https://final-project-km5-b16-production.up.railway.app/api/v1/auth/google/callback"
+  "http://localhost:3000/api/v1/auth/google/callback"
 );
 
 const scopes = [
