@@ -196,10 +196,6 @@ module.exports = {
     }
   },
 
-  loginGoogle: (req, res) => {
-    res.redirect(authorizationUrl);
-  },
-
   callbackLogin: async (req, res) => {
     try {
       const { access_token } = req.body;
