@@ -6,5 +6,4 @@ const express = require("express"),
   checkToken = require('../middlewares/checkToken')
 
 router.get('/', checkToken,controller.MyCourse)
-
 module.exports = router

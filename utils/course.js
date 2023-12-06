@@ -5,12 +5,17 @@ module.exports ={
       let MyCourse 
       data2 !== null ? MyCourse = await myCourse.findMany({where : {user : data2 }})
       :   console.log('not login')
+      
         let Data = await Promise.all(
             data.map(async (item) => {
+
+              //ratings
               const review = await reviews.aggregate({
                 where: {course: item.id},
                 _avg: {rating: true,},
               });
+
+              //order/popular
               const order = await myCourse.count({
                 where: {course: item.id,}
               });
