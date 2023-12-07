@@ -29,8 +29,6 @@ module.exports = {
               courses: true
             }
           });
-    
-          // console.log(data)
           let Data = await Promise.all(
             data.map(async (item) => {
     
@@ -81,7 +79,7 @@ module.exports = {
             filter !== null ? 
             filter == 'paling baru' ? 
             Data.sort((a, b) => a.rilis - b.rilis) : 
-            Data.sort((a, b) => b.orders - a.orders) : console.log('no filter')
+            Data.sort((a, b) => b.orders - a.orders) : filter = null
 
             return res.status(200).json({
               MyCourse : Data
