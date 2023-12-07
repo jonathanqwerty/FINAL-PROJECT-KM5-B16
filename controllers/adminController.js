@@ -239,23 +239,38 @@ module.exports = {
   },
 
   // course
+
+  // membuat course
   createCourse: async (req, res) => {
     try {
-      const course = await courses.create({
-        data: {
-          categoryId: parseInt(req.params.key),
+      // mencari course apakah sudah ada atau belum
+      const findCourse = await courses.findFirst({
+        where: {
           title: req.body.title,
-          author: req.body.author,
-          telegram: req.body.telegram,
-          image: req.body.image,
-          description: req.body.description,
-          price: parseInt(req.body.price),
         },
       });
-      return res.status(201).json({
-        message: "course are created",
-        course,
-      });
+      if (findCourse) {
+        return res.status(302).json({
+          message: "Course already exist  ",
+        });
+      }
+      if (!findCourse) {
+        const course = await courses.create({
+          data: {
+            categoryId: parseInt(req.params.categoryId),
+            title: req.body.title,
+            author: req.body.author,
+            telegram: req.body.telegram,
+            image: req.body.image,
+            description: req.body.description,
+            price: parseInt(req.body.price),
+          },
+        });
+        return res.status(201).json({
+          message: "course are created",
+          course,
+        });
+      }
     } catch (error) {
       console.log(error);
       return res.status(500).json({
@@ -265,6 +280,7 @@ module.exports = {
     }
   },
 
+  // menampilkan course berdasarkan category id
   listCourse: async (req, res) => {
     try {
       const course = await courses.findMany({
@@ -284,11 +300,12 @@ module.exports = {
     }
   },
 
+  // mengedit course
   editCourse: async (req, res) => {
     try {
       const editCourse = await courses.update({
         where: {
-          id: parseInt(req.params.key),
+          id: parseInt(req.params.id),
         },
         data: {
           title: req.body.title || courses.title,
@@ -300,7 +317,7 @@ module.exports = {
         },
       });
       return res.status(200).json({
-        success: true,
+        message: "Success edit this course",
         editCourse,
       });
     } catch (error) {
@@ -312,6 +329,7 @@ module.exports = {
     }
   },
 
+  // meghapus course
   destroyCourse: async (req, res) => {
     try {
       const course = await courses.delete({
@@ -332,18 +350,33 @@ module.exports = {
   },
 
   // category
+
+  // memuat category
   createCategory: async (req, res) => {
     try {
-      const category = await categories.create({
-        data: {
+      // mencari category apakah sudah ada atau belum
+      const findCategory = await categories.findFirst({
+        where: {
           name: req.body.name,
-          image: req.body.image,
         },
       });
-      return res.status(201).json({
-        message: "success crate category",
-        category,
-      });
+      if (findCategory) {
+        return res.status(302).json({
+          message: "Category already exist",
+        });
+      }
+      if (!findCategory) {
+        const category = await categories.create({
+          data: {
+            name: req.body.name,
+            image: req.body.image,
+          },
+        });
+        return res.status(201).json({
+          message: "success crate category",
+          category,
+        });
+      }
     } catch (error) {
       console.log(error);
       return res.status(500).json({
@@ -353,6 +386,7 @@ module.exports = {
     }
   },
 
+  // melihat daftar category
   listCategory: async (req, res) => {
     try {
       const category = await categories.findMany();
@@ -368,11 +402,12 @@ module.exports = {
     }
   },
 
+  // mengedit category yang sudah ada
   editCategory: async (req, res) => {
     try {
       const editCategory = await categories.update({
         where: {
-          id: parseInt(req.params.key),
+          id: parseInt(req.params.id),
         },
         data: {
           name: req.body.name || categories.name,
@@ -392,6 +427,7 @@ module.exports = {
     }
   },
 
+  // mendelete category yang sudah ada
   destroyCategory: async (req, res) => {
     try {
       const data = await categories.delete({
@@ -414,17 +450,30 @@ module.exports = {
   // chapter
   createChapter: async (req, res) => {
     try {
-      const chapter = await chapters.create({
-        data: {
-          courseId: parseInt(req.params.id),
+      // mencari chapter apakah sudah ada atau belum
+      const findChapter = await chapters.findFirst({
+        where: {
           title: req.body.title,
-          duration: parseInt(req.body.duration),
         },
       });
-      return res.status(201).json({
-        chapter,
-        message: "success create new chapter",
-      });
+      if (findChapter) {
+        return res.status(302).json({
+          message: "Chapter already exist",
+        });
+      }
+      if (!findChapter) {
+        const chapter = await chapters.create({
+          data: {
+            courseId: parseInt(req.params.courseId),
+            title: req.body.title,
+            duration: parseInt(req.body.duration),
+          },
+        });
+        return res.status(201).json({
+          chapter,
+          message: "success create new chapter",
+        });
+      }
     } catch (error) {
       console.log(error);
       return res.status(500).json({
@@ -434,11 +483,12 @@ module.exports = {
     }
   },
 
+  // melihat daftar chapter
   listChapter: async (req, res) => {
     try {
       const chapter = await chapters.findMany({
         where: {
-          courseId: parseInt(req.params.id),
+          courseId: parseInt(req.params.courseId),
         },
       });
       return res.status(200).json({
@@ -453,6 +503,7 @@ module.exports = {
     }
   },
 
+  // mengedit chapter yang sudah ada
   editChapter: async (req, res) => {
     try {
       const chapterEdit = await chapters.update({
@@ -478,6 +529,7 @@ module.exports = {
     }
   },
 
+  // menghapus chapter yang telah ada
   destroyChapter: async (req, res) => {
     try {
       const data = await chapters.delete({
@@ -498,19 +550,34 @@ module.exports = {
   },
 
   // Source
+  // membuat source baru
   createSource: async (req, res) => {
     try {
-      const source = await sources.create({
-        data: {
-          chapterId: parseInt(req.params.id),
+      // mencari apakah source telah di buat atau belum
+      const findSource = await sources.findFirst({
+        where: {
           name: req.body.name,
           link: req.body.link,
         },
       });
-      return res.status(201).json({
-        message: "success create source",
-        source,
-      });
+      if (findSource) {
+        return res.status(302).json({
+          message: "Source already exist",
+        });
+      }
+      if (!findSource) {
+        const source = await sources.create({
+          data: {
+            chapterId: parseInt(req.params.chapterId),
+            name: req.body.name,
+            link: req.body.link,
+          },
+        });
+        return res.status(201).json({
+          message: "success create source",
+          source,
+        });
+      }
     } catch (error) {
       console.log(error);
       return res.status(500).json({
@@ -520,11 +587,12 @@ module.exports = {
     }
   },
 
+  // menampilkan semua source berdasarkan chapter
   listSource: async (req, res) => {
     try {
       const source = await sources.findMany({
         where: {
-          chapterId: parseInt(req.params.id),
+          chapterId: parseInt(req.params.chapterId),
         },
       });
       return res.status(200).json({
@@ -539,6 +607,7 @@ module.exports = {
     }
   },
 
+  // mengedit source yang sudah ada
   editSource: async (req, res) => {
     try {
       const sourceEdit = await sources.update({
@@ -564,6 +633,7 @@ module.exports = {
     }
   },
 
+  // menghapus source yang sudah ada
   destroySource: async (req, res) => {
     try {
       const data = await sources.delete({

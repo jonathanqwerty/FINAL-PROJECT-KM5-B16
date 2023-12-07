@@ -15,6 +15,7 @@ router.post(
   validate(schema.verifyValidator),
   controller.verifyUser
 );
+// auth
 router.post("/login", validate(schema.loginValidator), controller.login);
 router.post("/reset-password", controller.resetPassword);
 router.post("/set-password/:key", controller.setPassword);
