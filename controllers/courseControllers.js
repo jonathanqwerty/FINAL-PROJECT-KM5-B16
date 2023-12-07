@@ -36,7 +36,6 @@ module.exports = {
       if (data.length == 0) {
         return res.status(404).json({ message: "not found data" });
       }
-      console.log("jumlah data : " + data.length);
 
       // mendapatkan count popularity dan memperbaiki return
       let course = await Course(data, user);
@@ -46,7 +45,7 @@ module.exports = {
         ? filter == "paling baru"
           ? course.sort((a, b) => a.rilis - b.rilis)
           : course.sort((a, b) => b.orders - a.orders)
-        : console.log("no filter");
+        : filter = null
 
       return res.status(200).json({
         course,
@@ -131,15 +130,6 @@ module.exports = {
               course
             }
           }) 
-  
-          // console.log(JSON.stringify(a, null, 2));
-          // console.log({
-          //   level : course.level,
-          //   modul,
-          //   duration : duration._sum.duration,
-          //   goal : goal,
-          // })
-  
   } catch (error) {
       console.log(error)
   }
@@ -190,7 +180,6 @@ module.exports = {
           course
         }
        })
-      //  console.log(JSON.stringify(a,null,2))
   
     } catch (error) {
       console.log(error)
@@ -239,5 +228,43 @@ module.exports = {
         message : 'internal server error'
       })
     }
+  },
+  getOrderCourse : async(req, res)=>{
+    const id = parseInt(req.params.id)
+    const user = parseInt(res.user.id)
+    const data = await myCourse.findFirst({
+      where:{
+        id : id,
+        user : user
+      },
+      select:{
+        id : true,
+        courses:{
+          select:{
+            title : true,
+            author : true,
+            price : true,
+            image : true,
+          }
+        }
+      }
+    })
+    return res.status(200).json({
+      data
+    })
+  },
+  payOrder: async(req, res)=>{
+    const data = await orders.update({
+      where:{
+        id : parseInt(req.params.id)
+      },
+      data :{
+        status : 'paid'
+      }
+    })
+    return res.status(200).json({
+      message : 'succses',
+      id : data.id
+    })
   }
 };

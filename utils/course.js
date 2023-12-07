@@ -4,7 +4,7 @@ module.exports ={
     Course : async(data,data2) => {
       let MyCourse 
       data2 !== null ? MyCourse = await myCourse.findMany({where : {user : data2 }})
-      :   console.log('not login')
+      :   data2 = null
       
         let Data = await Promise.all(
             data.map(async (item) => {
