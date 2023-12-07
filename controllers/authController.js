@@ -6,9 +6,7 @@ const { users, notifications } = require("../models"),
   nodemailer = require("nodemailer"),
   otp = require("../utils/otp"),
   axios = require("axios"),
-  https = require("https"),
-  { google } = require("googleapis"),
-  { Oauth2, authorizationUrl } = require("../utils/Oauth");
+  https = require("https");
 
 require("dotenv").config();
 const secret_key = process.env.JWT_KEY || "no_secret";
@@ -18,8 +16,10 @@ const agent = new https.Agent({
 });
 
 module.exports = {
+  // register user
   register: async (req, res) => {
     try {
+      // memvalidasi user
       const findUser = await users.findFirst({
         where: {
           email: req.body.email,
@@ -30,6 +30,7 @@ module.exports = {
           error: "Your email already exist",
         });
       }
+      // menambahkan user ke dalam database
       if (!findUser) {
         const generateOTP = otp.generateOTP();
         const data = await users.create({
@@ -47,6 +48,7 @@ module.exports = {
           },
         });
 
+        // mengirim code OTP ke email
         const transporter = nodemailer.createTransport({
           pool: true,
           host: "smtp.gmail.com",
@@ -97,6 +99,7 @@ module.exports = {
     }
   },
 
+  // melakukan validasi dari OTP yang sudah di kirimkan melalui email
   verifyUser: async (req, res) => {
     try {
       const findUser = await users.findFirst({
@@ -124,6 +127,8 @@ module.exports = {
         },
       });
       console.log(req.body.validasi);
+
+      // jika OTP sudah valid maka akan membuat token
       const token = jwt.sign(
         { id: findUser.id, email: findUser.email, phone: findUser.phone },
         secret_key,
@@ -149,8 +154,10 @@ module.exports = {
     }
   },
 
+  //login user
   login: async (req, res) => {
     try {
+      // mencari user berdasarkan email
       const findUser = await users.findFirst({
         where: {
           email: req.body.email,
@@ -167,6 +174,7 @@ module.exports = {
         });
       }
 
+      // melakukan validasi password
       if (bcrypt.compareSync(req.body.password, findUser.password)) {
         const token = jwt.sign(
           { id: findUser.id, email: findUser.email, phone: findUser.phone },
@@ -196,8 +204,10 @@ module.exports = {
     }
   },
 
+  // login user by google
   callbackLogin: async (req, res) => {
     try {
+      // menerima access token yang dikirimkan oleh frontendS
       const { access_token } = req.body;
       const data = await axios.get(
         `https://www.googleapis.com/oauth2/v3/userinfo?access_token=${access_token}`,
@@ -205,11 +215,15 @@ module.exports = {
       );
 
       console.log(data);
+
+      // melakukan validasi apakah user telah pernah membuat akun
       let user = await users.findFirst({
         where: {
           email: data.email,
         },
       });
+
+      // jika belum maka akan di buatkan
       if (!user) {
         user = await users.create({
           data: {
@@ -250,8 +264,10 @@ module.exports = {
     }
   },
 
+  // reset-password user jika belum melakukan login
   resetPassword: async (req, res) => {
     try {
+      // mencari user berdasarkan email apakah sudah terdaftar atau belum
       const findUser = await users.findFirst({
         where: {
           email: req.body.email,
@@ -264,6 +280,7 @@ module.exports = {
         });
       }
 
+      // membuat token untuk di kirimkan ke email
       const bcryptToken = await utils.cryptPassword(
         req.body.email.replace(/[\/\s]+/g, "@")
       );
@@ -276,6 +293,7 @@ module.exports = {
         },
       });
 
+      // mengirimkan token yang telah di buat ke email user
       const transporter = nodemailer.createTransport({
         pool: true,
         host: "smtp.gmail.com",
@@ -323,6 +341,7 @@ module.exports = {
     }
   },
 
+  // membuat password baru melalui link yang sudah dikirimkan di email
   setPassword: async (req, res) => {
     try {
       const findUser = await users.findFirst({

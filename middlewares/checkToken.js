@@ -28,16 +28,6 @@ const CheckToken = (req, res, next) => {
     res.user = decoded;
     next();
   });
-
-  // if (!jwtPayload) {
-  //   return res.status(403).json({
-  //     error: "unauthenticated",
-  //   });
-  // }
-
-  // res.user = jwtPayload;
-
-  // next();
 };
 
 module.exports = CheckToken;
