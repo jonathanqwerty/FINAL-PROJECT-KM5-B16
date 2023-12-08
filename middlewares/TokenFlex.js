@@ -7,7 +7,6 @@ const TokenFlex = (req, res, next) => {
 
   if (!token) {
     res.user = null;
-    next();
   }else{
     if (token.toLowerCase().startsWith("bearer")) {
       token = token.slice("bearer".length).trim();
@@ -21,8 +20,7 @@ const TokenFlex = (req, res, next) => {
         }
       }else{
         // Jika token valid, simpan informasi pengguna di objek req.user
-        req.user = decoded;
-        next();
+        res.user = decoded;
       }
     });
   }
