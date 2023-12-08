@@ -12,19 +12,18 @@ const TokenFlex = (req, res, next) => {
     if (token.toLowerCase().startsWith("bearer")) {
       token = token.slice("bearer".length).trim();
     }
-  
     jwt.verify(token, secret_key, (err, decoded) => {
       if (err) {
         if (err.name === "TokenExpiredError") {
-          return res.status(401).json({ message: "Token has expired" });
+          res.user = null;
         } else {
-          return res.status(500).json({ message: "unauthenticated" });
+          res.user = null;
         }
+      }else{
+        // Jika token valid, simpan informasi pengguna di objek req.user
+        req.user = decoded;
+        next();
       }
-  
-      // Jika token valid, simpan informasi pengguna di objek req.user
-      req.user = decoded;
-      next();
     });
   }
   next();
