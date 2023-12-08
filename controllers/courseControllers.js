@@ -1,5 +1,6 @@
 const { categories, reviews, courses, myCourse, orders,  progres, chapters,sources, goals} = require("../models");
 const { Course } = require("../utils/course");
+const {notif} = require('../utils/notification')
 
 module.exports = {
   FilterCourse: async (req, res) => {
@@ -217,6 +218,8 @@ module.exports = {
         }
       })
 
+      notif(user,'Successful buy course! Final step, please complete the payment process to access your course.')
+      
       return res.status(201).json({
         message : 'Successful! Final step, please complete the payment process to access your course.',
         mycourseId : MyCourse.id

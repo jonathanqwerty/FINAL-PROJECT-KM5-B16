@@ -33,5 +33,8 @@ const { promises } = require("nodemailer/lib/xoauth2");
     console.log(error)
   }
 };
-
+// const i = 'j'
+// const tes = parseInt(i)
+// isNaN(tes) ? console.log('is NaN') : console.log('ppp')
+// console.log(tes)
 FilterCourse()
