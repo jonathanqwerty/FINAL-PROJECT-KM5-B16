@@ -363,7 +363,7 @@ module.exports = {
         },
       });
 
-      const resetPasswordLink = `https://oneacademy-staging.pemudasukses.tech/forgot/${bcryptToken}`;
+      const resetPasswordLink = `https://last-king-academy-staging.pemudasukses.tech/set-password/${bcryptToken}`;
       const mailOption = {
         from: process.env.EMAIL_USER,
         to: req.body.email,
