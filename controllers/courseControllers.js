@@ -1,4 +1,4 @@
-const { categories, reviews, courses, myCourse, orders,  progres, chapters,sources, goals} = require("../models");
+const { categories, reviews, courses, myCourse, orders,  progres, chapters,sources, goals, users} = require("../models");
 const { Course } = require("../utils/course");
 const {notif} = require('../utils/notification')
 
@@ -43,7 +43,7 @@ module.exports = {
 
       // filter type course
       filter !== null
-        ? filter == "paling baru"
+        ? filter == "paling-baru"
           ? course.sort((a, b) => a.rilis - b.rilis)
           : course.sort((a, b) => b.orders - a.orders)
         : filter = null
@@ -198,18 +198,29 @@ module.exports = {
         where:{
           user : user,
           course : id,
+        },include:{
+          orders : true
         }
       })
       if(existMycourse){
-        return res.status(403).json({
-          message : 'you already have this course'
-        })
+        if(existMycourse.orders.status == "paid"){
+          return res.status(403).json({
+            message : 'you already have this course lest to the next step',
+            id : existMycourse.id
+          })
+        }
+        else{
+          return res.status(403).json({
+            message : 'you already have this course but you dont finsihing the payment. lets finishing the step',
+            id : existMycourse.id
+          })
+        }
+        
       }
       const MyCourse = await myCourse.create({
         data:{
           user      : user,
           course    : id,
-          order     : 1,
           orders    : {
             create: {
               status: 'notPaid'
@@ -235,6 +246,12 @@ module.exports = {
   getOrderCourse : async(req, res)=>{
     const id = parseInt(req.params.id)
     const user = parseInt(res.user.id)
+
+    if(isNaN(id) && isNaN(user)){
+      return res.status(400).json({
+        message : "bad req parameter url" 
+      })
+    }
     const data = await myCourse.findFirst({
       where:{
         id : id,
@@ -252,19 +269,32 @@ module.exports = {
         }
       }
     })
+    if(!data){
+      return res.status(404).json({
+        message : "Data not found " 
+      })
+    }
     return res.status(200).json({
       data
     })
   },
   payOrder: async(req, res)=>{
+    const user = parseInt(res.user.id)
+    const id = parseInt(req.params.id)
+    if (isNaN(id)){
+      return res.status(400).json({
+        message : "bad req parameter url" 
+      })
+    }
     const data = await orders.update({
       where:{
-        id : parseInt(req.params.id)
+        id : id
       },
       data :{
         status : 'paid'
       }
     })
+    notif(user, "Successful complete the payment procces, enjoy your class :)")
     return res.status(200).json({
       message : 'succses',
       id : data.id
