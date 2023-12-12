@@ -67,6 +67,7 @@ async function seed() {
       price: parseInt(priceTemp[faker.number.int({ min: 0, max: 2 })]),
       categoryId: temp,
       image: faker.image.avatarLegacy(),
+      prepare : faker.commerce.productDescription(),
       level: level[faker.number.int({ min: 0, max: 2 })],
     };
     data = await prisma.courses.create({ data: course });

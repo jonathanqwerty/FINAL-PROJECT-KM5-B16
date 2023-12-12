@@ -24,8 +24,11 @@ module.exports = {
           chapters : true
         },
       });
-      if(!data){return res.status(404).json({message : "not found data"})}
 
+      if(!data){return res.status(404).json({message : "not found data"})}
+      if (data.length == 0) {
+        return res.status(404).json({ message: "not found data" });
+      }
 
       // count popularity dan return yg dibutuhkan 
       let course = await Course(data, user)

@@ -96,7 +96,6 @@ async function seed() {
           user: i,
           course: Seed2,
           progress: progres1[faker.number.int({ min: 1, max: 2 })],
-          order: 1,
           orders: {
             create: {
               status: "paid",

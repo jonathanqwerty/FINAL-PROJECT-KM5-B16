@@ -3,7 +3,7 @@ const { categories, reviews, courses, myCourse, orders,  progres, chapters,sourc
 module.exports = {
     MyCourse : async (req, res) => {
       try {
-        const kategori = req.query.kategori;
+        const kategori = req.query.categories;
         const search = req.query.search;
         const filter = req.query.filter;
         const level = req.query.level;
@@ -29,6 +29,10 @@ module.exports = {
               courses: true
             }
           });
+          if (Data.length == 0) {
+            return res.status(404).json({ message: "not found data" });
+          }
+
           let Data = await Promise.all(
             data.map(async (item) => {
     

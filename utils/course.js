@@ -1,11 +1,15 @@
-const { categories, reviews, courses, myCourse, users ,chapters,sources} = require("../models");
+const { categories, reviews, courses, myCourse, users ,chapters,sources, orders} = require("../models");
 
 module.exports ={
     Course : async(data,data2) => {
       let MyCourse 
-      data2 !== null ? MyCourse = await myCourse.findMany({where : {user : data2 }})
+      data2 !== null ? MyCourse = await myCourse.findMany({
+        where : {
+          user : data2 
+        }
+      })
       :   data2 = null
-      
+
         let Data = await Promise.all(
             data.map(async (item) => {
 
@@ -35,7 +39,8 @@ module.exports ={
               if (MyCourse){
                 const course2 = await Promise.all(
                   MyCourse.map(async(item2)=>{
-                    if(item.id == item2.course){
+                    const order = await orders.findFirst({where : {myCourseId : item2.id}})
+                    if(item.id == item2.course && order.status == "paid" ){
                       return 'terbeli'
                     }
                   }))
