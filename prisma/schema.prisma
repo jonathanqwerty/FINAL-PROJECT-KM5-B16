@@ -53,6 +53,7 @@ model courses {
   description String
   price       Int
   image       String
+  prepare     String
   level       level      @default(beginer)
   available   Boolean    @default(true)
   createdAt   DateTime   @default(now()) @map("create_at")
@@ -129,7 +130,6 @@ model myCourse {
   id        Int       @id @default(autoincrement())
   user      Int
   course    Int
-  order     Int
   progress  progress  @default(inProgress)
   createdAt DateTime  @default(now()) @map("create_at")
   updatedAt DateTime  @updatedAt @map("updated_at")
@@ -145,6 +145,7 @@ model orders {
   id         Int      @id @default(autoincrement())
   status     status   @default(notPaid)
   myCourseId Int
+  method     String   @default("credit Card")
   myCourse   myCourse @relation(fields: [myCourseId], references: [id])
   createdAt  DateTime @default(now()) @map("create_at")
   updatedAt  DateTime @updatedAt @map("updated_at")
