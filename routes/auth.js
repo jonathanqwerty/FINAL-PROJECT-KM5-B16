@@ -1,3 +1,5 @@
+const { route } = require("./home");
+
 const express = require("express"),
   router = express.Router(),
   controller = require("../controllers/authController"),
@@ -15,7 +17,7 @@ router.post(
   validate(schema.verifyValidator),
   controller.verifyUser
 );
-// auth
+router.post("/reset-otp", controller.resetOtp);
 router.post("/login", validate(schema.loginValidator), controller.login);
 router.post("/reset-password", controller.resetPassword);
 router.post("/set-password/:key", controller.setPassword);

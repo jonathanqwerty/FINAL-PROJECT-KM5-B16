@@ -1,3 +1,4 @@
+const { generate } = require("otp-generator");
 const validate = require("../middlewares/validate");
 const { users, notifications } = require("../models"),
   utils = require("../utils/index"),
@@ -154,6 +155,63 @@ module.exports = {
     }
   },
 
+  resetOtp: async (req, res) => {
+    try {
+      const generateOTP = otp.generateOTP();
+      let date = new Date();
+      date.setMinutes(date.getMinutes() + 5);
+      date.toISOString();
+      const resetOtp = await users.update({
+        where: {
+          email: req.body.email,
+        },
+        data: {
+          validasi: generateOTP,
+        },
+        include: {
+          profiles: true,
+        },
+      });
+      const transporter = nodemailer.createTransport({
+        pool: true,
+        host: "smtp.gmail.com",
+        port: 465,
+        secure: true,
+        auth: {
+          user: process.env.EMAIL_USER,
+          pass: process.env.EMAIL_PASS,
+        },
+      });
+      const mailOption = {
+        from: process.env.EMAIL_USER,
+        to: req.body.email,
+        subject: "OTP-VERIFICATION",
+        html: `<div style="border: 1px solid #6148FF; border-radius: 10px; width: 45vw; flex-direction: column; padding: 2rem; background-color: #ffff; font-family:calibri; font-weight:600; font-size:18px;">
+            <p>Hi ! ${req.body.email} <br/> We've received an OTP request from your ${req.body.name}. <br/> Please input the 6 digit code below to authenticate your account</p> <br/>
+            <center><h1 style= " color: #6148FF; letter-spacing: .5rem; font-weight:900">${generateOTP}</h1> <br /></center>
+            <p>If you didn't make this request, you may ignore this email, <br />email us at <q>nathanaeljonathan09@gmail.com</q> on Monday - Friday, 09.00 - 18.00 WIB | Saturday, 09.00 - 15.00 WIB </p>
+        </div>`,
+      };
+      transporter.sendMail(mailOption, (error, info) => {
+        if (error) {
+          return res.status(403).json({
+            message: "Your email is not registered in our system",
+          });
+        }
+        console.log("Email sent: " + info.response);
+      });
+      return res.status(201).json({
+        otp: resetOtp.validasi,
+      });
+    } catch (error) {
+      console.log(error);
+      return res.status(500).json({
+        error,
+        message: "Internal server error",
+      });
+    }
+  },
+
   //login user
   login: async (req, res) => {
     try {
@@ -305,7 +363,7 @@ module.exports = {
         },
       });
 
-      const resetPasswordLink = `https://oneacademy-staging.pemudasukses.tech/forgot/${bcryptToken}`;
+      const resetPasswordLink = `https://last-king-academy-staging.pemudasukses.tech/set-password/${bcryptToken}`;
       const mailOption = {
         from: process.env.EMAIL_USER,
         to: req.body.email,
