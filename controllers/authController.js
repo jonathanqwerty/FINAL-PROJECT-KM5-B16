@@ -158,9 +158,6 @@ module.exports = {
   resetOtp: async (req, res) => {
     try {
       const generateOTP = otp.generateOTP();
-      let date = new Date();
-      date.setMinutes(date.getMinutes() + 5);
-      date.toISOString();
       const resetOtp = await users.update({
         where: {
           email: req.body.email,
@@ -389,6 +386,9 @@ module.exports = {
         },
       });
       return res.status(201).json({
+        data: {
+          resetPasswordLink,
+        },
         message: "The reset password link has been sent to your email",
       });
     } catch (error) {
@@ -431,7 +431,8 @@ module.exports = {
         },
       });
       return res.status(200).json({
-        data,
+        message: "seccess reset your password",
+        data: data.password,
       });
     } catch (error) {
       console.log(error);
