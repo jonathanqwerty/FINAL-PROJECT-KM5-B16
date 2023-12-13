@@ -139,12 +139,13 @@ module.exports = {
         { expiresIn: "6h" }
       );
 
-      await notifications.create({
-        data: {
-          userId: findUser.id,
-          message: "Your account has been successfully verified.",
-        },
-      });
+      // await notifications.create({
+      //   data: {
+      //     userId: findUser.id,
+      //     message: "Your account has been successfully verified.",
+      //   },
+      // });
+      notif(findUser.id, "Your account has been successfully verified.");
       return res.status(200).json({
         data: {
           token,
@@ -240,12 +241,13 @@ module.exports = {
           secret_key,
           { expiresIn: "6h" }
         );
-        await notifications.create({
-          data: {
-            userId: findUser.id,
-            message: "You have successfully logged in.",
-          },
-        });
+        // await notifications.create({
+        //   data: {
+        //     userId: findUser.id,
+        //     message: "You have successfully logged in.",
+        //   },
+        // });
+        notif(findUser.id, "You have successfully logged in.");
         return res.status(200).json({
           data: {
             token,
@@ -306,12 +308,13 @@ module.exports = {
       const token = jwt.sign({ id: user.id }, "secret_key", {
         expiresIn: "6h",
       });
-      await notifications.create({
-        data: {
-          userId: user.id,
-          message: "You have successfully logged in.",
-        },
-      });
+      // await notifications.create({
+      //   data: {
+      //     userId: user.id,
+      //     message: "You have successfully logged in.",
+      //   },
+      // });
+      notif(user.id, "Your account has been successfully verified.");
       return res.status(200).json({
         data: {
           token,
@@ -340,11 +343,8 @@ module.exports = {
       }
 
       // membuat token untuk di kirimkan ke email
-      const emailRegex = /\S+@\S+\.\S+/g;
-      const email = req.body.email;
-      const bcryptToken = await utils.cryptToken(
-        email.replaceAll(emailRegex, "-")
-      );
+      const data = req.body.email;
+      const bcryptToken = crypto.createHash("md5").update(data).digest("hex");
       await users.update({
         data: {
           resetPasswordToken: bcryptToken,
@@ -385,12 +385,16 @@ module.exports = {
         }
         console.log("Email sent: " + info.response);
       });
-      await notifications.create({
-        data: {
-          userId: findUser.id,
-          message: "The reset password link has been sent to your email.",
-        },
-      });
+      // await notifications.create({
+      //   data: {
+      //     userId: findUser.id,
+      //     message: "The reset password link has been sent to your email.",
+      //   },
+      // });
+      notif(
+        findUser.id,
+        "The reset password link has been sent to your email."
+      );
       return res.status(201).json({
         data: {
           resetPasswordLink,
@@ -430,12 +434,13 @@ module.exports = {
           resetPasswordToken: null,
         },
       });
-      await notifications.create({
-        data: {
-          userId: findUser.id,
-          message: "Your password has been changed successfully.",
-        },
-      });
+      // await notifications.create({
+      //   data: {
+      //     userId: findUser.id,
+      //     message: "Your password has been changed successfully.",
+      //   },
+      // });
+      notif(findUser.id, "Your password has been changed successfully.");
       return res.status(200).json({
         success: "success reset your password",
         data: data.password,
