@@ -431,7 +431,7 @@ module.exports = {
         },
       });
       return res.status(200).json({
-        message: "success reset your password",
+        success: "success reset your password",
         data: data.password,
       });
     } catch (error) {
