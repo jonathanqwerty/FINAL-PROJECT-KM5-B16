@@ -81,7 +81,7 @@ module.exports = {
         await notifications.create({
           data: {
             userId: data.id,
-            success: "Welcome! You have successfully registered.",
+            message: "Welcome! You have successfully registered.",
           },
         });
 
