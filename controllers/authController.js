@@ -1,5 +1,6 @@
 const { generate } = require("otp-generator");
 const validate = require("../middlewares/validate");
+const crypto = require("crypto");
 const { users, notifications } = require("../models"),
   utils = require("../utils/index"),
   jwt = require("jsonwebtoken"),
@@ -7,6 +8,7 @@ const { users, notifications } = require("../models"),
   nodemailer = require("nodemailer"),
   otp = require("../utils/otp"),
   axios = require("axios"),
+  { notif } = require("../utils/notification"),
   https = require("https");
 
 require("dotenv").config();
@@ -78,12 +80,13 @@ module.exports = {
           }
           console.log("Email sent: " + info.response);
         });
-        await notifications.create({
-          data: {
-            userId: data.id,
-            message: "Welcome! You have successfully registered.",
-          },
-        });
+        // await notifications.create({
+        //   data: {
+        //     userId: data.id,
+        //     message: "Welcome! You have successfully registered.",
+        //   },
+        // });
+        notif(data.id, "Welcome! You have successfully registered.");
 
         return res.status(201).json({
           email: data.email,
@@ -337,11 +340,10 @@ module.exports = {
       }
 
       // membuat token untuk di kirimkan ke email
-      const emailRegex = /\S+@\S+\.\S+/;
+      const emailRegex = /\S+@\S+\.\S+/g;
       const email = req.body.email;
       const bcryptToken = await utils.cryptToken(
-        email,
-        email.replace(emailRegex, "-")
+        email.replaceAll(emailRegex, "-")
       );
       await users.update({
         data: {
