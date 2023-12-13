@@ -199,6 +199,7 @@ module.exports = {
       });
       return res.status(201).json({
         otp: resetOtp.validasi,
+        success: "success send again your OTP",
       });
     } catch (error) {
       console.log(error);
@@ -305,7 +306,7 @@ module.exports = {
       await notifications.create({
         data: {
           userId: user.id,
-          success: "You have successfully logged in.",
+          message: "You have successfully logged in.",
         },
       });
       return res.status(200).json({
@@ -336,8 +337,11 @@ module.exports = {
       }
 
       // membuat token untuk di kirimkan ke email
-      const bcryptToken = await utils.cryptPassword(
-        req.body.email.replace(/[\/\s]+/g, "@")
+      const emailRegex = /\S+@\S+\.\S+/;
+      const email = req.body.email;
+      const bcryptToken = await utils.cryptToken(
+        email,
+        email.replace(emailRegex, "-")
       );
       await users.update({
         data: {
