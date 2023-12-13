@@ -309,7 +309,7 @@ module.exports = {
       await notifications.create({
         data: {
           userId: user.id,
-          message: "You have successfully logged in.",
+          success: "You have successfully logged in.",
         },
       });
       return res.status(200).json({

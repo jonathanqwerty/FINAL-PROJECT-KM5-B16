@@ -5,6 +5,7 @@ const cryptPassword = async (password) => {
 
   return bcrypt.hash(password, salt);
 };
+
 const cryptToken = async (email) => {
   const salt = await bcrypt.genSalt(5);
 
