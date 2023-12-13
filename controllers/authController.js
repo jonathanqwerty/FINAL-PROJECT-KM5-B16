@@ -410,7 +410,7 @@ module.exports = {
 
       if (!findUser) {
         return res.status(403).json({
-          message: "Your email is not registered in our system",
+          error: "Your email is not registered in our system",
         });
       }
 
@@ -431,7 +431,7 @@ module.exports = {
         },
       });
       return res.status(200).json({
-        message: "seccess reset your password",
+        message: "success reset your password",
         data: data.password,
       });
     } catch (error) {

@@ -23,6 +23,6 @@ router.post("/reset-password", controller.resetPassword);
 router.post("/set-password/:key", controller.setPassword);
 
 //Oauth
-router.post("/google/callback", controller.callbackLogin);
+router.post("/google", controller.callbackLogin);
 
 module.exports = router;
