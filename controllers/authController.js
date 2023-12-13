@@ -73,7 +73,7 @@ module.exports = {
         transporter.sendMail(mailOption, (error, info) => {
           if (error) {
             return res.status(403).json({
-              message: "Your email is not registered in our system",
+              error: "Your email is not registered in our system",
             });
           }
           console.log("Email sent: " + info.response);
@@ -81,14 +81,14 @@ module.exports = {
         await notifications.create({
           data: {
             userId: data.id,
-            message: "Welcome! You have successfully registered.",
+            success: "Welcome! You have successfully registered.",
           },
         });
 
         return res.status(201).json({
           email: data.email,
           otp: data.validasi,
-          message: "Check your email for verify",
+          success: "Check your email for verify",
         });
       }
     } catch (error) {
@@ -116,7 +116,7 @@ module.exports = {
       console.log(findUser.validasi);
       if (findUser && findUser.validasi !== req.body.validasi) {
         return res.status(403).json({
-          message: "Your OTP not valid",
+          error: "Your OTP not valid",
         });
       }
       const data = await users.update({
@@ -192,7 +192,7 @@ module.exports = {
       transporter.sendMail(mailOption, (error, info) => {
         if (error) {
           return res.status(403).json({
-            message: "Your email is not registered in our system",
+            error: "Your email is not registered in our system",
           });
         }
         console.log("Email sent: " + info.response);
@@ -225,7 +225,7 @@ module.exports = {
       }
       if (findUser && findUser.isActive === false) {
         return res.status(403).json({
-          message: "Please verify you account first",
+          error: "Please verify you account first",
         });
       }
 
@@ -249,7 +249,7 @@ module.exports = {
         });
       }
       return res.status(403).json({
-        message: "Invalid Password",
+        error: "Invalid Password",
       });
     } catch (error) {
       console.log(error);
@@ -305,7 +305,7 @@ module.exports = {
       await notifications.create({
         data: {
           userId: user.id,
-          message: "You have successfully logged in.",
+          success: "You have successfully logged in.",
         },
       });
       return res.status(200).json({
@@ -331,7 +331,7 @@ module.exports = {
 
       if (!findUser) {
         return res.status(403).json({
-          message: "Your email is not registered in our system",
+          error: "Your email is not registered in our system",
         });
       }
 
@@ -374,7 +374,7 @@ module.exports = {
       transporter.sendMail(mailOption, (error, info) => {
         if (error) {
           return res.status(403).json({
-            message: "Your email is not registered in our system",
+            error: "Your email is not registered in our system",
           });
         }
         console.log("Email sent: " + info.response);
@@ -389,7 +389,7 @@ module.exports = {
         data: {
           resetPasswordLink,
         },
-        message: "The reset password link has been sent to your email",
+        success: "The reset password link has been sent to your email",
       });
     } catch (error) {
       console.log(error);
@@ -431,7 +431,7 @@ module.exports = {
         },
       });
       return res.status(200).json({
-        message: "success reset your password",
+        success: "success reset your password",
         data: data.password,
       });
     } catch (error) {
