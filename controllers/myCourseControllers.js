@@ -3,11 +3,11 @@ const { categories, reviews, courses, myCourse, orders,  progres, chapters,sourc
 module.exports = {
     MyCourse : async (req, res) => {
       try {
-        const kategori = req.query.categories;
-        const search = req.query.search;
-        const filter = req.query.filter;
-        const level = req.query.level;
-        const progress = req.query.progres;
+        const kategori = req.query.kategori 
+        const search = req.query.search 
+        const filter = req.query.filter 
+        const level = req.query.level || null
+        const progress = req.query.progres || null
         let user = res.user.id
     
         const page =  req.query.page || 1;
@@ -18,9 +18,10 @@ module.exports = {
             take : itemsPerPage,
             where: {
                 user : user,
-                progress : progress !== null ? progress : {},
+                progress : progress !== null ?  progress : {},
                 courses:{
-                  categories: kategori !== null ? { name: kategori } : {},
+                  categories: kategori !== null ? Array.isArray(kategori)? { name: { in: kategori }  } : 
+                  { name: { contains: kategori } } : {},
                   title : search !== null ? {contains: search}:{},
                   level : level !== null ? level:{}
                   }
@@ -29,7 +30,7 @@ module.exports = {
               courses: true
             }
           });
-          if (Data.length == 0) {
+          if (data.length == 0) {
             return res.status(404).json({ message: "not found data" });
           }
 
@@ -63,6 +64,8 @@ module.exports = {
     
               //progres
               const progress = await progres.count({where:{myCourse : item.id}})
+
+              const status = await orders.findFirst({where: {myCourseId : item.id}})
     
               return {
                 id : item.id,
@@ -77,6 +80,7 @@ module.exports = {
                 progres : progress,
                 rilis : item.courses.createdAt,
                 orders : order,
+                status : status.status
               }
             }))
     

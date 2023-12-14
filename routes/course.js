@@ -9,8 +9,8 @@ const express = require("express"),
   checkToken = require('../middlewares/checkToken')
 
 router.get('/', TokenFlex,controller.FilterCourse)
-router.get('/:id',controller.detailCourse)
-router.get('/popup/:id',controller.popUpCourse)
+router.get('/:id',TokenFlex, controller.detailCourse)
+router.get('/popup/:id',TokenFlex, controller.popUpCourse)
 router.post('/order/:id', CheckToken, controller.orderCourse)
 router.get('/order/:id', CheckToken, controller.getOrderCourse)
 router.patch('/order/:id', CheckToken, controller.payOrder)
