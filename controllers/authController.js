@@ -1,4 +1,6 @@
+const { generate } = require("otp-generator");
 const validate = require("../middlewares/validate");
+const crypto = require("crypto");
 const { users, notifications } = require("../models"),
   utils = require("../utils/index"),
   jwt = require("jsonwebtoken"),
@@ -6,6 +8,7 @@ const { users, notifications } = require("../models"),
   nodemailer = require("nodemailer"),
   otp = require("../utils/otp"),
   axios = require("axios"),
+  { notif } = require("../utils/notification"),
   https = require("https");
 
 require("dotenv").config();
@@ -72,22 +75,23 @@ module.exports = {
         transporter.sendMail(mailOption, (error, info) => {
           if (error) {
             return res.status(403).json({
-              message: "Your email is not registered in our system",
+              error: "Your email is not registered in our system",
             });
           }
           console.log("Email sent: " + info.response);
         });
-        await notifications.create({
-          data: {
-            userId: data.id,
-            message: "Welcome! You have successfully registered.",
-          },
-        });
+        // await notifications.create({
+        //   data: {
+        //     userId: data.id,
+        //     message: "Welcome! You have successfully registered.",
+        //   },
+        // });
+        notif(data.id, "Welcome! You have successfully registered.");
 
         return res.status(201).json({
           email: data.email,
           otp: data.validasi,
-          message: "Check your email for verify",
+          success: "Check your email for verify",
         });
       }
     } catch (error) {
@@ -115,7 +119,7 @@ module.exports = {
       console.log(findUser.validasi);
       if (findUser && findUser.validasi !== req.body.validasi) {
         return res.status(403).json({
-          message: "Your OTP not valid",
+          error: "Your OTP not valid",
         });
       }
       const data = await users.update({
@@ -135,12 +139,13 @@ module.exports = {
         { expiresIn: "6h" }
       );
 
-      await notifications.create({
-        data: {
-          userId: findUser.id,
-          message: "Your account has been successfully verified.",
-        },
-      });
+      // await notifications.create({
+      //   data: {
+      //     userId: findUser.id,
+      //     message: "Your account has been successfully verified.",
+      //   },
+      // });
+      notif(findUser.id, "Your account has been successfully verified.");
       return res.status(200).json({
         data: {
           token,
@@ -150,6 +155,61 @@ module.exports = {
       console.log(error);
       return res.status(500).json({
         error,
+      });
+    }
+  },
+
+  resetOtp: async (req, res) => {
+    try {
+      const generateOTP = otp.generateOTP();
+      const resetOtp = await users.update({
+        where: {
+          email: req.body.email,
+        },
+        data: {
+          validasi: generateOTP,
+        },
+        include: {
+          profiles: true,
+        },
+      });
+      const transporter = nodemailer.createTransport({
+        pool: true,
+        host: "smtp.gmail.com",
+        port: 465,
+        secure: true,
+        auth: {
+          user: process.env.EMAIL_USER,
+          pass: process.env.EMAIL_PASS,
+        },
+      });
+      const mailOption = {
+        from: process.env.EMAIL_USER,
+        to: req.body.email,
+        subject: "OTP-VERIFICATION",
+        html: `<div style="border: 1px solid #6148FF; border-radius: 10px; width: 45vw; flex-direction: column; padding: 2rem; background-color: #ffff; font-family:calibri; font-weight:600; font-size:18px;">
+            <p>Hi ! ${req.body.email} <br/> We've received an OTP request from your ${req.body.name}. <br/> Please input the 6 digit code below to authenticate your account</p> <br/>
+            <center><h1 style= " color: #6148FF; letter-spacing: .5rem; font-weight:900">${generateOTP}</h1> <br /></center>
+            <p>If you didn't make this request, you may ignore this email, <br />email us at <q>nathanaeljonathan09@gmail.com</q> on Monday - Friday, 09.00 - 18.00 WIB | Saturday, 09.00 - 15.00 WIB </p>
+        </div>`,
+      };
+      transporter.sendMail(mailOption, (error, info) => {
+        if (error) {
+          return res.status(403).json({
+            error: "Your email is not registered in our system",
+          });
+        }
+        console.log("Email sent: " + info.response);
+      });
+      return res.status(201).json({
+        otp: resetOtp.validasi,
+        success: "success send again your OTP",
+      });
+    } catch (error) {
+      console.log(error);
+      return res.status(500).json({
+        error,
+        message: "Internal server error",
       });
     }
   },
@@ -170,7 +230,7 @@ module.exports = {
       }
       if (findUser && findUser.isActive === false) {
         return res.status(403).json({
-          message: "Please verify you account first",
+          error: "Please verify you account first",
         });
       }
 
@@ -181,12 +241,13 @@ module.exports = {
           secret_key,
           { expiresIn: "6h" }
         );
-        await notifications.create({
-          data: {
-            userId: findUser.id,
-            message: "You have successfully logged in.",
-          },
-        });
+        // await notifications.create({
+        //   data: {
+        //     userId: findUser.id,
+        //     message: "You have successfully logged in.",
+        //   },
+        // });
+        notif(findUser.id, "You have successfully logged in.");
         return res.status(200).json({
           data: {
             token,
@@ -194,7 +255,7 @@ module.exports = {
         });
       }
       return res.status(403).json({
-        message: "Invalid Password",
+        error: "Invalid Password",
       });
     } catch (error) {
       console.log(error);
@@ -247,12 +308,13 @@ module.exports = {
       const token = jwt.sign({ id: user.id }, "secret_key", {
         expiresIn: "6h",
       });
-      await notifications.create({
-        data: {
-          userId: user.id,
-          message: "You have successfully logged in.",
-        },
-      });
+      // await notifications.create({
+      //   data: {
+      //     userId: user.id,
+      //     message: "You have successfully logged in.",
+      //   },
+      // });
+      notif(user.id, "Your account has been successfully verified.");
       return res.status(200).json({
         data: {
           token,
@@ -276,14 +338,13 @@ module.exports = {
 
       if (!findUser) {
         return res.status(403).json({
-          message: "Your email is not registered in our system",
+          error: "Your email is not registered in our system",
         });
       }
 
       // membuat token untuk di kirimkan ke email
-      const bcryptToken = await utils.cryptPassword(
-        req.body.email.replace(/[\/\s]+/g, "@")
-      );
+      const data = req.body.email;
+      const bcryptToken = crypto.createHash("md5").update(data).digest("hex");
       await users.update({
         data: {
           resetPasswordToken: bcryptToken,
@@ -305,7 +366,7 @@ module.exports = {
         },
       });
 
-      const resetPasswordLink = `https://oneacademy-staging.pemudasukses.tech/forgot/${bcryptToken}`;
+      const resetPasswordLink = `https://last-king-academy-staging.pemudasukses.tech/set-password/${bcryptToken}`;
       const mailOption = {
         from: process.env.EMAIL_USER,
         to: req.body.email,
@@ -319,19 +380,26 @@ module.exports = {
       transporter.sendMail(mailOption, (error, info) => {
         if (error) {
           return res.status(403).json({
-            message: "Your email is not registered in our system",
+            error: "Your email is not registered in our system",
           });
         }
         console.log("Email sent: " + info.response);
       });
-      await notifications.create({
-        data: {
-          userId: findUser.id,
-          message: "The reset password link has been sent to your email.",
-        },
-      });
+      // await notifications.create({
+      //   data: {
+      //     userId: findUser.id,
+      //     message: "The reset password link has been sent to your email.",
+      //   },
+      // });
+      notif(
+        findUser.id,
+        "The reset password link has been sent to your email."
+      );
       return res.status(201).json({
-        message: "The reset password link has been sent to your email",
+        data: {
+          resetPasswordLink,
+        },
+        success: "The reset password link has been sent to your email",
       });
     } catch (error) {
       console.log(error);
@@ -352,7 +420,7 @@ module.exports = {
 
       if (!findUser) {
         return res.status(403).json({
-          message: "Your email is not registered in our system",
+          error: "Your email is not registered in our system",
         });
       }
 
@@ -366,14 +434,16 @@ module.exports = {
           resetPasswordToken: null,
         },
       });
-      await notifications.create({
-        data: {
-          userId: findUser.id,
-          message: "Your password has been changed successfully.",
-        },
-      });
+      // await notifications.create({
+      //   data: {
+      //     userId: findUser.id,
+      //     message: "Your password has been changed successfully.",
+      //   },
+      // });
+      notif(findUser.id, "Your password has been changed successfully.");
       return res.status(200).json({
-        data,
+        success: "success reset your password",
+        data: data.password,
       });
     } catch (error) {
       console.log(error);

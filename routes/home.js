@@ -3,10 +3,9 @@ const express = require("express"),
   controller = require("../controllers/homeControlers"),
   validate = require("../middlewares/validate"),
   schema = require("../validatorSchema/authValidatorSchema"),
-  TokenFlex = require('../middlewares/TokenFlex')
+  TokenFlex = require("../middlewares/TokenFlex");
 
+router.get("/category", controller.categories);
+router.get("/popular", TokenFlex, controller.popularCourse);
 
-router.get('/category', controller.categories)
-router.get('/popular',TokenFlex, controller.popularCourse)
-
-module.exports = router
+module.exports = router;
