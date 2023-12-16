@@ -31,7 +31,9 @@ module.exports = {
             }
           });
           if (data.length == 0) {
-            return res.status(404).json({ message: "not found data" });
+            return res.status(404).json({ 
+              error : "error",
+              message: "not found data" });
           }
 
           let Data = await Promise.all(
@@ -90,6 +92,7 @@ module.exports = {
             Data.sort((a, b) => b.orders - a.orders) : filter = null
 
             return res.status(200).json({
+              success : "success",
               MyCourse : Data
             })
     } catch (error) {

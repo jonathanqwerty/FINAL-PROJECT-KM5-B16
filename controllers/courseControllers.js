@@ -6,9 +6,9 @@ module.exports = {
   FilterCourse: async (req, res) => {
     // filtering sebuah course
     try {
-      const kategori = req.query.kategori;
-      const search = req.query.search;
-      const filter = req.query.filter;
+      const kategori = req.query.kategori || null;
+      const search = req.query.search || null;
+      const filter = req.query.filter || null;
       const level = req.query.level || null;
       const type = req.body.type;
       let user = res.user ? res.user.id : null;
@@ -36,7 +36,9 @@ module.exports = {
       // data = data.slice((page-1)*itemsPerPage,(page*itemsPerPage))
 
       if (data.length == 0) {
-        return res.status(404).json({ message: "not found data" });
+        return res.status(404).json({ 
+          error : "error",
+          message: "not found data" });
       }
 
       // mendapatkan count popularity dan memperbaiki return
@@ -47,9 +49,10 @@ module.exports = {
         ? filter == "paling-baru"
           ? course.sort((a, b) => a.rilis - b.rilis)
           : course.sort((a, b) => b.orders - a.orders)
-        : filter = null
+        : filter
 
       return res.status(200).json({
+        error : "error",
         course,
       });
     } catch (error) {
@@ -66,7 +69,9 @@ module.exports = {
       let user = res.user ? res.user.id : null;
 
       if(isNaN(id) || isNaN(user)){
-        return res.status(400).json({message : "bad req parameter url" })
+        return res.status(400).json({
+          error : "error",
+          message : "bad req parameter url" })
       }
 
       let MyCourse
@@ -120,6 +125,7 @@ module.exports = {
 
       if(!course){
         return res.status(404).json({
+          error : "error",
           message : "course not found"
         })
       }
@@ -144,6 +150,7 @@ module.exports = {
          
   
           return res.status(200).json({
+            success : "success",
             course : {
               id : course.id,
               title: course.title,
@@ -173,7 +180,9 @@ module.exports = {
     try {
       const id = parseInt(req.params.id)
       if(isNaN(id)){
-        return res.status(400).json({message : "bad req parameter url" })
+        return res.status(400).json({
+          error : "error",
+          message : "bad req parameter url" })
       }
       const course = await courses.findFirst({
         where: {id},
@@ -193,6 +202,7 @@ module.exports = {
       })
       if(!course){
         return res.status(500).json({
+          error : "error",
           message : 'data not found'
         })
       }
@@ -216,6 +226,7 @@ module.exports = {
        });
   
        return res.status(200).json({
+        error : "error",
         popUpCourse : {
           id : course.id,
           title : course.title,
@@ -233,6 +244,7 @@ module.exports = {
     } catch (error) {
       console.log(error)
       return res.status(500).json({
+        error,
         message : 'internal server error'
       })
     }
@@ -244,11 +256,15 @@ module.exports = {
       let order = null
 
       if(isNaN(id) || isNaN(user)){
-        return res.status(400).json({message : "bad req parameter url" })
+        return res.status(400).json({
+          error : "error",
+          message : "bad req parameter url" })
       }
       const existCourse = await courses.findFirst({where:{id}})
       if(!existCourse){
-        return res.status(404).json({message : "data not found" })
+        return res.status(404).json({
+          error : "error",
+          message : "data not found" })
       }
       const existMycourse = await myCourse.findFirst({
         where:{
@@ -264,6 +280,7 @@ module.exports = {
       if(order){
         if(order.status == "paid"){
           return res.status(403).json({
+            success : "success",
             message : 'you already have this course lets to the next step',
             status : order.status,
             id : existMycourse.id
@@ -271,6 +288,7 @@ module.exports = {
         }
         else{
           return res.status(403).json({
+            success : "success",
             message : 'you already have this course but you dont finsihing the payment. lets finishing the step',
             status : order.status,
             id : existMycourse.id
@@ -293,6 +311,7 @@ module.exports = {
       notif(user,'Successful buy course! Final step, please complete the payment process to access your course.')
       
       return res.status(201).json({
+        success : "success",
         message : 'Successful! Final step, please complete the payment process to access your course.',
         status : 'notPaid',
         id : MyCourse.id
@@ -310,7 +329,9 @@ module.exports = {
     const user = parseInt(res.user.id)
 
     if(isNaN(id) || isNaN(user)){
-      return res.status(400).json({message : "bad req parameter url" })
+      return res.status(400).json({
+        error : "error",
+        message : "bad req parameter url" })
     }
     const data = await myCourse.findFirst({
       where:{
@@ -331,11 +352,13 @@ module.exports = {
     })
     if(!data){
       return res.status(404).json({
+        error : "error",
         message : "Data not found " 
       })
     }
     const order = await orders.findFirst({where :{myCourseId : data.id}})
     return res.status(200).json({
+      success : "success",
       myCourse:{
         id : data.id,
         status : order.status,
@@ -350,12 +373,16 @@ module.exports = {
     const user = parseInt(res.user.id)
     const id = parseInt(req.params.id)
     if (isNaN(id)){
-      return res.status(400).json({message : "bad req parameter url" })
+      return res.status(400).json({
+        error : "error",
+        message : "bad req parameter url" })
     }
     const finData = await orders.findFirst({where : {id : id}})
 
     if(!finData){
-      return res.status(400).json({message : "data not found"  })
+      return res.status(400).json({
+        error : "error",
+        message : "data not found"  })
     }
 
     const data = await orders.update({
@@ -369,6 +396,7 @@ module.exports = {
     
     notif(user, "Successful complete the payment procces, enjoy your class :)")
     return res.status(200).json({
+      success : "success",
       message : 'Successful complete the payment procces, enjoy your class :)',
       myCourseId : data.id
     })

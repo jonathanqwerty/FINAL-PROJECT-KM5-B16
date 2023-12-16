@@ -5,7 +5,7 @@ module.exports = {
   popularCourse: async (req, res) => {
     // find seluruh course, urut berdasarkan popularitas
     try {
-      let categori = req.query.categories
+      let categori = req.query.categories || null
       let user = res.user ? res.user.id : null
 
       const page = parseInt(req.query.page) || 1;
@@ -17,7 +17,7 @@ module.exports = {
         skip,
         take : itemsPerPage,
         where: {
-          categories: categori !== null ?  { name: categori } : {},
+          categories: categori !== null ?  { name: { contains: categori } } : {},
         },
         include: {
           categories: true,
@@ -25,9 +25,13 @@ module.exports = {
         },
       });
 
-      if(!data){return res.status(404).json({message : "not found data"})}
+      if(!data){return res.status(404).json({
+        error : "error",
+        message : "not found data"})}
       if (data.length == 0) {
-        return res.status(404).json({ message: "not found data" });
+        return res.status(404).json({ 
+          error : "error",
+          message: "not found data" });
       }
 
       // count popularity dan return yg dibutuhkan 
@@ -38,6 +42,7 @@ module.exports = {
 
       // return
       return res.status(200).json({
+        success : "success",
         popular : course,
       });
 
@@ -61,7 +66,9 @@ module.exports = {
         skip,
         take: itemsPerPage,
       });
-      if(!data){return res.status(404).json({message : "not found data"})}
+      if(!data){return res.status(404).json({
+        error : "error",
+        message : "not found data"})}
 
       // return yg dibutuhkan 
       const category = data.map((item) => {
@@ -74,6 +81,7 @@ module.exports = {
 
       // return 
       return res.status(200).json({
+        success : "success",
         categories: category,
       });
     } catch (error) {
