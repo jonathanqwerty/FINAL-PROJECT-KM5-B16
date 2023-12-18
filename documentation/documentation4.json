@@ -1,7 +1,7 @@
 {
     "openapi": "3.0.3",
     "info": {
-        "title": " BEJS B16",
+        "title": "BEJS B16",
         "version": "1.0.11"
     },
     "servers": [
@@ -9,54 +9,77 @@
             "url": "https://final-project-km5-b16-production.up.railway.app/api/v1"
         }
     ],
+    "components": {
+        "securitySchemes": {
+          "bearerAuth": {
+            "type": "http",
+            "scheme": "bearer",
+            "bearerFormat": "JWT"
+          }
+        }
+      },
     "tags": [
         {
-            "name": "admin",
-            "description": "user table API"
+            "name": "Authentication",
+            "description": "Authentication Admin"
         },
         {
-            "name": "profile",
-            "description": "course table API"
+            "name": "Dashboard",
+            "description": "Dashboard Admin table API"
+        },
+        {
+            "name": "Category",
+            "description": "Category Admin table API"
+        },
+        {
+            "name": "Course",
+            "description": "Course Admin table API"
+        },
+        {
+            "name": "Chapter",
+            "description": "Chapter Admin table API"
+        },
+        {
+            "name": "Source",
+            "description": "Source Admin table API"
         }
     ],
     "paths": {
-        "/user": {
+        "/admin/login": {
             "post": {
                 "tags": [
-                    "admin"
+                    "Authentication"
                 ],
-                "summary": "upload image",
-                "description": "Find Single data product by ID",
+                "summary": "Admin login",
+                "description": "Login Admin and provides an access token",
                 "requestBody": {
                     "content": {
-                        "multipart/form-data": {
+                        "application/json": {
                             "schema": {
                                 "type": "object",
                                 "properties": {
-                                    "judul": {
+                                    "email": {
                                         "type": "string"
                                     },
-                                    "description": {
-                                        "type": "string"
-                                    },
-                                    "image": {
-                                        "type": "string",
-                                        "format": "file"
-                                    },
-                                    "harga": {
-                                        "type": "integer"
-                                    },
-                                    "seniman_id": {
+                                    "password": {
                                         "type": "string"
                                     }
-                                }
+                                },
+                                "required": [
+                                    "email",
+                                    "password"
+                                ]
+                            },
+                            "example": {   
+                                    "email": "admin01@gmail.com",
+                                    "password": "Admin,01"   
                             }
                         }
                     }
                 },
                 "responses": {
                     "200": {
-                        "description": "succsess",
+                        "description": "You have successfully logged in",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -65,29 +88,8 @@
                                         "data": {
                                             "type": "object",
                                             "properties": {
-                                                "id": {
-                                                    "type": "integer",
-                                                    "example": 1
-                                                },
-                                                "judul": {
-                                                    "type": "string",
-                                                    "example": "jhon@duar.com"
-                                                },
-                                                "description": {
-                                                    "type": "string",
-                                                    "example": "skdhfjd"
-                                                },
-                                                "image": {
-                                                    "type": "string",
-                                                    "example": "skdhfjd"
-                                                },
-                                                "harga": {
-                                                    "type": "integer",
-                                                    "example": 1000000
-                                                },
-                                                "seniman_id": {
-                                                    "type": "integer",
-                                                    "example": 1
+                                                "token": {
+                                                    "type": "string"
                                                 }
                                             }
                                         }
@@ -96,11 +98,1257 @@
                             }
                         }
                     },
+                    "403": {
+                        "description": "Invalid Password"
+                    },
                     "500": {
                         "description": "Internal Server Error"
                     }
                 }
             }
+        },
+        "/admin/active-user": {
+            "get": {
+              "tags": [
+                "Dashboard"
+              ],
+              "summary": "Get count of active users",
+              "description": "Retrieves the count of active users in the system",
+              "responses": {
+                "200": {
+                  "content": {
+                    "application/json": {
+                      "schema": {
+                        "type": "object",
+                        "properties": {
+                          "activeUser": {
+                            "type": "integer",
+                            "description": "Number of active users"
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "500": {
+                  "description": "Internal Server Error"
+                }
+              },
+              "security": [
+                {
+                  "bearerAuth": []
+                }
+              ]
+            }
+          },
+          "/admin/active-class": {
+            "get": {
+              "tags": [
+                "Dashboard"
+              ],
+              "summary": "Get count of active class",
+              "description": "Retrieves the count of active class in the system",
+              "responses": {
+                "200": {
+                  "content": {
+                    "application/json": {
+                      "schema": {
+                        "type": "object",
+                        "properties": {
+                          "activeClass": {
+                            "type": "integer",
+                            "description": "Number of active class"
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "500": {
+                  "description": "Internal Server Error"
+                }
+              },
+              "security": [
+                {
+                  "bearerAuth": []
+                }
+              ]
+            }
+          },
+          "/admin/active-premium": {
+            "get": {
+              "tags": [
+                "Dashboard"
+              ],
+              "summary": "Get count of active premium",
+              "description": "Retrieves the count of active premium in the system",
+              "responses": {
+                "200": {
+                  "content": {
+                    "application/json": {
+                      "schema": {
+                        "type": "object",
+                        "properties": {
+                          "activePremium": {
+                            "type": "integer",
+                            "description": "Number of active premium"
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "500": {
+                  "description": "Internal Server Error"
+                }
+              },
+              "security": [
+                {
+                  "bearerAuth": []
+                }
+              ]
+            }
+          },
+          "/admin/dashboard": {
+            "get": {
+              "tags": [
+                "Dashboard"
+              ],
+              "summary": "Get dashboard data",
+              "description": "Retrieves dashboard data with filtering",
+              "parameters": [
+                {
+                  "name": "filter",
+                  "in": "query",
+                  "description": "Filter dashboard data by course title",
+                  "schema": {
+                    "type": "string"
+                  }
+                },
+                {
+                  "name": "page",
+                  "in": "query",
+                  "description": "Page number for pagination",
+                  "schema": {
+                    "type": "integer",
+                    "default": 1
+                  }
+                },
+                {
+                  "name": "pageSize",
+                  "in": "query",
+                  "description": "Number of items per page",
+                  "schema": {
+                    "type": "integer",
+                    "default": 10
+                  }
+                }
+              ],
+              "responses": {
+                "200": {
+                  "description": "Successful operation",
+                  "content": {
+                    "application/json": {
+                      "schema": {
+                        "type": "object",
+                        "properties": {
+                          "data": {
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "id": { "type": "string" },
+                                "status": { "type": "string" },
+                                "createdAt": { "type": "string", "format": "date-time" },
+                                "myCourse": {
+                                  "type": "object",
+                                  "properties": {
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "500": {
+                  "description": "Internal Server Error"
+                }
+              },
+              "security": [
+                {
+                  "bearerAuth": []
+                }
+              ]
+            }
+          },
+          "/admin/kelola-Kelas": {
+            "get": {
+              "tags": [
+                "Dashboard"
+              ],
+              "summary": "Manage classes",
+              "description": "Retrieve classes with filtering",
+              "parameters": [
+                {
+                  "name": "filter",
+                  "in": "query",
+                  "description": "Filter classes by title",
+                  "schema": {
+                    "type": "string"
+                  }
+                },
+                {
+                  "name": "page",
+                  "in": "query",
+                  "description": "Page number for pagination",
+                  "schema": {
+                    "type": "integer",
+                    "default": 1
+                  }
+                },
+                {
+                  "name": "pageSize",
+                  "in": "query",
+                  "description": "Number of items per page",
+                  "schema": {
+                    "type": "integer",
+                    "default": 10
+                  }
+                }
+              ],
+              "responses": {
+                "200": {
+                  "description": "Successful operation",
+                  "content": {
+                    "application/json": {
+                      "schema": {
+                        "type": "object",
+                        "properties": {
+                          "data": {
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "kelolakelas": {
+                                  "type": "object",
+                                  "properties": {
+                                    "id": { "type": "string" },
+                                    "categories": {
+                                      "type": "object",
+                                      "properties": {
+                                        "name": { "type": "string" }
+                                      }
+                                    },
+                                    "title": { "type": "string" },
+                                    "price": { "type": "number" },
+                                    "level": { "type": "string" }
+                                  }
+                                },
+                                "priceType": { "type": "string" }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "500": {
+                  "description": "Internal Server Error"
+                }
+              },
+              "security": [
+                {
+                  "bearerAuth": []
+                }
+              ]
+            }
+        },
+        "/admin/category/create": {
+            "post": {
+              "tags": [
+                "Category"
+            ],
+              "summary": "Create a new category",
+              "description": "Creates a new category",
+              "requestBody": {
+                "required": true,
+                "content": {
+                  "application/json": {
+                    "schema": {
+                      "type": "object",
+                      "properties": {
+                        "name": {
+                          "type": "string",
+                          "description": "Name of the category"
+                        },
+                        "image": {
+                          "type": "string",
+                          "description": "URL of the category image"
+                        }
+                      },
+                      "required": [
+                        "name", 
+                        "image"
+                    ]
+                    },
+                    "example": {
+                      "name": "Example Category",
+                      "image": "https://example.com/category_image.jpg"
+                    }
+                  }
+                }
+              },
+              "responses": {
+                "201": {
+                  "description": "Category successfully created",
+                  "content": {
+                    "application/json": {
+                      "schema": {
+                        "type": "object",
+                        "properties": {
+                          "message": {
+                            "type": "string",
+                            "description": "Success message"
+                          },
+                          "category": {
+                            "type": "object",
+                            "description": "Newly created category details",
+                            "properties": {
+                              "id": {
+                                "type": "integer",
+                                "description": "Category ID"
+                              },
+                              "name": {
+                                "type": "string",
+                                "description": "Name of the category"
+                              },
+                              "image": {
+                                "type": "string",
+                                "description": "URL of the category image"
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "302": {
+                  "description": "Category already exists"
+                },
+                "500": {
+                  "description": "Internal Server Error"
+                }
+              },
+              "security": [
+                {
+                  "bearerAuth": []
+                }
+              ]
+            }
+          },
+          "/admin/category": {
+            "get": {
+              "tags": [
+                "Category"
+            ],
+              "summary": "List all categories",
+              "description": "Retrieves a list of all categories",
+              "responses": {
+                "200": {
+                  "description": "Successful operation",
+                  "content": {
+                    "application/json": {
+                      "schema": {
+                        "type": "object",
+                        "properties": {
+                          "categories": {
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "name": {
+                                  "type": "string"
+                                },
+                                "image": {
+                                  "type": "string"
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "500": {
+                  "description": "Internal Server Error"
+                }
+              },
+              "security": [
+                {
+                  "bearerAuth": []
+                }
+              ]
+            }
+          },
+          "/admin/category/edit/{categoryId}": {
+            "put": {
+              "tags": [
+                "Category"
+            ],
+              "summary": "Edit a category",
+              "description": "Edit an existing category",
+              "parameters": [
+                {
+                  "name": "categoryId",
+                  "in": "path",
+                  "description": "Category ID to be edited",
+                  "required": true,
+                  "schema": {
+                    "type": "integer"
+                  }
+                }
+              ],
+              "requestBody": {
+                "content": {
+                  "application/json": {
+                    "schema": {
+                      "type": "object",
+                      "properties": {
+                        "name": {
+                          "type": "string"
+                        },
+                        "image": {
+                          "type": "string"
+                        }
+                      }
+                    },
+                    "example": {
+                      "name": "Updated Category Name",
+                      "image": "https://example.com/updated_category_image.jpg"
+                    }
+                  }
+                }
+              },
+              "responses": {
+                "200": {
+                  "description": "Category edited successfully",
+                  "content": {
+                    "application/json": {
+                      "schema": {
+                        "type": "object",
+                        "properties": {
+                          "message": {
+                            "type": "string"
+                          },
+                          "category": {
+                            "type": "object",
+                            "properties": {
+                              "name": {
+                                "type": "string"
+                              },
+                              "image": {
+                                "type": "string"
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "500": {
+                  "description": "Internal Server Error",
+                  "content": {
+                    "application/json": {
+                      "schema": {
+                        "type": "object",
+                        "properties": {
+                          "error": {
+                            "type": "string"
+                          },
+                          "message": {
+                            "type": "string"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              "security": [
+                {
+                  "bearerAuth": []
+                }
+              ]
+            }
+          },
+          "/admin/category/delete/{categoryId}": {
+            "delete": {
+              "tags": [
+                "Category"
+            ],
+              "summary": "Delete a category",
+              "description": "Delete an existing category",
+              "parameters": [
+                {
+                  "name": "categoryId",
+                  "in": "path",
+                  "description": "Category ID to be deleted",
+                  "required": true,
+                  "schema": {
+                    "type": "integer"
+                  }
+                }
+              ],
+              "responses": {
+                "204": {
+                  "description": "Category deleted successfully"
+                },
+                "500": {
+                  "description": "Internal Server Error",
+                  "content": {
+                    "application/json": {
+                      "schema": {
+                        "type": "object",
+                        "properties": {
+                          "error": {
+                            "type": "string"
+                          },
+                          "message": {
+                            "type": "string"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              "security": [
+                {
+                  "bearerAuth": []
+                }
+              ]
+            }
+          },
+          "/admin/course/create/{categoryId}": {
+            "post": {
+              "tags": [
+                "Course"
+              ],
+              "summary": "Create a new course",
+              "description": "Creates a new course",
+              "parameters": [
+                {
+                  "name": "categoryId",
+                  "in": "path",
+                  "required": true,
+                  "schema": {
+                    "type": "integer"
+                  }
+                }
+              ],
+              "requestBody": {
+                "required": true,
+                "content": {
+                  "application/json": {
+                    "schema": {
+                      "type": "object",
+                      "properties": {
+                        "title": {
+                          "type": "string"
+                        },
+                        "author": {
+                          "type": "string"
+                        },
+                        "telegram": {
+                          "type": "string"
+                        },
+                        "image": {
+                          "type": "string"
+                        },
+                        "description": {
+                          "type": "string"
+                        },
+                        "price": {
+                          "type": "integer"
+                        },
+                        "prepare": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "title",
+                        "author",
+                        "telegram",
+                        "image",
+                        "description",
+                        "price",
+                        "prepare"
+                      ],
+                      "example": {
+                        "title": "UI&UX Test Create",
+                        "author": "sipenguji",
+                        "telegram": "https://admirable-molding.ponpes.id/",
+                        "image": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/1194.jpg",
+                        "description": "Carbonite web goalkeeper gloves are ergonomically designed to give easy fit",
+                        "price": "13000",
+                        "level": "beginer",
+                        "prepare": "Nice shoot"
+                    }
+                    }
+                  }
+                }
+              },
+              "responses": {
+                "201": {
+                  "description": "Course successfully created",
+                  "content": {
+                    "application/json": {
+                      "schema": {
+                        "type": "object",
+                        "properties": {
+                          "message": {
+                            "type": "string"
+                          },
+                          "course": {
+                            "type": "object"
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "302": {
+                  "description": "Course already exists"
+                },
+                "500": {
+                  "description": "Internal Server Error"
+                }
+              },
+              "security": [
+                {
+                  "bearerAuth": []
+                }
+              ]
+            }
+          },
+          "/admin/course/{categoryId}": {
+            "get": {
+              "tags": [
+                "Course"
+              ],
+              "summary": "List courses by category",
+              "description": "Retrieves courses based on category ID",
+              "parameters": [
+                {
+                  "name": "categoryId",
+                  "in": "path",
+                  "required": true,
+                  "schema": {
+                    "type": "integer"
+                  }
+                }
+              ],
+              "responses": {
+                "200": {
+                  "description": "Successful operation",
+                  "content": {
+                    "application/json": {
+                      "schema": {
+                        "type": "object"
+                      }
+                    }
+                  }
+                },
+                "500": {
+                  "description": "Internal Server Error"
+                }
+              },
+              "security": [
+                {
+                  "bearerAuth": []
+                }
+              ]
+            }
+          },
+          "/admin/course/edit/{id}": {
+            "put": {
+              "tags": [
+                "Course"
+              ],
+              "summary": "Edit a course",
+              "description": "Edit an existing course by ID",
+              "parameters": [
+                {
+                  "name": "id",
+                  "in": "path",
+                  "required": true,
+                  "schema": {
+                    "type": "integer"
+                  }
+                }
+              ],
+              "requestBody": {
+                "content": {
+                  "application/json": {
+                    "schema": {
+                      "type": "object",
+                      "properties": {
+                        "title": {
+                          "type": "string"
+                        },
+                        "author": {
+                          "type": "string"
+                        },
+                        "telegram": {
+                          "type": "string"
+                        },
+                        "image": {
+                          "type": "string"
+                        },
+                        "description": {
+                          "type": "string"
+                        },
+                        "price": {
+                          "type": "integer"
+                        }
+                      }
+                    },
+                    "example": {
+                        "title": "UI&UX Test Create",
+                        "author": "sipenguji",
+                        "telegram": "https://admirable-molding.ponpes.id/",
+                        "image": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/1194.jpg",
+                        "description": "Carbonite web goalkeeper gloves are ergonomically designed to give easy fit",
+                        "price": "13000",
+                        "level": "hard",
+                        "prepare": "Nice shoot"
+                    }
+                  }
+                }
+              },
+              "responses": {
+                "200": {
+                  "description": "Course edited successfully",
+                  "content": {
+                    "application/json": {
+                      "schema": {
+                        "type": "object"
+                      }
+                    }
+                  }
+                },
+                "500": {
+                  "description": "Internal Server Error"
+                }
+              },
+              "security": [
+                {
+                  "bearerAuth": []
+                }
+              ]
+            }
+          },
+          "/admin/course/delete/{id}": {
+            "delete": {
+              "tags": [
+                "Course"
+              ],
+              "summary": "Delete a course",
+              "description": "Delete an existing course by ID",
+              "parameters": [
+                {
+                  "name": "id",
+                  "in": "path",
+                  "required": true,
+                  "schema": {
+                    "type": "integer"
+                  }
+                }
+              ],
+              "responses": {
+                "204": {
+                  "description": "Course deleted successfully"
+                },
+                "500": {
+                  "description": "Internal Server Error"
+                }
+              },
+              "security": [
+                {
+                  "bearerAuth": []
+                }
+              ]
+            }
+          },
+          "/admin/chapter/create/{courseId}": {
+            "post": {
+              "tags": [
+                "Chapter"
+                ],
+              "summary": "Create a new chapter",
+              "description": "Creates a new chapter for a specific course",
+              "parameters": [
+                {
+                  "name": "courseId",
+                  "in": "path",
+                  "description": "ID of the course",
+                  "required": true,
+                  "schema": {
+                    "type": "integer",
+                    "format": "int64"
+                  }
+                }
+              ],
+              "requestBody": {
+                "required": true,
+                "content": {
+                  "application/json": {
+                    "schema": {
+                      "type": "object",
+                      "properties": {
+                        "title": { 
+                            "type": "string" 
+                        },
+                        "duration": { 
+                            "type": "integer", 
+                            "format": "int64" 
+                        }
+                      },
+                        "example": {
+                            "title": "Chapter 1",
+                            "duration": "4"
+                        },
+                      "required": [
+                        "title", 
+                        "duration"
+                        ]
+                    }
+                  }
+                }
+              },
+              "responses": {
+                "201": {
+                  "description": "Chapter successfully created",
+                  "content": {
+                    "application/json": {
+                      "schema": {
+                        "type": "object",
+                        "properties": {
+                          "chapter": { 
+                            "type": "object" 
+                        },
+                          "message": { 
+                            "type": "string" 
+                            }
+                        }
+                      }
+                    }
+                  }
+                },
+                "302": {
+                  "description": "Chapter already exists"
+                },
+                "500": {
+                  "description": "Internal Server Error"
+                }
+              },
+              "security": [
+                {
+                  "bearerAuth": []
+                }
+              ]
+            }
+          },
+          "/admin/chapter/{courseId}": {
+            "get": {
+              "tags": [
+                "Chapter"
+            ],
+              "summary": "List chapters for a course",
+              "description": "Retrieves chapters for a specific course",
+              "parameters": [
+                {
+                  "name": "courseId",
+                  "in": "path",
+                  "description": "ID of the course",
+                  "required": true,
+                  "schema": {
+                    "type": "integer",
+                    "format": "int64"
+                  }
+                }
+              ],
+              "responses": {
+                "200": {
+                  "description": "Successful operation",
+                  "content": {
+                    "application/json": {
+                      "schema": {
+                        "type": "object",
+                        "properties": {
+                          "chapter": { 
+                            "type": "array" 
+                        }
+                        }
+                      }
+                    }
+                  }
+                },
+                "500": {
+                  "description": "Internal Server Error"
+                }
+              },
+              "security": [
+                {
+                  "bearerAuth": []
+                }
+              ]
+            }
+          },
+          "/admin/chapter/edit/{id}": {
+            "put": {
+              "tags": [
+                "Chapter"
+            ],
+              "summary": "Edit a chapter",
+              "description": "Edits an existing chapter",
+              "parameters": [
+                {
+                  "name": "id",
+                  "in": "path",
+                  "description": "ID of the chapter",
+                  "required": true,
+                  "schema": {
+                    "type": "integer",
+                    "format": "int64"
+                  }
+                }
+              ],
+              "requestBody": {
+                "required": true,
+                "content": {
+                  "application/json": {
+                    "schema": {
+                      "type": "object",
+                      "properties": {
+                        "title": { 
+                            "type": "string" 
+                        },
+                        "duration": { 
+                            "type": "integer", 
+                            "format": "int64" 
+                        }
+                      },
+                      "example": {
+                        "title": "Chapter 2",
+                        "duration": "4"
+                    }
+                    }
+                  }
+                }
+              },
+              "responses": {
+                "200": {
+                  "description": "Chapter edited successfully",
+                  "content": {
+                    "application/json": {
+                      "schema": {
+                        "type": "object",
+                        "properties": {
+                          "message": { 
+                            "type": "string" 
+                        },
+                          "chapterEdit": { 
+                            "type": "object" 
+                            }
+                        }
+                      }
+                    }
+                  }
+                },
+                "500": {
+                  "description": "Internal Server Error"
+                }
+              },
+              "security": [
+                {
+                  "bearerAuth": []
+                }
+              ]
+            }
+          },
+          "/admin/chapter/delete/{id}": {
+            "delete": {
+              "tags": [
+                "Chapter"
+            ],
+              "summary": "Delete a chapter",
+              "description": "Deletes an existing chapter",
+              "parameters": [
+                {
+                  "name": "id",
+                  "in": "path",
+                  "description": "ID of the chapter",
+                  "required": true,
+                  "schema": {
+                    "type": "integer",
+                    "format": "int64"
+                  }
+                }
+              ],
+              "responses": {
+                "204": {
+                  "description": "Chapter deleted successfully"
+                },
+                "500": {
+                  "description": "Internal Server Error"
+                }
+              },
+              "security": [
+                {
+                  "bearerAuth": []
+                }
+              ]
+            }
+          },
+          "/admin/source/create/{chapterId}": {
+            "post": {
+              "tags": [
+                "Source"
+                ],
+              "summary": "Create a new source",
+              "description": "Creates a new source for a specific chapter",
+              "parameters": [
+                {
+                  "name": "chapterId",
+                  "in": "path",
+                  "description": "ID of the chapter",
+                  "required": true,
+                  "schema": {
+                    "type": "integer",
+                    "format": "int64"
+                  }
+                }
+              ],
+              "requestBody": {
+                "required": true,
+                "content": {
+                  "application/json": {
+                    "schema": {
+                      "type": "object",
+                      "properties": {
+                        "name": {
+                          "type": "string"
+                        },
+                        "link": {
+                          "type": "string",
+                          "format": "url"
+                        }
+                      },
+                      "required": [
+                        "name", 
+                        "link"
+                    ],
+                      "example": {
+                        "name": "Hanssource1",
+                        "link": "https://example.com/source"
+                      }
+                    }
+                  }
+                }
+              },
+              "responses": {
+                "201": {
+                  "description": "Source successfully created",
+                  "content": {
+                    "application/json": {
+                      "schema": {
+                        "type": "object",
+                        "properties": {
+                          "source": {
+                            "type": "object"
+                          },
+                          "message": {
+                            "type": "string"
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "302": {
+                  "description": "Source already exists"
+                },
+                "500": {
+                  "description": "Internal Server Error"
+                }
+              },
+              "security": [
+                {
+                  "bearerAuth": []
+                }
+              ]
+            }
+          },
+          "/admin/source/{chapterId}": {
+            "get": {
+              "tags": [
+                "Source"
+                ],
+              "summary": "List sources for a chapter",
+              "description": "Retrieves sources for a specific chapter",
+              "parameters": [
+                {
+                  "name": "chapterId",
+                  "in": "path",
+                  "description": "ID of the chapter",
+                  "required": true,
+                  "schema": {
+                    "type": "integer",
+                    "format": "int64"
+                  }
+                }
+              ],
+              "responses": {
+                "200": {
+                  "description": "Successful operation",
+                  "content": {
+                    "application/json": {
+                      "schema": {
+                        "type": "object",
+                        "properties": {
+                          "source": {
+                            "type": "array"
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "500": {
+                  "description": "Internal Server Error"
+                }
+              },
+              "security": [
+                {
+                  "bearerAuth": []
+                }
+              ]
+            }
+          },
+          "/admin/source/edit/{id}": {
+            "put": {
+              "tags": [
+                "Source"
+            ],
+              "summary": "Edit a source",
+              "description": "Edits an existing source",
+              "parameters": [
+                {
+                  "name": "id",
+                  "in": "path",
+                  "description": "ID of the source",
+                  "required": true,
+                  "schema": {
+                    "type": "integer",
+                    "format": "int64"
+                  }
+                }
+              ],
+              "requestBody": {
+                "required": true,
+                "content": {
+                  "application/json": {
+                    "schema": {
+                      "type": "object",
+                      "properties": {
+                        "name": {
+                          "type": "string"
+                        },
+                        "link": {
+                          "type": "string",
+                          "format": "url"
+                        }
+                      },
+                      "example": {
+                        "name": "hanssource",
+                        "link": "https://example.com/updated-source"
+                      }
+                    }
+                  }
+                }
+              },
+              "responses": {
+                "200": {
+                  "description": "Source edited successfully",
+                  "content": {
+                    "application/json": {
+                      "schema": {
+                        "type": "object",
+                        "properties": {
+                          "message": {
+                            "type": "string"
+                          },
+                          "sourceEdit": {
+                            "type": "object"
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "500": {
+                  "description": "Internal Server Error"
+                }
+              },
+              "security": [
+                {
+                  "bearerAuth": []
+                }
+              ]
+            }
+          },
+          "/admin/source/delete/{id}": {
+            "delete": {
+              "tags": [
+                "Source"
+                ],
+              "summary": "Delete a source",
+              "description": "Deletes an existing source",
+              "parameters": [
+                {
+                  "name": "id",
+                  "in": "path",
+                  "description": "ID of the source",
+                  "required": true,
+                  "schema": {
+                    "type": "integer",
+                    "format": "int64"
+                  }
+                }
+              ],
+              "responses": {
+                "204": {
+                  "description": "Source deleted successfully"
+                },
+                "500": {
+                  "description": "Internal Server Error"
+                }
+              },
+              "security": [
+                {
+                  "bearerAuth": []
+                }
+              ]
+            }
+          }
         }
     }
-}
+  
