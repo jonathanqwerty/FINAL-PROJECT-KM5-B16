@@ -6,10 +6,10 @@ module.exports = {
   FilterCourse: async (req, res) => {
     // filtering sebuah course
     try {
-      const kategori = req.query.kategori;
-      const search = req.query.search;
-      const filter = req.query.filter;
-      const level = req.query.level;
+      const kategori = req.query.kategori || null;
+      const search = req.query.search || null;
+      const filter = req.query.filter || null;
+      const level = req.query.level || null;
       const type = req.body.type;
       let user = res.user ? res.user.id : null;
 
@@ -22,7 +22,8 @@ module.exports = {
         skip,
         take: itemsPerPage,
         where: {
-          categories: kategori !== null ? { name: kategori } : {},
+          categories: kategori !== null ? Array.isArray(kategori)? { name: { in: kategori }  } : 
+          { name: { contains: kategori } } : {},
           title: search !== null ? { contains: search } : {},
           level: level !== null ? level : {},
           price: type == null ? {} : type == "premium" ? { not: 0 } : 0,
@@ -35,7 +36,9 @@ module.exports = {
       // data = data.slice((page-1)*itemsPerPage,(page*itemsPerPage))
 
       if (data.length == 0) {
-        return res.status(404).json({ message: "not found data" });
+        return res.status(404).json({ 
+          error : "error",
+          message: "not found data" });
       }
 
       // mendapatkan count popularity dan memperbaiki return
@@ -46,9 +49,10 @@ module.exports = {
         ? filter == "paling-baru"
           ? course.sort((a, b) => a.rilis - b.rilis)
           : course.sort((a, b) => b.orders - a.orders)
-        : filter = null
+        : filter
 
       return res.status(200).json({
+        error : "error",
         course,
       });
     } catch (error) {
@@ -62,7 +66,26 @@ module.exports = {
   detailCourse: async(req, res) =>{
     try {
       const id = parseInt(req.params.id)
-  
+      let user = res.user ? res.user.id : null;
+
+      if(isNaN(id) || isNaN(user)){
+        return res.status(400).json({
+          error : "error",
+          message : "bad req parameter url" })
+      }
+
+      let MyCourse
+      let order
+      if(user!== null){
+        MyCourse = await myCourse.findFirst({
+          where:{
+            course: id,
+            user: user
+          }})
+          if(MyCourse){
+            order = await orders.findFirst({where:{id: MyCourse.id}})
+          }
+      }
       const course = await courses.findFirst({
         where:{id},
         select :{
@@ -102,6 +125,7 @@ module.exports = {
 
       if(!course){
         return res.status(404).json({
+          error : "error",
           message : "course not found"
         })
       }
@@ -122,22 +146,44 @@ module.exports = {
             where: {course: course.id},
             _avg: {rating: true},
           });
+
+         
   
           return res.status(200).json({
-            detalCourse:{
+            success : "success",
+            course : {
+              id : course.id,
+              title: course.title,
+              author: course.author,
+              categories : course.categories.name,
+              telegram : course.telegram,
               modul,
               duration : `${duration._sum.duration} mnt`,
               rating : review._avg.rating,
-              course
+              level : course.level,
+              description : course.description,
+              pembelian : MyCourse? "terbeli": "tidak terbeli",
+              status : order? order.status : 'notPaid',
+              goals : course.goals,
+              chapters : course.chapters,
+              
             }
           }) 
   } catch (error) {
       console.log(error)
+      return res.status(500).json({
+        message : 'internal server error'
+      })
   }
   },
   popUpCourse : async(req, res)=>{
     try {
       const id = parseInt(req.params.id)
+      if(isNaN(id)){
+        return res.status(400).json({
+          error : "error",
+          message : "bad req parameter url" })
+      }
       const course = await courses.findFirst({
         where: {id},
         select:{
@@ -154,6 +200,12 @@ module.exports = {
           }
         }
       })
+      if(!course){
+        return res.status(500).json({
+          error : "error",
+          message : 'data not found'
+        })
+      }
   
        //modul 
        const chapter = await chapters.findMany({where:{courseId : course.id}}) 
@@ -174,17 +226,25 @@ module.exports = {
        });
   
        return res.status(200).json({
+        error : "error",
         popUpCourse : {
+          id : course.id,
+          title : course.title,
+          image : course.image,
+          author : course.author,
+          categories: course.categories.name,
+          level : course.level,
+          price : course.price,
           modul,
           duration : `${duration._sum.duration} mnt`,
           rating : review._avg.rating,
-          course
         }
        })
   
     } catch (error) {
       console.log(error)
       return res.status(500).json({
+        error,
         message : 'internal server error'
       })
     }
@@ -193,25 +253,44 @@ module.exports = {
     try {
       const id = parseInt(req.params.id)
       const user = parseInt(res.user.id)
-  
+      let order = null
+
+      if(isNaN(id) || isNaN(user)){
+        return res.status(400).json({
+          error : "error",
+          message : "bad req parameter url" })
+      }
+      const existCourse = await courses.findFirst({where:{id}})
+      if(!existCourse){
+        return res.status(404).json({
+          error : "error",
+          message : "data not found" })
+      }
       const existMycourse = await myCourse.findFirst({
         where:{
           user : user,
           course : id,
-        },include:{
-          orders : true
+        },select : {
+          id : true,
         }
       })
-      if(existMycourse){
-        if(existMycourse.orders.status == "paid"){
+      if (existMycourse){
+        order = await orders.findFirst({where :{myCourseId : existMycourse.id}})
+      }
+      if(order){
+        if(order.status == "paid"){
           return res.status(403).json({
-            message : 'you already have this course lest to the next step',
+            success : "success",
+            message : 'you already have this course lets to the next step',
+            status : order.status,
             id : existMycourse.id
           })
         }
         else{
           return res.status(403).json({
+            success : "success",
             message : 'you already have this course but you dont finsihing the payment. lets finishing the step',
+            status : order.status,
             id : existMycourse.id
           })
         }
@@ -232,8 +311,10 @@ module.exports = {
       notif(user,'Successful buy course! Final step, please complete the payment process to access your course.')
       
       return res.status(201).json({
+        success : "success",
         message : 'Successful! Final step, please complete the payment process to access your course.',
-        mycourseId : MyCourse.id
+        status : 'notPaid',
+        id : MyCourse.id
       })
 
     } catch (error) {
@@ -247,10 +328,10 @@ module.exports = {
     const id = parseInt(req.params.id)
     const user = parseInt(res.user.id)
 
-    if(isNaN(id) && isNaN(user)){
+    if(isNaN(id) || isNaN(user)){
       return res.status(400).json({
-        message : "bad req parameter url" 
-      })
+        error : "error",
+        message : "bad req parameter url" })
     }
     const data = await myCourse.findFirst({
       where:{
@@ -271,11 +352,21 @@ module.exports = {
     })
     if(!data){
       return res.status(404).json({
+        error : "error",
         message : "Data not found " 
       })
     }
+    const order = await orders.findFirst({where :{myCourseId : data.id}})
     return res.status(200).json({
-      data
+      success : "success",
+      myCourse:{
+        id : data.id,
+        status : order.status,
+        title : data.courses.title,
+        author : data.courses.author,
+        price : data.courses.price,
+        image : data.courses.image,
+      }
     })
   },
   payOrder: async(req, res)=>{
@@ -283,9 +374,17 @@ module.exports = {
     const id = parseInt(req.params.id)
     if (isNaN(id)){
       return res.status(400).json({
-        message : "bad req parameter url" 
-      })
+        error : "error",
+        message : "bad req parameter url" })
     }
+    const finData = await orders.findFirst({where : {id : id}})
+
+    if(!finData){
+      return res.status(400).json({
+        error : "error",
+        message : "data not found"  })
+    }
+
     const data = await orders.update({
       where:{
         id : id
@@ -294,10 +393,12 @@ module.exports = {
         status : 'paid'
       }
     })
+    
     notif(user, "Successful complete the payment procces, enjoy your class :)")
     return res.status(200).json({
-      message : 'succses',
-      id : data.id
+      success : "success",
+      message : 'Successful complete the payment procces, enjoy your class :)',
+      myCourseId : data.id
     })
   }
 };
