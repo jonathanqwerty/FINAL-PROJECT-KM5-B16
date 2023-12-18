@@ -1,5 +1,6 @@
 const { users, profiles, notifications } = require("../models"),
   utils = require("../utils/index");
+const { imageKit } = require("../utils/imageKit");
 
 module.exports = {
   profile: async (req, res) => {
@@ -46,13 +47,20 @@ module.exports = {
         });
       }
 
+      const fileTostring = req.file.buffer.toString("base64");
+
+      const uploadFile = await imageKit.upload({
+        fileName: req.file.originalname,
+        file: fileTostring,
+      });
+
       const updatedProfile = await profiles.update({
         where: {
           id: user.profiles.id,
         },
         data: {
           name: req.body.name || user.profiles.name,
-          image: req.body.image || user.profiles.image,
+          image: uploadFile.url || user.profiles.image,
           country: req.body.country || user.profiles.country,
           city: req.body.city || user.profiles.city,
           users: {
