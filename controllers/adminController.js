@@ -1,4 +1,5 @@
 const validate = require("../middlewares/validate");
+const { imageKit } = require("../utils/imageKit");
 const {
     users,
     notifications,
@@ -251,9 +252,17 @@ module.exports = {
       });
       if (findCourse) {
         return res.status(302).json({
-          message: "Course already exist  ",
+          error: "Course already exist  ",
         });
       }
+
+      const fileTostring = req.file.buffer.toString("base64");
+
+      const uploadFile = await imageKit.upload({
+        fileName: req.file.originalname,
+        file: fileTostring,
+      });
+
       if (!findCourse) {
         const course = await courses.create({
           data: {
@@ -261,13 +270,13 @@ module.exports = {
             title: req.body.title,
             author: req.body.author,
             telegram: req.body.telegram,
-            image: req.body.image,
+            image: uploadFile.url,
             description: req.body.description,
             price: parseInt(req.body.price),
           },
         });
         return res.status(201).json({
-          message: "course are created",
+          success: "course are created",
           course,
         });
       }
@@ -303,6 +312,12 @@ module.exports = {
   // mengedit course
   editCourse: async (req, res) => {
     try {
+      const fileTostring = req.file.buffer.toString("base64");
+
+      const uploadFile = await imageKit.upload({
+        fileName: req.file.originalname,
+        file: fileTostring,
+      });
       const editCourse = await courses.update({
         where: {
           id: parseInt(req.params.id),
@@ -311,13 +326,13 @@ module.exports = {
           title: req.body.title || courses.title,
           author: req.body.author || courses.author,
           telegram: req.body.telegram || courses.telegram,
-          image: req.body.image || courses.image,
+          image: uploadFile.url || courses.image,
           description: req.body.description || courses.description,
           price: parseInt(req.body.price) || courses.price,
         },
       });
       return res.status(200).json({
-        message: "Success edit this course",
+        success: "Success edit this course",
         editCourse,
       });
     } catch (error) {
@@ -338,7 +353,7 @@ module.exports = {
         },
       });
       return res.status(204).json({
-        message: "success delete course",
+        success: "success delete course",
       });
     } catch (error) {
       console.log(error);
@@ -365,15 +380,22 @@ module.exports = {
           message: "Category already exist",
         });
       }
+      const fileTostring = req.file.buffer.toString("base64");
+
+      const uploadFile = await imageKit.upload({
+        fileName: req.file.originalname,
+        file: fileTostring,
+      });
+
       if (!findCategory) {
         const category = await categories.create({
           data: {
             name: req.body.name,
-            image: req.body.image,
+            image: uploadFile.url,
           },
         });
         return res.status(201).json({
-          message: "success crate category",
+          success: "success crate category",
           category,
         });
       }
@@ -405,17 +427,24 @@ module.exports = {
   // mengedit category yang sudah ada
   editCategory: async (req, res) => {
     try {
+      const fileTostring = req.file.buffer.toString("base64");
+
+      const uploadFile = await imageKit.upload({
+        fileName: req.file.originalname,
+        file: fileTostring,
+      });
+
       const editCategory = await categories.update({
         where: {
           id: parseInt(req.params.id),
         },
         data: {
           name: req.body.name || categories.name,
-          image: req.body.image || categories.image,
+          image: uploadFile.url || categories.image,
         },
       });
       return res.status(200).json({
-        success: true,
+        success: "Success edit this category",
         editCategory,
       });
     } catch (error) {
@@ -436,7 +465,7 @@ module.exports = {
         },
       });
       return res.status(204).json({
-        message: "success delete category",
+        success: "success delete category",
       });
     } catch (error) {
       console.log(error);
@@ -458,7 +487,7 @@ module.exports = {
       });
       if (findChapter) {
         return res.status(302).json({
-          message: "Chapter already exist",
+          error: "Chapter already exist",
         });
       }
       if (!findChapter) {
@@ -471,7 +500,7 @@ module.exports = {
         });
         return res.status(201).json({
           chapter,
-          message: "success create new chapter",
+          success: "success create new chapter",
         });
       }
     } catch (error) {
@@ -517,7 +546,7 @@ module.exports = {
         },
       });
       return res.status(200).json({
-        message: "success edit Chapter",
+        success: "success edit Chapter",
         chapterEdit,
       });
     } catch (error) {
@@ -538,7 +567,7 @@ module.exports = {
         },
       });
       return res.status(204).json({
-        message: "success delete category",
+        success: "success delete category",
       });
     } catch (error) {
       console.log(error);
@@ -562,7 +591,7 @@ module.exports = {
       });
       if (findSource) {
         return res.status(302).json({
-          message: "Source already exist",
+          error: "Source already exist",
         });
       }
       if (!findSource) {
@@ -574,7 +603,7 @@ module.exports = {
           },
         });
         return res.status(201).json({
-          message: "success create source",
+          success: "success create source",
           source,
         });
       }
@@ -621,7 +650,7 @@ module.exports = {
         },
       });
       return res.status(200).json({
-        message: "success edit source",
+        success: "success edit source",
         sourceEdit,
       });
     } catch (error) {
@@ -642,7 +671,7 @@ module.exports = {
         },
       });
       return res.status(204).json({
-        message: "success delete source",
+        success: "success delete source",
       });
     } catch (error) {
       console.log(error);
