@@ -52,7 +52,7 @@ module.exports = {
         : filter
 
       return res.status(200).json({
-        error : "error",
+        success : "success",
         course,
       });
     } catch (error) {
@@ -226,7 +226,7 @@ module.exports = {
        });
   
        return res.status(200).json({
-        error : "error",
+        success : "success",
         popUpCourse : {
           id : course.id,
           title : course.title,
