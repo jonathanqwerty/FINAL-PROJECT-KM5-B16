@@ -21,6 +21,7 @@ const TokenFlex = (req, res, next) => {
       }else{
         // Jika token valid, simpan informasi pengguna di objek req.user
         res.user = decoded;
+    console.log("token masuk")
       }
     });
   }

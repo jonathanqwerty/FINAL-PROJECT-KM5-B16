@@ -10,7 +10,7 @@ module.exports = {
       const search = req.query.search || null;
       const filter = req.query.filter || null;
       const level = req.query.level || null;
-      const type = req.body.type;
+      const type = req.query.type || null
       let user = res.user ? res.user.id : null;
 
       const page = parseInt(req.query.page) || 1;
@@ -279,19 +279,19 @@ module.exports = {
       }
       if(order){
         if(order.status == "paid"){
-          return res.status(403).json({
+          return res.status(200).json({
             success : "success",
             message : 'you already have this course lets to the next step',
             status : order.status,
-            id : existMycourse.id
+            MyCourseId : existMycourse.id
           })
         }
         else{
-          return res.status(403).json({
+          return res.status(200).json({
             success : "success",
             message : 'you already have this course but you dont finsihing the payment. lets finishing the step',
             status : order.status,
-            id : existMycourse.id
+            MyCourseId : existMycourse.id
           })
         }
         
@@ -314,7 +314,7 @@ module.exports = {
         success : "success",
         message : 'Successful! Final step, please complete the payment process to access your course.',
         status : 'notPaid',
-        id : MyCourse.id
+        MyCourseId : MyCourse.id
       })
 
     } catch (error) {

@@ -4,7 +4,6 @@ const secret_key = process.env.JWT_KEY || "no_secret";
 
 const CheckToken = (req, res, next) => {
   let token = req.headers.authorization;
-
   if (!token) {
     return res.status(403).json({
       error: "please provide a token",
@@ -26,6 +25,7 @@ const CheckToken = (req, res, next) => {
 
     // Jika token valid, simpan informasi pengguna di objek req.user
     res.user = decoded;
+    console.log("token masuk")
     next();
   });
 };
