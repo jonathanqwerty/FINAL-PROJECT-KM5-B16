@@ -38,7 +38,7 @@
         "description": "Search course berdasarkan nama dan bisa melakukan beberapa filter ",
         "security": [
           {
-            "BearerAuth": []
+            "bearerAuth": []
           }
         ],
         "parameters": [
@@ -192,7 +192,7 @@
         "description": "Daftar course yang di shorting berdasarkan order terbanyak dan dapat di filter dengan kategori",
         "security": [
           {
-            "BearerAuth": []
+            "bearerAuth": []
           }
         ],
         "parameters": [
@@ -258,7 +258,7 @@
         "description": "Mendapatkan data mengenai 1 course yang dipilih sesuai id pada parameters",
         "security": [
           {
-            "BearerAuth": []
+            "bearerAuth": []
           }
         ],
         "parameters": [
@@ -331,7 +331,7 @@
         "description": "Popup data course untuk penekanan sebelum membeli course",
         "security": [
           {
-            "BearerAuth": []
+            "bearerAuth": []
           }
         ],
         "parameters": [
@@ -379,11 +379,11 @@
         "tags": [
           "Order-Page"
         ],
-        "summary": "get order course (read)",
+        "summary": "buy order course (button buy)",
         "description": "membeli course (digunakan saat menekan button beli)",
         "security": [
           {
-            "BearerAuth": []
+            "bearerAuth": []
           }
         ],
         "parameters": [
@@ -424,7 +424,7 @@
         "description": "mengambil data order untuk tampilan page pembayaran",
         "security": [
           {
-            "BearerAuth": []
+            "bearerAuth": []
           }
         ],
         "parameters": [
@@ -466,11 +466,11 @@
         "tags": [
           "Order-Page"
         ],
-        "summary": "pay order course (read)",
+        "summary": "pay order course (button pay)",
         "description": "update data order dari notPaid menjadi paid",
         "security": [
           {
-            "BearerAuth": []
+            "bearerAuth": []
           }
         ],
         "parameters": [
@@ -512,7 +512,7 @@
         "description": "Search course berdasarkan nama dan bisa melakukan beberapa filter ",
         "security": [
           {
-            "BearerAuth": []
+            "bearerAuth": []
           }
         ],
         "parameters": [
@@ -629,7 +629,7 @@
   },
   "components": {
     "securitySchemes": {
-      "BearerAuth": {
+      "bearerAuth": {
         "type": "http",
         "scheme": "bearer",
         "bearerFormat": "JWT",
