@@ -359,32 +359,6 @@ module.exports = {
         success: "Successfully updated course",
         updatedCourse,
       });
-
-      // const fileTostring = req.file.buffer.toString("base64");
-
-      // const uploadFile = await imageKit.upload({
-      //   fileName: req.file.originalname,
-      //   file: fileTostring,
-      // });
-      // const editCourse = await courses.update({
-      //   where: {
-      //     id: parseInt(req.params.id),
-      //   },
-      //   data: {
-      //     title: req.body.title || courses.title,
-      //     author: req.body.author || courses.author,
-      //     telegram: req.body.telegram || courses.telegram,
-      //     image: uploadFile.url || courses.image,
-      //     description: req.body.description || courses.description,
-      //     price: parseInt(req.body.price) || courses.price,
-      //     leve: req.body.level || courses.level,
-      //     prepare: req.body.prepare || courses.prepare,
-      //   },
-      // });
-      // return res.status(200).json({
-      //   success: "Success edit this course",
-      //   editCourse,
-      // });
     } catch (error) {
       console.log(error);
       return res.status(500).json({
