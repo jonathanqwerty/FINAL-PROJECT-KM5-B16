@@ -7,7 +7,7 @@ module.exports = {
         const search = req.query.search 
         const filter = req.query.filter 
         const level = req.query.level || null
-        const progress = req.query.progres || null
+        const progress = req.query.progress || null
         let user = res.user.id
     
         const page =  req.query.page || 1;
