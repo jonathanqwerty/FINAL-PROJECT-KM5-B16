@@ -87,7 +87,7 @@
         }
       }
     },
-    "/auth/otp/:email": {
+    "/auth/otp/{email}": {
       "post": {
         "tags": ["Auth"],
         "parameters": [
@@ -280,7 +280,7 @@
         }
       }
     },
-    "/auth/set-password/:token": {
+    "/auth/set-password/{token}": {
       "post": {
         "tags": ["Auth"],
         "parameters": [
@@ -501,7 +501,7 @@
             "application/json": {
               "schema": {
                 "type": "object",
-                "properties": {
+                "multipart/form-data": {
                   "name": {
                     "type": "string"
                   },
