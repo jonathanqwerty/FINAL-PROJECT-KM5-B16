@@ -22,10 +22,11 @@ module.exports = {
         skip,
         take: itemsPerPage,
         where: {
+          available : true,
           categories: kategori !== null ? Array.isArray(kategori)? { name: { in: kategori }  } : 
           { name: { contains: kategori } } : {},
-          title: search !== null ? { contains: search } : {},
-          level: level !== null ? level : {},
+          title: search !== null ? { contains: search, lte : 'insensitive' } : {},
+          level: level !== null ? Array.isArray(level)? { in: level }: level : {},
           price: type == null ? {} : type == "premium" ? { not: 0 } : 0,
         },
         include: {
@@ -87,7 +88,10 @@ module.exports = {
           }
       }
       const course = await courses.findFirst({
-        where:{id},
+        where:{
+          available : true,
+          id
+        },
         select :{
           id  : true,
           title : true,
@@ -185,7 +189,9 @@ module.exports = {
           message : "bad req parameter url" })
       }
       const course = await courses.findFirst({
-        where: {id},
+        where: {
+          available : true,
+          id},
         select:{
           id : true,
           title : true,
@@ -260,7 +266,7 @@ module.exports = {
           error : "error",
           message : "bad req parameter url" })
       }
-      const existCourse = await courses.findFirst({where:{id}})
+      const existCourse = await courses.findFirst({where:{available : true,id}})
       if(!existCourse){
         return res.status(404).json({
           error : "error",
