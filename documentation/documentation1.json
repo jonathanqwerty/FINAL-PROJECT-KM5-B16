@@ -498,7 +498,7 @@
         "summary": "Get profile",
         "requestBody": {
           "content": {
-            "application/json": {
+            "multipart/form-data": {
               "schema": {
                 "type": "object",
                 "multipart/form-data": {
