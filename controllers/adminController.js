@@ -314,31 +314,77 @@ module.exports = {
   // mengedit course
   editCourse: async (req, res) => {
     try {
-      const fileTostring = req.file.buffer.toString("base64");
+      const courseDataToUpdate = {
+        title: req.body.title || courses.title,
+        author: req.body.author || courses.author,
+        telegram: req.body.telegram || courses.telegram,
+        description: req.body.description || courses.description,
+        price: parseInt(req.body.price) || courses.price,
+        level: req.body.level || courses.level,
+        prepare: req.body.prepare || courses.prepare,
+      };
 
-      const uploadFile = await imageKit.upload({
-        fileName: req.file.originalname,
-        file: fileTostring,
-      });
-      const editCourse = await courses.update({
+      if (req.file) {
+        const fileTostring = req.file.buffer.toString("base64");
+
+        const uploadFile = await imageKit.upload({
+          fileName: req.file.originalname,
+          file: fileTostring,
+        });
+
+        courseDataToUpdate.image = uploadFile.url;
+      }
+
+      const courseId = parseInt(req.params.id);
+      const existingCourse = await courses.findFirst({
         where: {
-          id: parseInt(req.params.id),
-        },
-        data: {
-          title: req.body.title || courses.title,
-          author: req.body.author || courses.author,
-          telegram: req.body.telegram || courses.telegram,
-          image: uploadFile.url || courses.image,
-          description: req.body.description || courses.description,
-          price: parseInt(req.body.price) || courses.price,
-          leve: req.body.level || courses.level,
-          prepare: req.body.prepare || courses.prepare,
+          id: courseId,
         },
       });
+
+      if (!existingCourse) {
+        return res.status(404).json({
+          message: "Course not found",
+        });
+      }
+
+      const updatedCourse = await courses.update({
+        where: {
+          id: courseId,
+        },
+        data: courseDataToUpdate,
+      });
+
       return res.status(200).json({
-        success: "Success edit this course",
-        editCourse,
+        success: "Successfully updated course",
+        updatedCourse,
       });
+
+      // const fileTostring = req.file.buffer.toString("base64");
+
+      // const uploadFile = await imageKit.upload({
+      //   fileName: req.file.originalname,
+      //   file: fileTostring,
+      // });
+      // const editCourse = await courses.update({
+      //   where: {
+      //     id: parseInt(req.params.id),
+      //   },
+      //   data: {
+      //     title: req.body.title || courses.title,
+      //     author: req.body.author || courses.author,
+      //     telegram: req.body.telegram || courses.telegram,
+      //     image: uploadFile.url || courses.image,
+      //     description: req.body.description || courses.description,
+      //     price: parseInt(req.body.price) || courses.price,
+      //     leve: req.body.level || courses.level,
+      //     prepare: req.body.prepare || courses.prepare,
+      //   },
+      // });
+      // return res.status(200).json({
+      //   success: "Success edit this course",
+      //   editCourse,
+      // });
     } catch (error) {
       console.log(error);
       return res.status(500).json({
@@ -432,25 +478,44 @@ module.exports = {
   // mengedit category yang sudah ada
   editCategory: async (req, res) => {
     try {
-      const fileTostring = req.file.buffer.toString("base64");
+      let categoryDataToUpdate = {
+        name: req.body.name,
+      };
 
-      const uploadFile = await imageKit.upload({
-        fileName: req.file.originalname,
-        file: fileTostring,
-      });
+      if (req.file) {
+        const fileTostring = req.file.buffer.toString("base64");
 
-      const editCategory = await categories.update({
+        const uploadFile = await imageKit.upload({
+          fileName: req.file.originalname,
+          file: fileTostring,
+        });
+
+        categoryDataToUpdate.image = uploadFile.url;
+      }
+
+      const categoryId = parseInt(req.params.id);
+      const existingCategory = await categories.findFirst({
         where: {
-          id: parseInt(req.params.id),
-        },
-        data: {
-          name: req.body.name || categories.name,
-          image: uploadFile.url || categories.image,
+          id: categoryId,
         },
       });
+
+      if (!existingCategory) {
+        return res.status(404).json({
+          message: "Category not found",
+        });
+      }
+
+      const updatedCategory = await categories.update({
+        where: {
+          id: categoryId,
+        },
+        data: categoryDataToUpdate,
+      });
+
       return res.status(200).json({
-        success: "Success edit this category",
-        editCategory,
+        success: "Successfully updated category",
+        updatedCategory,
       });
     } catch (error) {
       console.log(error);
@@ -650,7 +715,7 @@ module.exports = {
         },
         data: {
           chapterId: sources.chapterId,
-          name: req.boy.name || sources.name,
+          name: req.body.name || sources.name,
           link: req.body.link || sources.link,
         },
       });

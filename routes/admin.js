@@ -16,29 +16,29 @@ router.get("/kelola-kelas", adminToken, controller.kelolaKelas);
 router.get("/course/:categoryId", adminToken, controller.listCourse);
 router.post(
   "/course/create/:categoryId",
-  multer.single("image"),
   adminToken,
+  multer.single("image"),
   controller.createCourse
 );
 router.put(
   "/course/edit/:id",
-  multer.single("image"),
   adminToken,
+  multer.single("image"),
   controller.editCourse
 );
 router.delete("/course/delete/:id", adminToken, controller.destroyCourse);
 // category
-router.get(
-  "/category",
-  multer.single("image"),
+router.get("/category", adminToken, controller.listCategory);
+router.post(
+  "/category/create",
   adminToken,
-  controller.listCategory
+  multer.single("image"),
+  controller.createCategory
 );
-router.post("/category/create", adminToken, controller.createCategory);
 router.put(
   "/category/edit/:id",
-  multer.single("image"),
   adminToken,
+  multer.single("image"),
   controller.editCategory
 );
 router.delete("/category/delete/:id", adminToken, controller.destroyCategory);
