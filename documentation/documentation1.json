@@ -495,7 +495,6 @@
     "/me/profile/update": {
       "put": {
         "tags": ["profile"],
-        "summary": "Get profile",
         "requestBody": {
           "content": {
             "multipart/form-data": {
@@ -520,7 +519,15 @@
                   "phone": {
                     "type": "integer"
                   }
-                }
+                },
+                "required": [
+                  "name",
+                  "image",
+                  "country",
+                  "city",
+                  "password",
+                  "phone"
+                ]
               }
             }
           }
