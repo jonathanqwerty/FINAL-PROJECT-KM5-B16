@@ -3,6 +3,7 @@ const express = require("express"),
   controller = require("../controllers/adminController"),
   validate = require("../middlewares/validate"),
   schema = require("../validatorSchema/authValidatorSchema"),
+  multer = require("multer")(),
   adminToken = require("../middlewares/adminToken");
 
 router.post("/login", validate(schema.loginValidator), controller.login);
@@ -13,13 +14,33 @@ router.get("/dashboard", adminToken, controller.dashboardData);
 router.get("/kelola-kelas", adminToken, controller.kelolaKelas);
 // course
 router.get("/course/:categoryId", adminToken, controller.listCourse);
-router.post("/course/create/:categoryId", adminToken, controller.createCourse);
-router.put("/course/edit/:id", adminToken, controller.editCourse);
+router.post(
+  "/course/create/:categoryId",
+  multer.single("image"),
+  adminToken,
+  controller.createCourse
+);
+router.put(
+  "/course/edit/:id",
+  multer.single("image"),
+  adminToken,
+  controller.editCourse
+);
 router.delete("/course/delete/:id", adminToken, controller.destroyCourse);
 // category
-router.get("/category", adminToken, controller.listCategory);
+router.get(
+  "/category",
+  multer.single("image"),
+  adminToken,
+  controller.listCategory
+);
 router.post("/category/create", adminToken, controller.createCategory);
-router.put("/category/edit/:id", adminToken, controller.editCategory);
+router.put(
+  "/category/edit/:id",
+  multer.single("image"),
+  adminToken,
+  controller.editCategory
+);
 router.delete("/category/delete/:id", adminToken, controller.destroyCategory);
 // chapter
 router.get("/chapter/:courseId", adminToken, controller.listChapter);

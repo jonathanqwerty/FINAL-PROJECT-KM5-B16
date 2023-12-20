@@ -273,6 +273,8 @@ module.exports = {
             image: uploadFile.url,
             description: req.body.description,
             price: parseInt(req.body.price),
+            level: req.body.level,
+            prepare: req.body.prepare,
           },
         });
         return res.status(201).json({
@@ -329,6 +331,8 @@ module.exports = {
           image: uploadFile.url || courses.image,
           description: req.body.description || courses.description,
           price: parseInt(req.body.price) || courses.price,
+          leve: req.body.level || courses.level,
+          prepare: req.body.prepare || courses.prepare,
         },
       });
       return res.status(200).json({
@@ -375,6 +379,7 @@ module.exports = {
           name: req.body.name,
         },
       });
+      console.log(req.body.name);
       if (findCategory) {
         return res.status(302).json({
           message: "Category already exist",
