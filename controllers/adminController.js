@@ -371,12 +371,15 @@ module.exports = {
   // meghapus course
   destroyCourse: async (req, res) => {
     try {
-      const course = await courses.delete({
+      const course = await courses.update({
         where: {
           id: parseInt(req.params.id),
         },
+        data: {
+          available: false,
+        },
       });
-      return res.status(204).json({
+      return res.status(200).json({
         success: "success delete course",
       });
     } catch (error) {
@@ -503,9 +506,12 @@ module.exports = {
   // mendelete category yang sudah ada
   destroyCategory: async (req, res) => {
     try {
-      const data = await categories.delete({
+      const data = await categories.update({
         where: {
           id: parseInt(req.params.id),
+        },
+        data: {
+          available: false,
         },
       });
       return res.status(204).json({
