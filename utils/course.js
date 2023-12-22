@@ -56,7 +56,7 @@ module.exports ={
                 categories : item.categories.name,
                 outhor :item.author,
                 price : item.price,
-                rating: review._avg.rating || 0,
+                rating: review._avg.rating !== null ? parseFloat(review._avg.rating.toFixed(1)) : "-",
                 level : item.level,
                 duration : `${duration._sum.duration} mnt`,
                 modul : modul,

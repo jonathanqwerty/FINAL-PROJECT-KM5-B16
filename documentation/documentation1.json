@@ -500,7 +500,7 @@
             "multipart/form-data": {
               "schema": {
                 "type": "object",
-                "properties": {
+                "multipart/form-data": {
                   "name": {
                     "type": "string"
                   },

@@ -17,6 +17,7 @@ module.exports = {
         skip,
         take : itemsPerPage,
         where: {
+          available : true,
           categories: categori !== null ?  { name: { contains: categori } } : {},
         },
         include: {
