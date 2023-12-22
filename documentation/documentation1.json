@@ -87,7 +87,7 @@
         }
       }
     },
-    "/auth/otp/:email": {
+    "/auth/otp/{email}": {
       "post": {
         "tags": ["Auth"],
         "parameters": [
@@ -280,7 +280,7 @@
         }
       }
     },
-    "/auth/set-password/:token": {
+    "/auth/set-password/{token}": {
       "post": {
         "tags": ["Auth"],
         "parameters": [
@@ -495,13 +495,12 @@
     "/me/profile/update": {
       "put": {
         "tags": ["profile"],
-        "summary": "Get profile",
         "requestBody": {
           "content": {
-            "application/json": {
+            "multipart/form-data": {
               "schema": {
                 "type": "object",
-                "properties": {
+                "multipart/form-data": {
                   "name": {
                     "type": "string"
                   },
@@ -520,7 +519,15 @@
                   "phone": {
                     "type": "integer"
                   }
-                }
+                },
+                "required": [
+                  "name",
+                  "image",
+                  "country",
+                  "city",
+                  "password",
+                  "phone"
+                ]
               }
             }
           }
