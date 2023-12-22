@@ -371,12 +371,15 @@ module.exports = {
   // meghapus course
   destroyCourse: async (req, res) => {
     try {
-      const course = await courses.delete({
+      const course = await courses.update({
         where: {
           id: parseInt(req.params.id),
         },
+        data: {
+          available: false,
+        },
       });
-      return res.status(204).json({
+      return res.status(200).json({
         success: "success delete course",
       });
     } catch (error) {
@@ -501,6 +504,27 @@ module.exports = {
   },
 
   // mendelete category yang sudah ada
+  // destroyCategory: async (req, res) => {
+  //   try {
+  //     const data = await categories.update({
+  //       where: {
+  //         id: parseInt(req.params.id),
+  //       },
+  //       data: {
+  //         available: false,
+  //       },
+  //     });
+  //     return res.status(204).json({
+  //       success: "success delete category",
+  //     });
+  //   } catch (error) {
+  //     console.log(error);
+  //     return res.status(500).json({
+  //       error,
+  //       message: "Internal server error",
+  //     });
+  //   }
+  // },
   destroyCategory: async (req, res) => {
     try {
       const data = await categories.delete({
@@ -561,7 +585,9 @@ module.exports = {
     try {
       const chapter = await chapters.findMany({
         where: {
-          courseId: parseInt(req.params.courseId),
+          courseId: {
+            in: [parseInt(req.params.courseId)],
+          },
         },
       });
       return res.status(200).json({
@@ -665,7 +691,9 @@ module.exports = {
     try {
       const source = await sources.findMany({
         where: {
-          chapterId: parseInt(req.params.chapterId),
+          chapterId: {
+            in: [parseInt(req.params.chapterId)],
+          },
         },
       });
       return res.status(200).json({
