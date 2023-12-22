@@ -26,7 +26,7 @@ router.put(
   multer.single("image"),
   controller.editCourse
 );
-router.delete("/course/delete/:id", adminToken, controller.destroyCourse);
+router.put("/course/delete/:id", adminToken, controller.destroyCourse);
 // category
 router.get("/category", adminToken, controller.listCategory);
 router.post(
@@ -41,7 +41,7 @@ router.put(
   multer.single("image"),
   controller.editCategory
 );
-router.delete("/category/delete/:id", adminToken, controller.destroyCategory);
+router.put("/category/delete/:id", adminToken, controller.destroyCategory);
 // chapter
 router.get("/chapter/:courseId", adminToken, controller.listChapter);
 router.post("/chapter/create/:courseId", adminToken, controller.createChapter);

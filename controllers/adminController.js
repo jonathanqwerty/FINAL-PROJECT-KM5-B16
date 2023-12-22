@@ -527,9 +527,12 @@ module.exports = {
   // },
   destroyCategory: async (req, res) => {
     try {
-      const data = await categories.delete({
+      const data = await categories.update({
         where: {
           id: parseInt(req.params.id),
+        },
+        data: {
+          available: false,
         },
       });
       return res.status(204).json({
