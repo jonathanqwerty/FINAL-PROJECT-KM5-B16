@@ -71,6 +71,7 @@ model categories {
   id        Int       @id @default(autoincrement())
   name      String
   image     String
+  available Boolean   @default(true)
   createdAt DateTime  @default(now()) @map("create_at")
   updatedAt DateTime  @updatedAt @map("updated_at")
   courses   courses[]

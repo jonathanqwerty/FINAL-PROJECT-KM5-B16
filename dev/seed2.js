@@ -78,8 +78,19 @@ async function seed() {
     data = await prisma.users.create({ data: user });
     // console.log(data)
   }
+  await prisma.users.create({
+    data:{
+      email: "admin01@gmail.com",
+      phone: "10102022",
+      password: await utils.cryptPassword("Admin,01"),
+      profileId: 1,
+      isActive: true,
+      role : "admin"
+    }
+   })
   console.log("Profiles Success");
   console.log("Users Success");
+  console.log("Users admin Success");
 
   (Seed = new Set()), (Used = new Set());
   (Seed2 = new Set()), (Used2 = new Set());
