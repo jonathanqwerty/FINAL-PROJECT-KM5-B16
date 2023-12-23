@@ -2,35 +2,54 @@ const { Prisma } = require("@prisma/client");
 const { categories, reviews, courses, myCourse, orders,  progres, chapters,sources, goals, users} = require("../models");
 const {Course} = require('../utils/course');
 const { promises } = require("nodemailer/lib/xoauth2");
+const utils = require("../utils");
+
 
  async function FilterCourse(){
   try {
-    id = parseInt(1)
-    user = 1 || parseInt(res.user.id)
-
-    const MyCourse = await myCourse.create({
-      data:{
-        user    : user,
-        course  : id,
-        order : 1,
-        orders   : {
-          create: {
-            status: 'notPaid'
+    //mencari data cource
+    const course = await courses.findFirst({
+      where : {id: 3},
+      select : {
+        chapters : {
+          select :{
+            id : true,
+          title : true,
+          duration: true,
+            sources : true
           }
         }
       }
     })
-
-    //  const a ={
-    //   modul,
-    //   duration : `${duration._sum.duration} mnt`,
-    //   rating : review._avg.rating,
-    //   course
-    //  }
-     console.log(JSON.stringify(MyCourse,null,2))
-
+    const idChapter = course.chapters.map(item=>(item.id))
+    console.log(idChapter)
+    const a = [22,23,24]
+    let Data = await Promise.all(
+      course.chapters.map(async (item) => {
+        const source = await Promise.all(
+          item.sources.map(async (item2)=>{
+            if(a.some(value => value === item2.id)){
+              return {
+                ...item2,
+                read : true
+              }
+            }else{
+              return {
+                read : false,
+                ...item2,
+              }
+            }
+          }))
+        return{
+          id : item.id,
+          tittle : item.title,
+          duration :item.duration,
+          sources : source
+        }
+      }))
+    console.log(JSON.stringify(Data))
   } catch (error) {
-    console.log(error)
+    console.log(error);
   }
 };
 // const i = 'j'

@@ -68,18 +68,19 @@ module.exports = {
               const progress = await progres.count({where:{myCourse : item.id}})
 
               const status = await orders.findFirst({where: {myCourseId : item.id}})
-    
+              const persentase = (progress/modul)*100
               return {
                 id : item.id,
                 title: item.courses.title,
                 categories : kategori.name,
                 outhor :item.courses.author,
-                rating: review._avg.rating,
+                rating: review._avg.rating !== null ? parseFloat(review._avg.rating.toFixed(1)) : "-",
                 level : item.courses.level,
                 duration : `${duration._sum.duration} mnt`,
                 modul : modul,
                 image : item.courses.image,
                 progres : progress,
+                persentaseProgres : `${persentase.toFixed(0)}%`,
                 rilis : item.courses.createdAt,
                 orders : order,
                 status : status.status
