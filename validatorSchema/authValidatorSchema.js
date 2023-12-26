@@ -3,14 +3,7 @@ const { body } = require("express-validator");
 const registerValidator = [
   body("email").notEmpty().isEmail(),
   body("phone").notEmpty().isMobilePhone(),
-  body("password").notEmpty().isStrongPassword({
-    minLength: 8,
-    minUppercase: 1,
-    minLowercase: 1,
-    minNumbers: 1,
-    minSymbols: 1,
-    returnScore: false,
-  }),
+  body("password").notEmpty(),
 ];
 
 const verifyValidator = [body("validasi").notEmpty()];

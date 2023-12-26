@@ -1,0 +1,4 @@
+-- AlterTable
+ALTER TABLE "profiles" ALTER COLUMN "image" DROP NOT NULL,
+ALTER COLUMN "country" DROP NOT NULL,
+ALTER COLUMN "city" DROP NOT NULL;

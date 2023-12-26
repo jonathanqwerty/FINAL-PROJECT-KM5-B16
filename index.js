@@ -1,16 +1,13 @@
 const express = require("express"),
   app = express(),
+  PORT = process.env.PORT || 3000,
   cors = require("cors"),
-  router = require("./routes/index"),
-  swaggerUi = require("swagger-ui-express"),
-  swagger = require("./documentation/documentation.js");
+  router = require("./routes/index");
 
 require("dotenv").config();
-const PORT = process.env.PORT || 3000;
 
 app.use(express.json({ strict: false }));
 app.use(cors());
-app.use("/documentation", swaggerUi.serve, swaggerUi.setup(swagger));
 app.use("/api/v1", router);
 
 // Handle 404 route
