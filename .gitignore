@@ -1,7 +1,2 @@
 node_modules
 .env
-*index.js
-prisma/migrations
-API -me.postman_collection.json
-API Beranda.postman_collection.json
-final-project.postman_collection.json
