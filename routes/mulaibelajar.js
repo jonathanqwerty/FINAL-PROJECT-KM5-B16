@@ -2,7 +2,6 @@ const express = require("express"),
   router = express.Router(),
   controller = require("../controllers/mulaiBelajarController"),
   validateToken = require("../middlewares/checkToken");
-// //   schema = require("../validatorSchema/authValidatorSchema"),
 
 
 router.get("/:id",validateToken,controller.detailCourse)
