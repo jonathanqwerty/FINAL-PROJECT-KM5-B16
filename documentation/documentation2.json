@@ -432,7 +432,7 @@
         ],
         "parameters": [
           {
-            "name": "id",
+            "name": "MyCourseId",
             "in": "path",
             "description": "Id myCourse",
             "required": true,
@@ -478,7 +478,7 @@
         ],
         "parameters": [
           {
-            "name": "id",
+            "name": "MyCourseId",
             "in": "path",
             "description": "Id myCourse",
             "required": true,
@@ -631,7 +631,6 @@
         }
       }
     }
-   
   },
   "components": {
     "securitySchemes": {
