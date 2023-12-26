@@ -8,7 +8,7 @@ const {
     categories,
     chapters,
     sources,
-    progres
+    progres,
   } = require("../models"),
   jwt = require("jsonwebtoken"),
   bcrypt = require("bcrypt");
@@ -504,28 +504,6 @@ module.exports = {
     }
   },
 
-  // mendelete category yang sudah ada
-  // destroyCategory: async (req, res) => {
-  //   try {
-  //     const data = await categories.update({
-  //       where: {
-  //         id: parseInt(req.params.id),
-  //       },
-  //       data: {
-  //         available: false,
-  //       },
-  //     });
-  //     return res.status(200).json({
-  //       success: "success delete category",
-  //     });
-  //   } catch (error) {
-  //     console.log(error);
-  //     return res.status(500).json({
-  //       error,
-  //       message: "Internal server error",
-  //     });
-  //   }
-  // },
   destroyCategory: async (req, res) => {
     try {
       const data = await categories.update({
@@ -555,7 +533,7 @@ module.exports = {
       const findChapter = await chapters.findFirst({
         where: {
           title: req.body.title,
-          courseId : parseInt(req.params.courseId)
+          courseId: parseInt(req.params.courseId),
         },
       });
       if (findChapter) {
@@ -596,14 +574,14 @@ module.exports = {
           },
         },
       });
-      if(!chapter){
+      if (!chapter) {
         return res.status(404).json({
           error,
           message: "Not found data",
         });
       }
       return res.status(200).json({
-        success : true,
+        success: true,
         message: "success get list chapter",
         chapter,
       });
@@ -623,8 +601,8 @@ module.exports = {
         where: {
           id: parseInt(req.params.id),
         },
-      })
-      if(!existChapter){
+      });
+      if (!existChapter) {
         return res.status(404).json({
           error,
           message: "Not found data",
@@ -658,42 +636,42 @@ module.exports = {
     try {
       //get source
       const source = await sources.findMany({
-        where :{
-          chapterId : parseInt(req.params.id)
-        },select:{
-          id:true
-        }
-      })
+        where: {
+          chapterId: parseInt(req.params.id),
+        },
+        select: {
+          id: true,
+        },
+      });
       //object to array
-      const arraySource = source.map(item => (item.id))
+      const arraySource = source.map((item) => item.id);
       // delete source dan progress
-      if(source.length != 0){
+      if (source.length != 0) {
         await sources.deleteMany({
           where: {
-            id : {
-              in : arraySource
-            }
-          }
-        })
+            id: {
+              in: arraySource,
+            },
+          },
+        });
         await progres.deleteMany({
-          where:{
-            sourceId : {
-              in: arraySource
-            }
-          }
-        })
-        
+          where: {
+            sourceId: {
+              in: arraySource,
+            },
+          },
+        });
       }
-      // delete chapter 
+      // delete chapter
       const data = await chapters.deleteMany({
         where: {
           id: parseInt(req.params.id),
         },
       });
-      if(data.count == 0){
+      if (data.count == 0) {
         return res.status(404).json({
           success: true,
-          message: "not found source to deleted"
+          message: "not found source to deleted",
         });
       }
       return res.status(200).json({
@@ -757,7 +735,7 @@ module.exports = {
         },
       });
       return res.status(200).json({
-        success:true,
+        success: true,
         message: "success get the source video",
         source,
       });
@@ -784,7 +762,7 @@ module.exports = {
         },
       });
       return res.status(200).json({
-        success: true ,
+        success: true,
         message: "success edit source",
         sourceEdit,
       });
@@ -801,20 +779,20 @@ module.exports = {
   destroySource: async (req, res) => {
     try {
       const progress = await progres.deleteMany({
-        where : {
-          sourceId : parseInt(req.params.id)
-        }
-      })
+        where: {
+          sourceId: parseInt(req.params.id),
+        },
+      });
       const data = await sources.deleteMany({
         where: {
           id: parseInt(req.params.id),
         },
       });
 
-      if(data.count == 0){
+      if (data.count == 0) {
         return res.status(404).json({
           success: true,
-          message: "not found source to delete"
+          message: "not found source to delete",
         });
       }
 
