@@ -3,6 +3,12 @@ const {myCourse,progres,reviews,courses} = require("../models")
 module.exports = {
     detailCourse: async (req,res) =>{
         const idCourse = parseInt(req.params.id);
+        if(!idCourse){
+          return res.status(404).json({
+            error : "error",
+            message:"id params not found"
+          })
+        }
         try{
             const getData = await myCourse.findFirst({
                 where: {
@@ -20,8 +26,8 @@ module.exports = {
                       title: true,
                       author: true,
                       telegram: true,
+                      prepare:true,
                       description: true,
-                      prepare : true,
                       image: true,
                       level: true,
                       reviews:{
@@ -54,32 +60,6 @@ module.exports = {
                 },
             });
 
-            // menambahkan validasi read pada setiap source
-            const idProgres = getData.progres.map(item=>(item.id))
-            let Data = await Promise.all(
-              getData.courses.chapters.map(async (item) => {
-                const source = await Promise.all(
-                  item.sources.map(async (item2)=>{
-                    if(idProgres.some(value => value === item2.id)){
-                      return {
-                        ...item2,
-                        read : true
-                      }
-                    }else{
-                      return {
-                        ...item2,
-                        read : false
-                      }
-                    }
-                  }))
-                return{
-                  id : item.id,
-                  tittle : item.title,
-                  duration :item.duration,
-                  sources : source
-                }
-              }))
-
             // Menghitung total progres yang ada 
             const progresCount = getData.progres.length;
 
@@ -100,6 +80,7 @@ module.exports = {
               course: getData.course,
               progress: getData.progress,
               progres: progresCount,
+              prepare : getData.courses.prepare,
               courses: {
                 id: getData.courses.id,
                 title: getData.courses.title,
@@ -112,15 +93,18 @@ module.exports = {
                 image: getData.courses.image,
                 level: getData.courses.level,
                 goals: getData.courses.goals,
-                chapters: Data
+                chapters: getData.courses.chapters
               }
             }
-            return res.status(200).json({data})
-            
+            return res.status(200).json({
+              sucess : "success",
+              course : data})
         }
         catch(err){
-            console.log(err)
-            return  res.status(500).json({message:"Error while getting the data"})
+            return  res.status(500).json({
+              error : "error",
+              message:"Error while getting the data"
+            })
         }
     },
     progresBelajar : async (req,res) =>{
@@ -166,10 +150,14 @@ module.exports = {
 
         const exist = isSourceIdPresent(MyCourse,parseInt(videoId))
         if (!exist){
-          return res.status(400).json({message  : "the videoId was not found in the course"})
+          return res.status(400).json({
+            error : "error",
+            message  : "the videoId was not found in the course"})
         }
         if (duplicate){
-          return res.status(400).json({message : "the progress from this video was saved before"})
+          return res.status(400).json({
+            error:"error",
+            message : "the progress from this video was saved before"})
         }
         const data = await progres.create({
             data:{
@@ -179,13 +167,19 @@ module.exports = {
         })
         
         if(!data){
-          return res.status(400).json({message:"Request failed please try again or using another params"})
+          return res.status(400).json({
+            error:"error",
+            message:"Request failed please try again or using another params"})
         }
-        return res.status(200).json({message:"Request Successfull Progres Save Properly"})
+        return res.status(200).json({
+          success : "success",
+          message:"Request Successfull Progres Save Properly"})
       }
       catch(err){
-        console.log("The error is",err)
-        return res.status(400).json({message: "Error while saving the data"})
+        return res.status(400).json({
+          error:"error",
+          message: "Error while saving the data"
+        })
       }
     },
     makeReview : async (req,res) =>{
@@ -193,6 +187,12 @@ module.exports = {
       const idUser = parseInt(res.user.id)
       const rating = parseInt(req.body.rating)
       const coment = req.body.coment
+      if (!idUser||!rating||!coment){
+        res.status(404).json({
+          error:"error",
+          message:"the req body has missed something"
+        })
+      }
       try{
         const MyCourse = await myCourse.findFirst({
           where:{
@@ -228,7 +228,10 @@ module.exports = {
         const totalProgres = parseInt(Progres._count._all)
 
         if(totalProgres != totalSources){
-          return res.status(400).json({message : "You can review this courses yet because you not completed the modul"})
+          return res.status(400).json({
+            error : "error",
+            message : "You can review this courses yet because you not completed the modul"
+          })
         }
 
         const review = await reviews.findFirst({
@@ -239,7 +242,10 @@ module.exports = {
         })
 
         if(review){
-          return res.status(400).json({message : "You've provided a review before"})
+          return res.status(400).json({
+            error : "error",
+            message : "You've provided a review before"
+          })
         }
 
         const upload = await reviews.create({
@@ -259,12 +265,20 @@ module.exports = {
           }
         })
         if(!upload){
-          return res.status(400).json({message : "Something error while uploading reviews please try again"})
+          return res.status(400).json({
+            error : "error",
+            message : "Something error while uploading reviews please try again"
+          })
         }
-        return res.status(200).json({message : "Success uploading data"})
+        return res.status(200).json({
+          success : "success",
+          message : "Success uploading data"})
       }
       catch(err){
-          return res.status(400).json({message : "Error hapend while procesing data"})
+          return res.status(400).json({
+            error : "error",
+            message : "Error hapend while procesing data"
+          })
       }
     },
     viewReview : async (req,res) =>{
@@ -285,12 +299,20 @@ module.exports = {
         })
 
         if (!review){
-          return res.status(400).json({message : "error while getting data review"})
+          return res.status(400).json({
+            error : "error",
+            message : "error while getting data review"
+          })
         }
-        return res.status(200).json({review})
+        return res.status(200).json({
+          success: "success",
+          review : review})
       }
       catch(err){
-        return res.status(400).json({message : "error happend while getting the data"})
+        return res.status(400).json({
+          error : "error",
+          message : "error happend while getting the data"
+        })
       }
-    }
+    },
 }
