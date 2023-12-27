@@ -20,6 +20,10 @@
   },
   "tags": [
     {
+      "name": "Notification",
+      "description": "Notification table API"
+    },
+    {
       "name": "Authentication",
       "description": "Authentication Admin"
     },
@@ -1351,6 +1355,44 @@
         "responses": {
           "204": {
             "description": "Source deleted successfully"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/me/notifications": {
+      "get": {
+        "tags": [
+          "Notification"
+        ],
+        "summary": "List all User Notification",
+        "description": "Get all Notification user by User ID",
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "example": {
+                  "notifications": [
+                    {
+                      "id": 126,
+                      "userId": 2,
+                      "message": "Your profile has been updated successfully.",
+                      "isRead": false,
+                      "createdAt": "2023-12-27T03:38:51.876Z",
+                      "updatedAt": "2023-12-27T03:38:51.876Z"
+                    }
+                  ]
+                }
+              }
+            }
           },
           "500": {
             "description": "Internal Server Error"
