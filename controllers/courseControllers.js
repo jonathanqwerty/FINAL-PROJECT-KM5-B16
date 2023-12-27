@@ -272,6 +272,7 @@ module.exports = {
           error : "error",
           message : "data not found" })
       }
+
       const existMycourse = await myCourse.findFirst({
         where:{
           user : user,
@@ -300,7 +301,26 @@ module.exports = {
             MyCourseId : existMycourse.id
           })
         }
-        
+      }
+      if(existCourse.price=="0"){
+        const MyCourse = await myCourse.create({
+          data:{
+            user      : user,
+            course    : id,
+            orders    : {
+              create: {
+                status: 'paid'
+              }
+            }
+          }
+        })
+      notif(user,'Successful buy a free course lets go to study')
+        return res.status(201).json({
+          success : true,
+          message : 'Successful buy a free course lets go to study',
+          status : 'Paid',
+          MyCourseId : MyCourse.id
+        })
       }
       const MyCourse = await myCourse.create({
         data:{

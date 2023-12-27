@@ -48,7 +48,7 @@ module.exports = {
       }
 
       const fileTostring = req.file.buffer.toString("base64");
-
+      // console.log("aa")
       const uploadFile = await imageKit.upload({
         fileName: req.file.originalname,
         file: fileTostring,
@@ -69,8 +69,8 @@ module.exports = {
                 id: user.id,
               },
               data: {
-                password:
-                  (await utils.cryptPassword(req.body.password)) ||
+                password: req.body.password?
+                  (await utils.cryptPassword(req.body.password)) :
                   user.password,
                 phone: req.body.phone || user.phone,
               },
