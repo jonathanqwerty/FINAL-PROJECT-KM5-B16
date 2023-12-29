@@ -327,6 +327,25 @@ module.exports = {
     }
   },
 
+  // get by id
+  course: async (req, res) => {
+    try {
+      const course = await courses.findUnique({
+        where: {
+          courseId: parseInt(req.params.courseId),
+        },
+      });
+      return res.status(200).json({
+        course,
+      });
+    } catch (error) {
+      return res.status(500).json({
+        error,
+        message: "Internal server error",
+      });
+    }
+  },
+
   // mengedit course
   editCourse: async (req, res) => {
     try {
