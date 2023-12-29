@@ -13,8 +13,8 @@ router.get("/active-premium", adminToken, controller.activePremium);
 router.get("/dashboard", adminToken, controller.dashboardData);
 router.get("/kelola-kelas", adminToken, controller.kelolaKelas);
 // course
-router.get("/course/:categoryId", adminToken, controller.listCourse);
 router.get("/course/:courseId", adminToken, controller.course);
+router.get("/course", controller.listCourse);
 router.post(
   "/course/create/:categoryId",
   adminToken,
@@ -45,12 +45,14 @@ router.put(
 );
 router.put("/category/delete/:id", adminToken, controller.destroyCategory);
 // chapter
-router.get("/chapter/:courseId", adminToken, controller.listChapter);
+router.get("/chapter/:chapterId", adminToken, controller.listChapterById);
+router.get("/chapter", adminToken, controller.listChapter);
 router.post("/chapter/create/:courseId", adminToken, controller.createChapter);
 router.put("/chapter/edit/:id", adminToken, controller.editChapter);
 router.delete("/chapter/delete/:id", adminToken, controller.destroyChapter);
 // source
-router.get("/source/:chapterId", adminToken, controller.listSource);
+router.get("/source/:sourceId", adminToken, controller.listSourceById);
+router.get("/source", adminToken, controller.listSource);
 router.post("/source/create/:chapterId", adminToken, controller.createSource);
 router.put("/source/edit/:id", adminToken, controller.editSource);
 router.delete("/source/delete/:id", adminToken, controller.destroySource);
