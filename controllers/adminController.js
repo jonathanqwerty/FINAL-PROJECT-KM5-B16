@@ -312,6 +312,25 @@ module.exports = {
     }
   },
 
+  // get by id
+  course: async (req, res) => {
+    try {
+      const course = await courses.findUnique({
+        where: {
+          courseId: parseInt(req.params.courseId),
+        },
+      });
+      return res.status(200).json({
+        course,
+      });
+    } catch (error) {
+      return res.status(500).json({
+        error,
+        message: "Internal server error",
+      });
+    }
+  },
+
   // mengedit course
   editCourse: async (req, res) => {
     try {
@@ -441,6 +460,26 @@ module.exports = {
   listCategory: async (req, res) => {
     try {
       const category = await categories.findMany();
+      return res.status(200).json({
+        category,
+      });
+    } catch (error) {
+      console.log(error);
+      return res.status(500).json({
+        error,
+        message: "Internal server error",
+      });
+    }
+  },
+
+  // get by id
+  category: async (req, res) => {
+    try {
+      const category = await categories.findUnique({
+        where: {
+          id: parseInt(req.params.categoryId),
+        },
+      });
       return res.status(200).json({
         category,
       });
