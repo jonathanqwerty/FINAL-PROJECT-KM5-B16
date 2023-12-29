@@ -14,6 +14,7 @@ router.get("/dashboard", adminToken, controller.dashboardData);
 router.get("/kelola-kelas", adminToken, controller.kelolaKelas);
 // course
 router.get("/course/:categoryId", adminToken, controller.listCourse);
+router.get("/course/:courseId", adminToken, controller.course);
 router.post(
   "/course/create/:categoryId",
   adminToken,
@@ -29,6 +30,7 @@ router.put(
 router.put("/course/delete/:id", adminToken, controller.destroyCourse);
 // category
 router.get("/category", adminToken, controller.listCategory);
+router.get("/category/:categoryId", adminToken, controller.category);
 router.post(
   "/category/create",
   adminToken,
