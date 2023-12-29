@@ -47,12 +47,14 @@ module.exports = {
         });
       }
 
-      const fileTostring = req.file.buffer.toString("base64");
-      // console.log("aa")
-      const uploadFile = await imageKit.upload({
-        fileName: req.file.originalname,
-        file: fileTostring,
-      });
+      let uploadFile;
+      if (req.file) {
+        const fileTostring = req.file.buffer.toString("base64");
+        uploadFile = await imageKit.upload({
+          fileName: req.file.originalname,
+          file: fileTostring,
+        });
+      }
 
       const updatedProfile = await profiles.update({
         where: {
@@ -60,7 +62,7 @@ module.exports = {
         },
         data: {
           name: req.body.name || user.profiles.name,
-          image: uploadFile.url || user.profiles.image,
+          image: uploadFile ? uploadFile.url : user.profiles.image,
           country: req.body.country || user.profiles.country,
           city: req.body.city || user.profiles.city,
           users: {
@@ -69,9 +71,9 @@ module.exports = {
                 id: user.id,
               },
               data: {
-                password: req.body.password?
-                  (await utils.cryptPassword(req.body.password)) :
-                  user.password,
+                password: req.body.password
+                  ? await utils.cryptPassword(req.body.password)
+                  : user.password,
                 phone: req.body.phone || user.phone,
               },
             },
