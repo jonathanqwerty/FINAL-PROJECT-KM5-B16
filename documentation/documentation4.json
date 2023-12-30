@@ -492,6 +492,59 @@
         ]
       }
     },
+    "/admin/category/{categoryId}": {
+      "get": {
+        "tags": ["Category"],
+        "summary": "List category by id",
+        "description": "Retrieves courses based on category ID",
+        "parameters": [
+          {
+            "name": "categoryId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "category": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "name": {
+                            "type": "string"
+                          },
+                          "image": {
+                            "type": "string"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
     "/admin/category/edit/{categoryId}": {
       "put": {
         "tags": ["Category"],
@@ -723,14 +776,52 @@
         ]
       }
     },
-    "/admin/course/{categoryId}": {
+    "/admin/course": {
       "get": {
         "tags": ["Course"],
-        "summary": "List courses by category",
-        "description": "Retrieves courses based on category ID",
+        "summary": "List all courses",
+        "description": "Retrieves a list of all categories",
+        "responses": {
+          "201": {
+            "description": "Course successfully created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    },
+                    "course": {
+                      "type": "object"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "302": {
+            "description": "Course already exists"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/admin/course/{courseId}": {
+      "get": {
+        "tags": ["Course"],
+        "summary": "List courses by course",
+        "description": "Retrieves courses based on course ID",
         "parameters": [
           {
-            "name": "categoryId",
+            "name": "courseId",
             "in": "path",
             "required": true,
             "schema": {
@@ -956,20 +1047,56 @@
         ]
       }
     },
-    "/admin/chapter/{courseId}": {
+    "/admin/chapter": {
       "get": {
         "tags": ["Chapter"],
-        "summary": "List chapters for a course",
-        "description": "Retrieves chapters for a specific course",
+        "summary": "List all chapter",
+        "description": "Retrieves a list of all chapter",
+        "responses": {
+          "201": {
+            "description": "Course successfully created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    },
+                    "course": {
+                      "type": "object"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "302": {
+            "description": "Course already exists"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/admin/chapter/{chapterId}": {
+      "get": {
+        "tags": ["Chapter"],
+        "summary": "List courses by chapter",
+        "description": "Retrieves courses based on chapter ID",
         "parameters": [
           {
-            "name": "courseId",
+            "name": "chapterId",
             "in": "path",
-            "description": "ID of the course",
             "required": true,
             "schema": {
-              "type": "integer",
-              "format": "int64"
+              "type": "integer"
             }
           }
         ],
@@ -979,12 +1106,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "object",
-                  "properties": {
-                    "chapter": {
-                      "type": "array"
-                    }
-                  }
+                  "type": "object"
                 }
               }
             }
@@ -1176,16 +1298,54 @@
         ]
       }
     },
-    "/admin/source/{chapterId}": {
+    "/admin/source": {
+      "get": {
+        "tags": ["source"],
+        "summary": "List all source",
+        "description": "Retrieves a list of all source",
+        "responses": {
+          "201": {
+            "description": "Course successfully created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    },
+                    "course": {
+                      "type": "object"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "302": {
+            "description": "Course already exists"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/admin/source/{sourceId}": {
       "get": {
         "tags": ["Source"],
-        "summary": "List sources for a chapter",
-        "description": "Retrieves sources for a specific chapter",
+        "summary": "List sources for a source",
+        "description": "Retrieves sources for a specific source",
         "parameters": [
           {
-            "name": "chapterId",
+            "name": "Source",
             "in": "path",
-            "description": "ID of the chapter",
+            "description": "ID of the source",
             "required": true,
             "schema": {
               "type": "integer",
