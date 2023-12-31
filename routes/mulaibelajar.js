@@ -7,6 +7,6 @@ const express = require("express"),
 router.get("/:id",validateToken,controller.detailCourse)
 router.post("/progres/:id/:videoId",validateToken,controller.progresBelajar)
 router.post('/review/:id',validateToken ,controller.makeReview)
-router.get('/review/:id',validateToken ,controller.viewReview)
+router.get('/review/:id',controller.viewReview)
 
 module.exports = router
