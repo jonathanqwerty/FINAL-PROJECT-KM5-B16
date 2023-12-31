@@ -152,6 +152,7 @@
                               "link": "https://youtu.be/fCWOBU8OnMI?si=3gQDLaul4P9GU2LT"
                             }
                           ]
+
                         }
                       ]
                     }
@@ -254,7 +255,8 @@
                 },
                 "example": {
                   "rating": "3",
-                  "password": "pembelajaran asik namun tidak bisa diakses ulang"
+                  "coment": "pembelajaran asik namun tidak bisa diakses ulang"
+
                 }
               }
             }
@@ -279,11 +281,6 @@
           "tags": ["Course-Page"],
           "summary": "Melihat Ulasan (token dan my-course id diperlukan) ",
           "description": "Melihat ulasan berdasarkan my-course id dan juga id user",
-          "security": [
-            {
-              "bearerAuth": []
-            }
-          ],
           "parameters": [
             {
               "name": "id",
