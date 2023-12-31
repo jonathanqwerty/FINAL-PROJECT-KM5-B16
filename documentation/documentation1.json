@@ -496,16 +496,18 @@
       "put": {
         "tags": ["profile"],
         "requestBody": {
+          "required": true,
           "content": {
             "multipart/form-data": {
               "schema": {
                 "type": "object",
-                "multipart/form-data": {
+                "properties": {
                   "name": {
                     "type": "string"
                   },
                   "image": {
-                    "type": "string"
+                    "type": "string",
+                    "format": "binary"
                   },
                   "country": {
                     "type": "string"
@@ -518,16 +520,16 @@
                   },
                   "phone": {
                     "type": "integer"
-                  }
-                },
-                "required": [
-                  "name",
-                  "image",
-                  "country",
-                  "city",
-                  "password",
-                  "phone"
-                ]
+                  },
+                  "required": [
+                    "name",
+                    "image",
+                    "country",
+                    "city",
+                    "password",
+                    "phone"
+                  ]
+                }
               }
             }
           }
