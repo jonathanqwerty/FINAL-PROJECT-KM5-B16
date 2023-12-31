@@ -67,10 +67,7 @@
                     "type": "string"
                   }
                 },
-                "required": [
-                  "email", 
-                  "password"
-                ]
+                "required": ["email", "password"]
               },
               "example": {
                 "email": "admin01@gmail.com",
@@ -111,9 +108,7 @@
     },
     "/admin/active-user": {
       "get": {
-        "tags": [
-          "Dashboard"
-        ],
+        "tags": ["Dashboard"],
         "summary": "Get count of active users",
         "description": "Retrieves the count of active users in the system",
         "responses": {
@@ -145,9 +140,7 @@
     },
     "/admin/active-class": {
       "get": {
-        "tags": [
-          "Dashboard"
-        ],
+        "tags": ["Dashboard"],
         "summary": "Get count of active class",
         "description": "Retrieves the count of active class in the system",
         "responses": {
@@ -179,9 +172,7 @@
     },
     "/admin/active-premium": {
       "get": {
-        "tags": [
-          "Dashboard"
-        ],
+        "tags": ["Dashboard"],
         "summary": "Get count of active premium",
         "description": "Retrieves the count of active premium in the system",
         "responses": {
@@ -213,9 +204,7 @@
     },
     "/admin/dashboard": {
       "get": {
-        "tags": [
-          "Dashboard"
-        ],
+        "tags": ["Dashboard"],
         "summary": "Get dashboard data",
         "description": "Retrieves dashboard data with filtering",
         "parameters": [
@@ -259,11 +248,11 @@
                       "items": {
                         "type": "object",
                         "properties": {
-                          "id": { 
-                            "type": "string" 
+                          "id": {
+                            "type": "string"
                           },
-                          "status": { 
-                            "type": "string" 
+                          "status": {
+                            "type": "string"
                           },
                           "createdAt": {
                             "type": "string",
@@ -294,9 +283,7 @@
     },
     "/admin/kelola-Kelas": {
       "get": {
-        "tags": [
-          "Dashboard"
-        ],
+        "tags": ["Dashboard"],
         "summary": "Manage classes",
         "description": "Retrieve classes with filtering",
         "parameters": [
@@ -343,30 +330,30 @@
                           "kelolakelas": {
                             "type": "object",
                             "properties": {
-                              "id": { 
-                                "type": "string" 
+                              "id": {
+                                "type": "string"
                               },
                               "categories": {
                                 "type": "object",
                                 "properties": {
-                                  "name": { 
-                                    "type": "string" 
+                                  "name": {
+                                    "type": "string"
                                   }
                                 }
                               },
-                              "title": { 
-                                "type": "string" 
+                              "title": {
+                                "type": "string"
                               },
-                              "price": { 
-                                "type": "number" 
+                              "price": {
+                                "type": "number"
                               },
-                              "level": { 
-                                "type": "string" 
+                              "level": {
+                                "type": "string"
                               }
                             }
                           },
-                          "priceType": { 
-                            "type": "string" 
+                          "priceType": {
+                            "type": "string"
                           }
                         }
                       }
@@ -389,9 +376,7 @@
     },
     "/admin/category/create": {
       "post": {
-        "tags": [
-          "Category"
-        ],
+        "tags": ["Category"],
         "summary": "Create a new category with ImageKit",
         "description": "Endpoint to create a new category by uploading an image using ImageKit",
         "requestBody": {
@@ -466,9 +451,7 @@
     },
     "/admin/category": {
       "get": {
-        "tags": [
-          "Category"
-        ],
+        "tags": ["Category"],
         "summary": "List all categories",
         "description": "Retrieves a list of all categories",
         "responses": {
@@ -509,11 +492,62 @@
         ]
       }
     },
+    "/admin/category/{categoryId}": {
+      "get": {
+        "tags": ["Category"],
+        "summary": "List category by id",
+        "description": "Retrieves courses based on category ID",
+        "parameters": [
+          {
+            "name": "categoryId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "category": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "name": {
+                            "type": "string"
+                          },
+                          "image": {
+                            "type": "string"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
     "/admin/category/edit/{categoryId}": {
       "put": {
-        "tags": [
-          "Category"
-        ],
+        "tags": ["Category"],
         "summary": "Edit a category",
         "description": "Edit an existing category",
         "parameters": [
@@ -600,12 +634,10 @@
       }
     },
     "/admin/category/delete/{categoryId}": {
-      "delete": {
-        "tags": [
-          "Category"
-        ],
-        "summary": "Delete a category",
-        "description": "Delete an existing category by ID",
+      "put": {
+        "tags": ["Category"],
+        "summary": "Delete a Category",
+        "description": "Delete an existing course by ID",
         "parameters": [
           {
             "name": "categoryId",
@@ -616,29 +648,30 @@
             }
           }
         ],
-        "responses": {
-          "204": {
-            "description": "Category deleted successfully"
-          },
-          "500": {
-            "description": "Internal Server Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "error": {
-                      "type": "string",
-                      "description": "Error message"
-                    },
-                    "message": {
-                      "type": "string",
-                      "description": "Error description"
-                    }
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "available": {
+                    "type": "boolean"
                   }
+                },
+                "example": {
+                  "available": false
                 }
               }
             }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "success delete category"
+          },
+          "500": {
+            "description": "Internal Server Error"
           }
         },
         "security": [
@@ -647,12 +680,10 @@
           }
         ]
       }
-    },    
+    },
     "/admin/course/create/{categoryId}": {
       "post": {
-        "tags": [
-          "Course"
-        ],
+        "tags": ["Course"],
         "summary": "Create a new course",
         "description": "Creates a new course",
         "parameters": [
@@ -745,16 +776,52 @@
         ]
       }
     },
-    "/admin/course/{categoryId}": {
+    "/admin/course": {
       "get": {
-        "tags": [
-          "Course"
-        ],
-        "summary": "List courses by category",
-        "description": "Retrieves courses based on category ID",
+        "tags": ["Course"],
+        "summary": "List all courses",
+        "description": "Retrieves a list of all categories",
+        "responses": {
+          "201": {
+            "description": "Course successfully created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    },
+                    "course": {
+                      "type": "object"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "302": {
+            "description": "Course already exists"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/admin/course/{courseId}": {
+      "get": {
+        "tags": ["Course"],
+        "summary": "List courses by course",
+        "description": "Retrieves courses based on course ID",
         "parameters": [
           {
-            "name": "categoryId",
+            "name": "courseId",
             "in": "path",
             "required": true,
             "schema": {
@@ -786,9 +853,7 @@
     },
     "/admin/course/edit/{id}": {
       "put": {
-        "tags": [
-          "Course"
-        ],
+        "tags": ["Course"],
         "summary": "Edit a course",
         "description": "Edit an existing course by ID",
         "parameters": [
@@ -861,10 +926,8 @@
       }
     },
     "/admin/course/delete/{courseId}": {
-      "delete": {
-        "tags": [
-          "Course"
-        ],
+      "put": {
+        "tags": ["Course"],
         "summary": "Delete a course",
         "description": "Delete an existing course by ID",
         "parameters": [
@@ -877,22 +940,27 @@
             }
           }
         ],
-        "responses": {
-          "200": {
-            "description": "Course deleted successfully",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "success": {
-                      "type": "string",
-                      "description": "Success message"
-                    }
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "available": {
+                    "type": "boolean"
                   }
+                },
+                "example": {
+                  "available": false
                 }
               }
             }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "success delete course"
           },
           "500": {
             "description": "Internal Server Error"
@@ -907,9 +975,7 @@
     },
     "/admin/chapter/create/{courseId}": {
       "post": {
-        "tags": [
-          "Chapter"
-        ],
+        "tags": ["Chapter"],
         "summary": "Create a new chapter",
         "description": "Creates a new chapter for a specific course",
         "parameters": [
@@ -943,10 +1009,7 @@
                   "title": "Chapter 1",
                   "duration": "4"
                 },
-                "required": [
-                  "title", 
-                  "duration"
-                ]
+                "required": ["title", "duration"]
               }
             }
           }
@@ -984,22 +1047,56 @@
         ]
       }
     },
-    "/admin/chapter/{courseId}": {
+    "/admin/chapter": {
       "get": {
-        "tags": [
-          "Chapter"
-        ],
-        "summary": "List chapters for a course",
-        "description": "Retrieves chapters for a specific course",
+        "tags": ["Chapter"],
+        "summary": "List all chapter",
+        "description": "Retrieves a list of all chapter",
+        "responses": {
+          "201": {
+            "description": "Course successfully created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    },
+                    "course": {
+                      "type": "object"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "302": {
+            "description": "Course already exists"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/admin/chapter/{chapterId}": {
+      "get": {
+        "tags": ["Chapter"],
+        "summary": "List courses by chapter",
+        "description": "Retrieves courses based on chapter ID",
         "parameters": [
           {
-            "name": "courseId",
+            "name": "chapterId",
             "in": "path",
-            "description": "ID of the course",
             "required": true,
             "schema": {
-              "type": "integer",
-              "format": "int64"
+              "type": "integer"
             }
           }
         ],
@@ -1009,12 +1106,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "object",
-                  "properties": {
-                    "chapter": {
-                      "type": "array"
-                    }
-                  }
+                  "type": "object"
                 }
               }
             }
@@ -1032,9 +1124,7 @@
     },
     "/admin/chapter/edit/{id}": {
       "put": {
-        "tags": [
-          "Chapter"
-        ],
+        "tags": ["Chapter"],
         "summary": "Edit a chapter",
         "description": "Edits an existing chapter",
         "parameters": [
@@ -1104,9 +1194,7 @@
     },
     "/admin/chapter/delete/{id}": {
       "delete": {
-        "tags": [
-          "Chapter"
-        ],
+        "tags": ["Chapter"],
         "summary": "Delete a chapter",
         "description": "Deletes an existing chapter",
         "parameters": [
@@ -1138,9 +1226,7 @@
     },
     "/admin/source/create/{chapterId}": {
       "post": {
-        "tags": [
-          "Source"
-        ],
+        "tags": ["Source"],
         "summary": "Create a new source",
         "description": "Creates a new source for a specific chapter",
         "parameters": [
@@ -1170,10 +1256,7 @@
                     "format": "url"
                   }
                 },
-                "required": [
-                  "name", 
-                  "link"
-                ],
+                "required": ["name", "link"],
                 "example": {
                   "name": "Hanssource1",
                   "link": "https://example.com/source"
@@ -1215,18 +1298,54 @@
         ]
       }
     },
-    "/admin/source/{chapterId}": {
+    "/admin/source": {
       "get": {
-        "tags": [
-          "Source"
-        ],
-        "summary": "List sources for a chapter",
-        "description": "Retrieves sources for a specific chapter",
+        "tags": ["source"],
+        "summary": "List all source",
+        "description": "Retrieves a list of all source",
+        "responses": {
+          "201": {
+            "description": "Course successfully created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    },
+                    "course": {
+                      "type": "object"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "302": {
+            "description": "Course already exists"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/admin/source/{sourceId}": {
+      "get": {
+        "tags": ["Source"],
+        "summary": "List sources for a source",
+        "description": "Retrieves sources for a specific source",
         "parameters": [
           {
-            "name": "chapterId",
+            "name": "Source",
             "in": "path",
-            "description": "ID of the chapter",
+            "description": "ID of the source",
             "required": true,
             "schema": {
               "type": "integer",
@@ -1263,9 +1382,7 @@
     },
     "/admin/source/edit/{id}": {
       "put": {
-        "tags": [
-          "Source"
-        ],
+        "tags": ["Source"],
         "summary": "Edit a source",
         "description": "Edits an existing source",
         "parameters": [
@@ -1335,9 +1452,7 @@
     },
     "/admin/source/delete/{id}": {
       "delete": {
-        "tags": [
-          "Source"
-        ],
+        "tags": ["Source"],
         "summary": "Delete a source",
         "description": "Deletes an existing source",
         "parameters": [
@@ -1369,9 +1484,7 @@
     },
     "/me/notifications": {
       "get": {
-        "tags": [
-          "Notification"
-        ],
+        "tags": ["Notification"],
         "summary": "List all User Notification",
         "description": "Get all Notification user by User ID",
         "responses": {

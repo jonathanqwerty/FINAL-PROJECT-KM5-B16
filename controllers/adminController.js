@@ -292,19 +292,53 @@ module.exports = {
     }
   },
 
-  // menampilkan course berdasarkan category id
+  // get all
   listCourse: async (req, res) => {
     try {
-      const course = await courses.findMany({
+      const course = await this.course.findMany();
+      return res.status(200).json({
+        course,
+      });
+    } catch (error) {
+      console.log(error);
+      return res.status(500).json({
+        error,
+        message: "Internal server error",
+      });
+    }
+  },
+
+  // get by id
+  course: async (req, res) => {
+    try {
+      const course = await courses.findUnique({
         where: {
-          categoryId: parseInt(req.params.categoryId),
+          courseId: parseInt(req.params.courseId),
         },
       });
       return res.status(200).json({
         course,
       });
     } catch (error) {
-      console.log(error);
+      return res.status(500).json({
+        error,
+        message: "Internal server error",
+      });
+    }
+  },
+
+  // get by id
+  course: async (req, res) => {
+    try {
+      const course = await courses.findUnique({
+        where: {
+          courseId: parseInt(req.params.courseId),
+        },
+      });
+      return res.status(200).json({
+        course,
+      });
+    } catch (error) {
       return res.status(500).json({
         error,
         message: "Internal server error",
@@ -453,6 +487,26 @@ module.exports = {
     }
   },
 
+  // get by id
+  category: async (req, res) => {
+    try {
+      const category = await categories.findUnique({
+        where: {
+          id: parseInt(req.params.categoryId),
+        },
+      });
+      return res.status(200).json({
+        category,
+      });
+    } catch (error) {
+      console.log(error);
+      return res.status(500).json({
+        error,
+        message: "Internal server error",
+      });
+    }
+  },
+
   // mengedit category yang sudah ada
   editCategory: async (req, res) => {
     try {
@@ -564,25 +618,31 @@ module.exports = {
     }
   },
 
-  // melihat daftar chapter
-  listChapter: async (req, res) => {
+  // get by id
+  listChapterById: async (req, res) => {
     try {
-      const chapter = await chapters.findMany({
+      const chapter = await chapters.findUnique({
         where: {
-          courseId: {
-            in: [parseInt(req.params.courseId)],
-          },
+          id: parseInt(req.params.chapterId),
         },
       });
-      if (!chapter) {
-        return res.status(404).json({
-          error,
-          message: "Not found data",
-        });
-      }
       return res.status(200).json({
-        success: true,
-        message: "success get list chapter",
+        chapter,
+      });
+    } catch (error) {
+      console.log(error);
+      return res.status(500).json({
+        error,
+        message: "Internal server error",
+      });
+    }
+  },
+
+  // get all
+  listChapter: async (req, res) => {
+    try {
+      const chapter = await chapters.findMany();
+      return res.status(200).json({
         chapter,
       });
     } catch (error) {
@@ -726,17 +786,33 @@ module.exports = {
     }
   },
 
-  // menampilkan semua source berdasarkan chapter
-  listSource: async (req, res) => {
+  // get by id
+  listSourceById: async (req, res) => {
     try {
-      const source = await sources.findMany({
+      const source = await sources.findUnique({
         where: {
-          chapterId: parseInt(req.params.chapterId),
+          id: parseInt(req.params.sourceId),
         },
       });
       return res.status(200).json({
         success: true,
         message: "success get the source video",
+        source,
+      });
+    } catch (error) {
+      console.log(error);
+      return res.status(500).json({
+        error,
+        message: "Internal server error",
+      });
+    }
+  },
+
+  // get all
+  listSource: async (req, res) => {
+    try {
+      const source = await sources.findMany();
+      return res.status(200).json({
         source,
       });
     } catch (error) {
