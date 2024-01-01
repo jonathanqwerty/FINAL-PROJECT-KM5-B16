@@ -306,19 +306,12 @@ module.exports = {
                     image: true,
                   }
                 }
-                // name: true,
-                // image: true,
               },
             },
           },
         });
 
-        // const review = await reviews.findMany({
-        //   where:{
-        //     course : MyCourse.course
-        //   }
-        // })
-        
+      
 
         if (!review){
           return res.status(400).json({
