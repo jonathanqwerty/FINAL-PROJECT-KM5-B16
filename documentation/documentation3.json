@@ -152,6 +152,7 @@
                               "link": "https://youtu.be/fCWOBU8OnMI?si=3gQDLaul4P9GU2LT"
                             }
                           ]
+
                         }
                       ]
                     }
@@ -254,7 +255,8 @@
                 },
                 "example": {
                   "rating": "3",
-                  "password": "pembelajaran asik namun tidak bisa diakses ulang"
+                  "coment": "pembelajaran asik namun tidak bisa diakses ulang"
+
                 }
               }
             }
@@ -279,11 +281,6 @@
           "tags": ["Course-Page"],
           "summary": "Melihat Ulasan (token dan my-course id diperlukan) ",
           "description": "Melihat ulasan berdasarkan my-course id dan juga id user",
-          "security": [
-            {
-              "bearerAuth": []
-            }
-          ],
           "parameters": [
             {
               "name": "id",
@@ -301,13 +298,41 @@
                 "application/json": {
                   "example": {
                     "success": "success",
-                    "review": {
-                        "id": 9,
-                        "rating": 5,
-                        "user": 2,
-                        "course": 20,
-                        "comment": "Ergonomic executive chair upholstered in bonded black leather and PVC padded seat and back for all-day comfort and support"
-                    }
+                    "review": [
+                        {
+                            "id": 2,
+                            "rating": 5,
+                            "comment": "The automobile layout consists of a front-engine design, with transaxle-type transmissions mounted at the rear of the engine and four wheel drive",
+                            "users": {
+                                "profiles": {
+                                    "name": "Febian Paiman",
+                                    "image": "https://avatars.githubusercontent.com/u/97363993"
+                                }
+                            }
+                        },
+                        {
+                            "id": 9,
+                            "rating": 5,
+                            "comment": "Ergonomic executive chair upholstered in bonded black leather and PVC padded seat and back for all-day comfort and support",
+                            "users": {
+                                "profiles": {
+                                    "name": "jhonitay",
+                                    "image": "https://ik.imagekit.io/rlsnxhtnz/Capture_bU24vS0yU.PNG"
+                                }
+                            }
+                        },
+                        {
+                            "id": 44,
+                            "rating": 3,
+                            "comment": "Ergonomic executive chair upholstered in bonded black leather and PVC padded seat and back for all-day comfort and support",
+                            "users": {
+                                "profiles": {
+                                    "name": "Gunarto Mursinin",
+                                    "image": "https://avatars.githubusercontent.com/u/13213594"
+                                }
+                            }
+                        }
+                    ]
                   }
                 }
               }
