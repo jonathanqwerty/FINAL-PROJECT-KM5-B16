@@ -295,31 +295,12 @@ module.exports = {
   // get all
   listCourse: async (req, res) => {
     try {
-      const course = await this.course.findMany();
+      const course = await course.findMany();
       return res.status(200).json({
         course,
       });
     } catch (error) {
       console.log(error);
-      return res.status(500).json({
-        error,
-        message: "Internal server error",
-      });
-    }
-  },
-
-  // get by id
-  course: async (req, res) => {
-    try {
-      const course = await courses.findUnique({
-        where: {
-          courseId: parseInt(req.params.courseId),
-        },
-      });
-      return res.status(200).json({
-        course,
-      });
-    } catch (error) {
       return res.status(500).json({
         error,
         message: "Internal server error",
