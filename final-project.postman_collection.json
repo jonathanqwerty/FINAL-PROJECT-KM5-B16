@@ -1,177 +1,76 @@
 {
-	"info": {
-		"_postman_id": "6a1f60a9-ec85-4594-ac8f-68b18b1e6453",
-		"name": "final-project",
-		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "23729870"
-	},
-	"item": [
-		{
-			"name": "register",
-			"request": {
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n    \"email\": \"nathanaeljonathan08@gmail.com\",\r\n    \"phone\": \"81223543908\",\r\n    \"password\": \"12345678\"\r\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "https://test-final-project-production.up.railway.app/api/v1/auth/register",
-					"protocol": "https",
-					"host": [
-						"test-final-project-production",
-						"up",
-						"railway",
-						"app"
-					],
-					"path": [
-						"api",
-						"v1",
-						"auth",
-						"register"
-					]
-				}
+	"paths": {
+	  "/update-user-profile": {
+		"post": {
+		  "summary": "Update user profile",
+		  "description": "Update user profile data with multi-platform support",
+		  "consumes": [
+			"multipart/form-data"
+		  ],
+		  "parameters": [
+			{
+			  "name": "phone",
+			  "in": "formData",
+			  "type": "string",
+			  "description": "User's phone number",
+			  "required": false,
+			  "example": "+1234567890"
 			},
-			"response": []
-		},
-		{
-			"name": "login",
-			"request": {
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n    \"email\": \"nathanaeljonathan08@gmail.com\",\r\n    \"password\": \"\"\r\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "localhost:3000/api/v1/auth/login",
-					"host": [
-						"localhost"
-					],
-					"port": "3000",
-					"path": [
-						"api",
-						"v1",
-						"auth",
-						"login"
-					]
-				}
+			{
+			  "name": "password",
+			  "in": "formData",
+			  "type": "string",
+			  "description": "User's password",
+			  "required": false,
+			  "example": "password123"
 			},
-			"response": []
-		},
-		{
-			"name": "reset-password",
-			"request": {
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n    \"email\": \"nathanaeljonathan08@gmail.com\"\r\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "localhost:3000/api/v1/auth/reset-password",
-					"host": [
-						"localhost"
-					],
-					"port": "3000",
-					"path": [
-						"api",
-						"v1",
-						"auth",
-						"reset-password"
-					]
-				}
+			{
+			  "name": "name",
+			  "in": "formData",
+			  "type": "string",
+			  "description": "User's name",
+			  "required": false,
+			  "example": "John Doe"
 			},
-			"response": []
-		},
-		{
-			"name": "otp-verification",
-			"request": {
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n    \"validasi\": \"303487\"\r\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "localhost:3000/api/v1/auth/otp/:email",
-					"host": [
-						"localhost"
-					],
-					"port": "3000",
-					"path": [
-						"api",
-						"v1",
-						"auth",
-						"otp",
-						":email"
-					],
-					"variable": [
-						{
-							"key": "email",
-							"value": ""
-						}
-					]
-				}
+			{
+			  "name": "image",
+			  "in": "formData",
+			  "type": "file",
+			  "description": "User's profile image",
+			  "required": false
 			},
-			"response": []
-		},
-		{
-			"name": "set-password",
-			"request": {
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n    \"password\": \"87654321\"\r\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "localhost:3000/api/v1/auth/set-password/:token",
-					"host": [
-						"localhost"
-					],
-					"port": "3000",
-					"path": [
-						"api",
-						"v1",
-						"auth",
-						"set-password",
-						":token"
-					],
-					"variable": [
-						{
-							"key": "token",
-							"value": ""
-						}
-					]
-				}
+			{
+			  "name": "country",
+			  "in": "formData",
+			  "type": "string",
+			  "description": "User's country",
+			  "required": false,
+			  "example": "United States"
 			},
-			"response": []
+			{
+			  "name": "city",
+			  "in": "formData",
+			  "type": "string",
+			  "description": "User's city",
+			  "required": false,
+			  "example": "New York"
+			}
+		  ],
+		  "responses": {
+			"200": {
+			  "description": "Successful response"
+			},
+			"400": {
+			  "description": "Bad request"
+			},
+			"401": {
+			  "description": "Unauthorized"
+			},
+			"500": {
+			  "description": "Internal server error"
+			}
+		  }
 		}
-	]
-}
+	  }
+	}
+  }

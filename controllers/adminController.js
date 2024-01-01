@@ -8,7 +8,7 @@ const {
     categories,
     chapters,
     sources,
-    progres
+    progres,
   } = require("../models"),
   jwt = require("jsonwebtoken"),
   bcrypt = require("bcrypt");
@@ -292,19 +292,53 @@ module.exports = {
     }
   },
 
-  // menampilkan course berdasarkan category id
+  // get all
   listCourse: async (req, res) => {
     try {
-      const course = await courses.findMany({
+      const course = await this.course.findMany();
+      return res.status(200).json({
+        course,
+      });
+    } catch (error) {
+      console.log(error);
+      return res.status(500).json({
+        error,
+        message: "Internal server error",
+      });
+    }
+  },
+
+  // get by id
+  course: async (req, res) => {
+    try {
+      const course = await courses.findUnique({
         where: {
-          categoryId: parseInt(req.params.categoryId),
+          courseId: parseInt(req.params.courseId),
         },
       });
       return res.status(200).json({
         course,
       });
     } catch (error) {
-      console.log(error);
+      return res.status(500).json({
+        error,
+        message: "Internal server error",
+      });
+    }
+  },
+
+  // get by id
+  course: async (req, res) => {
+    try {
+      const course = await courses.findUnique({
+        where: {
+          courseId: parseInt(req.params.courseId),
+        },
+      });
+      return res.status(200).json({
+        course,
+      });
+    } catch (error) {
       return res.status(500).json({
         error,
         message: "Internal server error",
@@ -453,6 +487,26 @@ module.exports = {
     }
   },
 
+  // get by id
+  category: async (req, res) => {
+    try {
+      const category = await categories.findUnique({
+        where: {
+          id: parseInt(req.params.categoryId),
+        },
+      });
+      return res.status(200).json({
+        category,
+      });
+    } catch (error) {
+      console.log(error);
+      return res.status(500).json({
+        error,
+        message: "Internal server error",
+      });
+    }
+  },
+
   // mengedit category yang sudah ada
   editCategory: async (req, res) => {
     try {
@@ -504,28 +558,6 @@ module.exports = {
     }
   },
 
-  // mendelete category yang sudah ada
-  // destroyCategory: async (req, res) => {
-  //   try {
-  //     const data = await categories.update({
-  //       where: {
-  //         id: parseInt(req.params.id),
-  //       },
-  //       data: {
-  //         available: false,
-  //       },
-  //     });
-  //     return res.status(200).json({
-  //       success: "success delete category",
-  //     });
-  //   } catch (error) {
-  //     console.log(error);
-  //     return res.status(500).json({
-  //       error,
-  //       message: "Internal server error",
-  //     });
-  //   }
-  // },
   destroyCategory: async (req, res) => {
     try {
       const data = await categories.update({
@@ -555,7 +587,7 @@ module.exports = {
       const findChapter = await chapters.findFirst({
         where: {
           title: req.body.title,
-          courseId : parseInt(req.params.courseId)
+          courseId: parseInt(req.params.courseId),
         },
       });
       if (findChapter) {
@@ -586,25 +618,31 @@ module.exports = {
     }
   },
 
-  // melihat daftar chapter
-  listChapter: async (req, res) => {
+  // get by id
+  listChapterById: async (req, res) => {
     try {
-      const chapter = await chapters.findMany({
+      const chapter = await chapters.findUnique({
         where: {
-          courseId: {
-            in: [parseInt(req.params.courseId)],
-          },
+          id: parseInt(req.params.chapterId),
         },
       });
-      if(!chapter){
-        return res.status(404).json({
-          error,
-          message: "Not found data",
-        });
-      }
       return res.status(200).json({
-        success : true,
-        message: "success get list chapter",
+        chapter,
+      });
+    } catch (error) {
+      console.log(error);
+      return res.status(500).json({
+        error,
+        message: "Internal server error",
+      });
+    }
+  },
+
+  // get all
+  listChapter: async (req, res) => {
+    try {
+      const chapter = await chapters.findMany();
+      return res.status(200).json({
         chapter,
       });
     } catch (error) {
@@ -623,8 +661,8 @@ module.exports = {
         where: {
           id: parseInt(req.params.id),
         },
-      })
-      if(!existChapter){
+      });
+      if (!existChapter) {
         return res.status(404).json({
           error,
           message: "Not found data",
@@ -658,42 +696,42 @@ module.exports = {
     try {
       //get source
       const source = await sources.findMany({
-        where :{
-          chapterId : parseInt(req.params.id)
-        },select:{
-          id:true
-        }
-      })
+        where: {
+          chapterId: parseInt(req.params.id),
+        },
+        select: {
+          id: true,
+        },
+      });
       //object to array
-      const arraySource = source.map(item => (item.id))
+      const arraySource = source.map((item) => item.id);
       // delete source dan progress
-      if(source.length != 0){
+      if (source.length != 0) {
         await sources.deleteMany({
           where: {
-            id : {
-              in : arraySource
-            }
-          }
-        })
+            id: {
+              in: arraySource,
+            },
+          },
+        });
         await progres.deleteMany({
-          where:{
-            sourceId : {
-              in: arraySource
-            }
-          }
-        })
-        
+          where: {
+            sourceId: {
+              in: arraySource,
+            },
+          },
+        });
       }
-      // delete chapter 
+      // delete chapter
       const data = await chapters.deleteMany({
         where: {
           id: parseInt(req.params.id),
         },
       });
-      if(data.count == 0){
+      if (data.count == 0) {
         return res.status(404).json({
           success: true,
-          message: "not found source to deleted"
+          message: "not found source to deleted",
         });
       }
       return res.status(200).json({
@@ -748,17 +786,33 @@ module.exports = {
     }
   },
 
-  // menampilkan semua source berdasarkan chapter
-  listSource: async (req, res) => {
+  // get by id
+  listSourceById: async (req, res) => {
     try {
-      const source = await sources.findMany({
+      const source = await sources.findUnique({
         where: {
-          chapterId: parseInt(req.params.chapterId),
+          id: parseInt(req.params.sourceId),
         },
       });
       return res.status(200).json({
-        success:true,
+        success: true,
         message: "success get the source video",
+        source,
+      });
+    } catch (error) {
+      console.log(error);
+      return res.status(500).json({
+        error,
+        message: "Internal server error",
+      });
+    }
+  },
+
+  // get all
+  listSource: async (req, res) => {
+    try {
+      const source = await sources.findMany();
+      return res.status(200).json({
         source,
       });
     } catch (error) {
@@ -784,7 +838,7 @@ module.exports = {
         },
       });
       return res.status(200).json({
-        success: true ,
+        success: true,
         message: "success edit source",
         sourceEdit,
       });
@@ -801,20 +855,20 @@ module.exports = {
   destroySource: async (req, res) => {
     try {
       const progress = await progres.deleteMany({
-        where : {
-          sourceId : parseInt(req.params.id)
-        }
-      })
+        where: {
+          sourceId: parseInt(req.params.id),
+        },
+      });
       const data = await sources.deleteMany({
         where: {
           id: parseInt(req.params.id),
         },
       });
 
-      if(data.count == 0){
+      if (data.count == 0) {
         return res.status(404).json({
           success: true,
-          message: "not found source to delete"
+          message: "not found source to delete",
         });
       }
 
