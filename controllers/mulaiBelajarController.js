@@ -188,7 +188,7 @@ module.exports = {
       const rating = parseInt(req.body.rating)
       const coment = req.body.coment
       if (!idUser||!rating||!coment){
-        res.status(404).json({
+        return res.status(404).json({
           error:"error",
           message:"the req body has missed something"
         })
@@ -283,7 +283,6 @@ module.exports = {
     },
     viewReview : async (req,res) =>{
       const mycourse = parseInt(req.params.id)
-      const idUser = parseInt(res.user.id)
       try{
         const MyCourse = await myCourse.findFirst({
           where:{
@@ -291,12 +290,28 @@ module.exports = {
           }
         })
 
-        const review = await reviews.findFirst({
+        const review = await reviews.findMany({
           where:{
-            course : MyCourse.course,
-            user: idUser
-          }
-        })
+            course : MyCourse.course
+          },
+          select: {
+            id: true,
+            rating: true,
+            comment: true,
+            users: {
+              select: {
+                profiles:{
+                  select:{
+                    name: true,
+                    image: true,
+                  }
+                }
+              },
+            },
+          },
+        });
+
+      
 
         if (!review){
           return res.status(400).json({
