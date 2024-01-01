@@ -293,8 +293,25 @@ module.exports = {
         const review = await reviews.findMany({
           where:{
             course : MyCourse.course
-          }
-        })
+          },
+          select: {
+            id: true,
+            rating: true,
+            comment: true,
+            users: {
+              select: {
+                profiles:{
+                  select:{
+                    name: true,
+                    image: true,
+                  }
+                }
+              },
+            },
+          },
+        });
+
+      
 
         if (!review){
           return res.status(400).json({
