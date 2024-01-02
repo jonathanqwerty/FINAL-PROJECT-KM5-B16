@@ -71,7 +71,7 @@ async function seed() {
     const user = {
       email: email[i - 1],
       phone: Seed2,
-      password: await utils.cryptPassword("Last,King16"),
+      password: await utils.cryptPassword("LastKing,16"),
       profileId: i,
       isActive: true,
     };
@@ -96,7 +96,7 @@ async function seed() {
   (Seed2 = new Set()), (Used2 = new Set());
 
   for (let i = 1; i <= 10; i++) {
-    for (let a = 1; a <= 5; a++) {
+    for (let a = 1; a <= 15; a++) {
       do {
         Seed2 = faker.number.int({ min: 1, max: 25 });
       } while (Used2.has(Seed2));
@@ -159,6 +159,7 @@ async function seed() {
       //         })
       //     }
       // }
+
     }
     (Used2 = new Set()), (Seed2 = new Set());
   }

@@ -7,24 +7,24 @@ const prisma = new PrismaClient();
 
 async function seed() {
   await prisma.$transaction([prisma.goals.deleteMany()]);
-  await prisma.$executeRaw `ALTER TABLE goals AUTO_INCREMENT = 1`;
-  // await prisma.$executeRaw`ALTER SEQUENCE "goals_id_seq" RESTART WITH 1`;
+  // await prisma.$executeRaw `ALTER TABLE goals AUTO_INCREMENT = 1`;
+  await prisma.$executeRaw`ALTER SEQUENCE "goals_id_seq" RESTART WITH 1`;
 
   await prisma.$transaction([prisma.sources.deleteMany()]);
-  await prisma.$executeRaw `ALTER TABLE sources AUTO_INCREMENT = 1`;
-  // await prisma.$executeRaw`ALTER SEQUENCE "sources_id_seq" RESTART WITH 1`;
+  // await prisma.$executeRaw `ALTER TABLE sources AUTO_INCREMENT = 1`;
+  await prisma.$executeRaw`ALTER SEQUENCE "sources_id_seq" RESTART WITH 1`;
 
   await prisma.$transaction([prisma.chapters.deleteMany()]);
-  await prisma.$executeRaw `ALTER TABLE chapters AUTO_INCREMENT = 1`;
-  // await prisma.$executeRaw`ALTER SEQUENCE "chapters_id_seq" RESTART WITH 1`;
+  // await prisma.$executeRaw `ALTER TABLE chapters AUTO_INCREMENT = 1`;
+  await prisma.$executeRaw`ALTER SEQUENCE "chapters_id_seq" RESTART WITH 1`;
 
   await prisma.$transaction([prisma.courses.deleteMany()]);
-  await prisma.$executeRaw `ALTER TABLE courses AUTO_INCREMENT = 1`;
-  // await prisma.$executeRaw`ALTER SEQUENCE "courses_id_seq" RESTART WITH 1`;
+  // await prisma.$executeRaw `ALTER TABLE courses AUTO_INCREMENT = 1`;
+  await prisma.$executeRaw`ALTER SEQUENCE "courses_id_seq" RESTART WITH 1`;
 
   await prisma.$transaction([prisma.categories.deleteMany()]);
-  await prisma.$executeRaw `ALTER TABLE categories AUTO_INCREMENT = 1`;
-  // await prisma.$executeRaw`ALTER SEQUENCE "categories_id_seq" RESTART WITH 1`;
+  // await prisma.$executeRaw `ALTER TABLE categories AUTO_INCREMENT = 1`;
+  await prisma.$executeRaw`ALTER SEQUENCE "categories_id_seq" RESTART WITH 1`;
 
   let data;
   
@@ -48,7 +48,7 @@ async function seed() {
     "https://ik.imagekit.io/ihgyz0wbk/category/cyber%20security.jpg",
   ];
   let x1 = kategori.length; //kategory
-  let x2 = x1 * 6; //course
+  let x2 = x1 * 30; //course
   let x3 = 2; //chapter
   const video = [3,7]
   let x5 = 3; //goals
@@ -69,7 +69,7 @@ async function seed() {
     let a = []
     let b = []
     if(level==0){
-      a =["Mahir Dasar","Belajar","Mempelajari","Belajar Dasar","mMnjadi Seorang"]
+      a =["Mahir Dasar","Belajar","Mempelajari","Belajar Dasar","Menjadi Seorang"]
       b =["Sejak Dini","Dari Nol","Itu Mudah","",""]
     }if(level==1){
       a =["Upgrade Skill","Tingkatkan Skill","Menjadi Junior","Menguasai","Mengasah Skill"]
@@ -78,9 +78,9 @@ async function seed() {
       a =["Tuntas Menjadi","Expert dalam","Mendalami","Menguasai","Menjadi Senior"]
       b =["Sekarang Juga","Tanpa Ribet","Dengan Sempurna","Di Usia Muda","Itu Sulit?"]
     }
-    return `${a[faker.number.int({min: 0, max: 3})]} ${kategori[TempKategori-1]} ${b[faker.number.int({min: 0, max: 3})]}`
+    return `${a[faker.number.int({min: 0, max: 3})]} ${kategori[TempKategori]} ${b[faker.number.int({min: 0, max: 3})]}`
   }
-    const telegram = "safsdhf"
+    const telegram = "https://t.me/saillytradinggroup"
     const desc =[
     "Selamat datang di platform pengembangan perangkat lunak kami yang memukau. Kami hadir untuk memberikan pengalaman pengkodean yang mulus dan efisien. Dengan berbagai alat terkini, kami menyederhanakan proses pengembangan, memperkuat kolaborasi tim, dan meningkatkan manajemen proyek. Platform kami tidak hanya sekadar alat, tetapi juga katalisator kreativitas untuk mewujudkan ide-ide inovatif Anda. Temukan kekuatan coding dalam lingkungan yang ramah pengguna dan dapat disesuaikan. Bersama kami, buatlah perangkat lunak luar biasa yang memenuhi harapan Anda dan menginspirasi orang lain. Sambut era pengembangan perangkat lunak yang dinamis dan produktif bersama platform kami.",
     "Dalam dunia perkembangan teknologi saat ini, menjadi seorang pengembang web adalah kunci untuk membuka pintu dunia digital. Seorang pengembang web tidak hanya menciptakan situs web yang berfungsi, tetapi juga merancang pengalaman online yang memukau. Dengan pemahaman mendalam tentang HTML, CSS, dan JavaScript, seorang pengembang web minimalis dapat membentuk tampilan dan fungsionalitas dengan desain yang bersih dan efisien. Dari landing page yang menarik hingga aplikasi web yang canggih, pengembang web minimalis menciptakan solusi yang elegan dan mudah digunakan. Dengan fokus pada kecepatan, responsif, dan pengalaman pengguna yang intuitif, pengembang web minimalis adalah arsitek digital yang menciptakan jembatan antara ide kreatif dan realitas online.",
@@ -103,6 +103,7 @@ async function seed() {
     "Memerlukan sebuah software code editor",
     "Memerlukan sebuah software code editor",
     "Memerlukan sebuah software code editor",
+    "Memerlukan sebuah software code editor",
     "Memerlukan sebuah software code editor"]
   
 
@@ -111,15 +112,15 @@ async function seed() {
     let temp = faker.number.int({ min: 1, max: x1 });
     let Level = faker.number.int({min: 0, max: 2})
     const course = {
-      title: title(temp,Level),
+      title: title(temp-1,Level),
       author: faker.person.fullName(),
       telegram: telegram,
-      description: desc[kategori-1],
       price: parseInt(price[faker.number.int({ min: 0, max: 2 })]),
       categoryId: temp,
-      image: imageCourse[kategori-1][faker.number.int({ min: 0, max: 9 })],
-      prepare : prepare[kategori-1],
+      image: imageCourse[temp-1][faker.number.int({ min: 0, max: 9 })],
+      prepare : prepare[temp-1],
       level: level[Level],
+      description: desc[temp-1],
     };
     const data1 = await prisma.courses.create({ data: course });
 
@@ -149,7 +150,7 @@ async function seed() {
       "https://www.youtube.com/watch?v=Rrn_2-vVToU",
       "https://www.youtube.com/watch?v=ncD5n3RZe3M",
       "https://www.youtube.com/watch?v=oDbt01X1JIQ"]]
-      
+
       for (let b = 0; b < video[a]; b++) {
         const sources = {
           name: name[a][b],
@@ -163,7 +164,7 @@ async function seed() {
   // goals
     const goal = [["menguasai","memahami konsep","mempraktikan langsung","membuat mini project","mengembangkan ide baru"],
     ["mengetahui dasar ","mempelajari teori","melakukan parkit langsung","memahami konsep","mengembangkan konsep"],["memahami konsep programing","mempelajari teori","praktikan coding","mengembangkan konsep","mengelola konsep"],
-    ["memahami konsep dasar","menguasai konsep dasar","praktikan langsung","mengembangkan konsep data","mengelola data"],["","","","",""],
+    ["memahami konsep dasar","menguasai konsep dasar","praktikan langsung","mengembangkan konsep data","mengelola data"],["mempelajari teori","memahami konsep","mengembangkan konsep","melakukan parkit langsung","membuat mini project"],
     ["meperkenalkan dunia cyber","memahami dasar keamanan","memahami model","praktik langsung","mengembangkan keamanan"]]
 
     for (let a = 1; a <= x5; a++) {
@@ -173,6 +174,8 @@ async function seed() {
       };
       data4 = await prisma.goals.create({ data: goals });
     }
+    await new Promise(resolve => setTimeout(resolve, 200)); // Tunggu selama 100 milidetik
+  console.log("course " + i)
   }
   console.log("course success");
   console.log("chapter success");
