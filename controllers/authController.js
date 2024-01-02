@@ -305,7 +305,7 @@ module.exports = {
         },
       });
 
-      const token = jwt.sign({ id: user.id }, "secret_key", {
+      const token = jwt.sign({ id: user.id, email: user.email }, secret_key, {
         expiresIn: "6h",
       });
       // await notifications.create({

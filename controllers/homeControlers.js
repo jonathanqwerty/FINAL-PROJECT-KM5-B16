@@ -59,13 +59,16 @@ module.exports = {
     // find seluruh kategori yang tersedia
     try {
       const page = parseInt(req.query.page) || 1;
-      const itemsPerPage = 5;
+      const itemsPerPage = 6;
       const skip = (page - 1) * itemsPerPage;
 
       // pagingnation
       const data = await categories.findMany({
         skip,
         take: itemsPerPage,
+        where:{
+          available : true
+        }
       });
       if(!data){return res.status(404).json({
         error : "error",

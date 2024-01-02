@@ -8,9 +8,7 @@
     "start": "node index.js",
     "migrate": "prisma migrate deploy",
     "postinstall": "prisma generate",
-    "build": "prisma generate",
-    "seed1": " node dev/seed.js ",
-    "seed2": "node dev/seed2.js"
+    "build": "prisma generate"
   },
   "author": "",
   "license": "ISC",
