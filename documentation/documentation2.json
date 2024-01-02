@@ -162,6 +162,16 @@
         ],
         "summary": "Popular Course",
         "description": "daftar categories yang tersedia",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "success",

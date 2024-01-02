@@ -25,7 +25,7 @@ const CheckToken = (req, res, next) => {
 
     // Jika token valid, simpan informasi pengguna di objek req.user
     res.user = decoded;
-    console.log("token masuk")
+    // console.log("token masuk")
     next();
   });
 };
