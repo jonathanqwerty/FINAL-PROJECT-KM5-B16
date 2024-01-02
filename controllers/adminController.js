@@ -295,7 +295,7 @@ module.exports = {
   // get all
   listCourse: async (req, res) => {
     try {
-      const course = await course.findMany();
+      const course = await courses.findMany();
       return res.status(200).json({
         course,
       });
