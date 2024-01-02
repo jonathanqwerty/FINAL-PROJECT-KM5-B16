@@ -14,7 +14,7 @@ router.get("/dashboard", adminToken, controller.dashboardData);
 router.get("/kelola-kelas", adminToken, controller.kelolaKelas);
 // course
 router.get("/course/:courseId", adminToken, controller.course);
-router.get("/course", controller.listCourse);
+router.get("/course", adminToken, controller.listCourse);
 router.post(
   "/course/create/:categoryId",
   adminToken,
