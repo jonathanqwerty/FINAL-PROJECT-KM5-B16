@@ -52,9 +52,9 @@ async function seed() {
     let email = [
       "nathanaeljonathan08@gmail.com",
       "nelanjoe@gmail.com",
-      "email3@gmail.com",
-      "email4@gmail.com",
-      "email5@gmail.com",
+      "rezahans03@gmail.com",
+      "jhonitay06@gmail.com",
+      "abdurrohmanazis@gmail.com",
       "email6@gmail.com",
       "email7@gmail.com",
       "email8@gmail.com",
@@ -71,7 +71,7 @@ async function seed() {
     const user = {
       email: email[i - 1],
       phone: Seed2,
-      password: await utils.cryptPassword("12345678"),
+      password: await utils.cryptPassword("Last,King16"),
       profileId: i,
       isActive: true,
     };
@@ -95,7 +95,6 @@ async function seed() {
   (Seed = new Set()), (Used = new Set());
   (Seed2 = new Set()), (Used2 = new Set());
 
-  const progres1 = ["inProgres", "completed"];
   for (let i = 1; i <= 10; i++) {
     for (let a = 1; a <= 5; a++) {
       do {
@@ -106,7 +105,7 @@ async function seed() {
         data: {
           user: i,
           course: Seed2,
-          progress: progres1[faker.number.int({ min: 1, max: 2 })],
+          progress: "inProgress",
           orders: {
             create: {
               status: "paid",
@@ -114,10 +113,11 @@ async function seed() {
           },
         },
       });
+      const komen =["bagus banget saya suka", "cipi cipi capa capa dubi dubi daba daba", "cipi cipi capa capa dubi dubi daba daba","cipi cipi capa capa dubi dubi daba daba","saya langsung jadi senior cuy","mudah di pahami","gokil bang otw curhat ke nadia omara","keren sih tapi lebih keren lulo","terimakasih berkat course ini saya jadi wibu", "nilai saya sempurna tapi kok tetep gabisa ngoding yaa, apa ada pengaruhnya ama pemakaian GPT?",] 
       review = await prisma.reviews.create({
         data: {
-          rating: faker.number.int({ min: 3, max: 5 }),
-          comment: faker.commerce.productDescription(),
+          rating: faker.number.int({ min: 4, max: 5 }),
+          comment: komen[faker.number.int({ min: 0, max: 9 })],
           user: data.user,
           course: data.course,
         },

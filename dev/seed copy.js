@@ -69,14 +69,14 @@ async function seed() {
     let a = []
     let b = []
     if(level==0){
-      a =["","","","",""]
-      b =["","","","",""]
+      a =["Mahir Dasar","Belajar","Mempelajari","Belajar Dasar","mMnjadi Seorang"]
+      b =["Sejak Dini","Dari Nol","Itu Mudah","",""]
     }if(level==1){
-      a =["","","","",""]
-      b =["","","","",""]
+      a =["Upgrade Skill","Tingkatkan Skill","Menjadi Junior","Menguasai","Mengasah Skill"]
+      b =["Dengan Cepat","Tanpa lama","Dengan mudah","Bersama Kami","Lebih lanjut"]
     }if(level==2){
-      a =["","","","",""]
-      b =["","","","",""]
+      a =["Tuntas Menjadi","Expert dalam","Mendalami","Menguasai","Menjadi Senior"]
+      b =["Sekarang Juga","Tanpa Ribet","Dengan Sempurna","Di Usia Muda","Itu Sulit?"]
     }
     return `${a[faker.number.int({min: 0, max: 3})]} ${kategori[TempKategori-1]} ${b[faker.number.int({min: 0, max: 3})]}`
   }
@@ -133,33 +133,45 @@ async function seed() {
         duration: arrayDuration[faker.number.int({ min: 0, max: 3 })],
         courseId: data1.id,
       };
-      data = await prisma.chapters.create({ data: chapter });
+      const data2 = await prisma.chapters.create({ data: chapter });
 
   // sources
-      const name =[["","",""],["","","","","","",""]]
-      const link =[["","",""],["","","","","","",""]]
+      const name =[["pengenalan","pengenalan dasar ","pengenalan dasar 2"],["materi 1","materi 2","materi 3","materi 4","materi 5","materi 6","materi 7"]]
+      const link =[
+      ["https://youtu.be/rRSK7n4oeew?si=6ZT5odXFhg7RhHYf",
+      "https://www.youtube.com/watch?v=U2w1zNexdTA",
+      "https://www.youtube.com/watch?v=yHQzRmpxpcQ"],
+      
+      ["https://www.youtube.com/watch?v=ZHJPogRLT4Q",
+      "https://www.youtube.com/watch?v=veE1W-hTTqs",
+      "https://www.youtube.com/watch?v=sjES4yMn7bk",
+      "https://www.youtube.com/watch?v=tuYQo8Qo6Eg",
+      "https://www.youtube.com/watch?v=Rrn_2-vVToU",
+      "https://www.youtube.com/watch?v=ncD5n3RZe3M",
+      "https://www.youtube.com/watch?v=oDbt01X1JIQ"]]
+      
       for (let b = 0; b < video[a]; b++) {
         const sources = {
           name: name[a][b],
           link: link[a][b],
-          chapterId: i,
+          chapterId: data2.id,
         };
-        data = await prisma.sources.create({ data: sources });
+        data3 = await prisma.sources.create({ data: sources });
       }
     }
 
   // goals
-    const goal = [["","","","",""],
-    ["","","","",""],["","","","",""],
-    ["","","","",""],["","","","",""],
-    ["","","","",""]]
+    const goal = [["menguasai","memahami konsep","mempraktikan langsung","membuat mini project","mengembangkan ide baru"],
+    ["mengetahui dasar ","mempelajari teori","melakukan parkit langsung","memahami konsep","mengembangkan konsep"],["memahami konsep programing","mempelajari teori","praktikan coding","mengembangkan konsep","mengelola konsep"],
+    ["memahami konsep dasar","menguasai konsep dasar","praktikan langsung","mengembangkan konsep data","mengelola data"],["","","","",""],
+    ["meperkenalkan dunia cyber","memahami dasar keamanan","memahami model","praktik langsung","mengembangkan keamanan"]]
 
     for (let a = 1; a <= x5; a++) {
       const goals = {
         name: goal[temp-1][a-1],
         course: i,
       };
-      data = await prisma.goals.create({ data: goals });
+      data4 = await prisma.goals.create({ data: goals });
     }
   }
   console.log("course success");
