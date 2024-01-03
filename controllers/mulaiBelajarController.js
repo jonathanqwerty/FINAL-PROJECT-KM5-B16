@@ -60,6 +60,33 @@ module.exports = {
                 },
             });
 
+                       // menambahkan validasi read pada setiap source
+                       const idProgres = getData.progres.map(item=>(item.sourceId))
+                       console.log(idProgres)
+                       let Data = await Promise.all(
+                         getData.courses.chapters.map(async (item) => {
+                           const source = await Promise.all(
+                             item.sources.map(async (item2)=>{
+                               if(idProgres.some(value => value === item2.id)){
+                                 return {
+                                   ...item2,
+                                   read : true
+                                 }
+                               }else{
+                                 return {
+                                   ...item2,
+                                   read : false
+                                 }
+                               }
+                             }))
+                           return{
+                             id : item.id,
+                             tittle : item.title,
+                             duration :item.duration,
+                             sources : source
+                           }
+                         }))
+
             // Menghitung total progres yang ada 
             const progresCount = getData.progres.length;
 
@@ -93,7 +120,7 @@ module.exports = {
                 image: getData.courses.image,
                 level: getData.courses.level,
                 goals: getData.courses.goals,
-                chapters: getData.courses.chapters
+                chapters: Data
               }
             }
             return res.status(200).json({
