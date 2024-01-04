@@ -1,0 +1,656 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": " BEJS B16",
+    "version": "1.0.11"
+  },
+  "servers": [
+    {
+      "url": "https://final-project-km5-b16-production.up.railway.app/api/v1"
+    }
+  ],
+  "tags": [
+    {
+      "name": "Home",
+      "description": "Home Page API"
+    },
+    {
+      "name": "Course-Page",
+      "description": "Course Page API"
+    },
+    {
+      "name": "Order-Page",
+      "description": "Order page API"
+    },
+    {
+      "name": "My-Course",
+      "description": "My-Course page API"
+    }
+  ],
+  "paths": {
+    "/course": {
+      "get": {
+        "tags": [
+          "Home",
+          "Course-Page"
+        ],
+        "summary": "Search Course + Filtering (token tidak wajib)",
+        "description": "Search course berdasarkan nama dan bisa melakukan beberapa filter ",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "search",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "kategori",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": [
+                  "Cyber Cecurity",
+                  "Web Development",
+                  "Data Science",
+                  "Fullstack",
+                  "Mobile Development",
+                  "Ui&Ux"
+                ]
+              }
+            },
+            "style": "form",
+            "explode": true
+          },
+          {
+            "name": "filter",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "paling-baru",
+                "populer"
+              ]
+            }
+          },
+          {
+            "name": "level",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": [
+                  "beginer",
+                  "intermediate",
+                  "expert"
+                ]
+              }
+            }
+          },
+          {
+            "name": "type",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "premium",
+                "gratis"
+              ]
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Data populer berhasil diambil",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": "success",
+                  "course": [
+                    {
+                      "id": 1,
+                      "title": "Data Science Fantastic Steel Pants",
+                      "categories": "Data Science",
+                      "outhor": "Karya Suwarno",
+                      "price": 677,
+                      "rating": 3.6666666666666665,
+                      "level": "expert",
+                      "duration": "80 mnt",
+                      "modul": 10,
+                      "type": "premium",
+                      "orders": 3,
+                      "image": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/654.jpg",
+                      "rilis": "2023-12-12T15:58:36.940Z",
+                      "pembelian": "tidak terbeli"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/home/category": {
+      "get": {
+        "tags": [
+          "Home"
+        ],
+        "summary": "Popular Course",
+        "description": "daftar categories yang tersedia",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "success",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": "success",
+                  "categories": [
+                    {
+                      "id": 1,
+                      "name": "Ui&Ux",
+                      "image": "https://avatars.githubusercontent.com/u/26052886"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/home/popular": {
+      "get": {
+        "tags": [
+          "Home"
+        ],
+        "summary": "Popular Course",
+        "description": "Daftar course yang di shorting berdasarkan order terbanyak dan dapat di filter dengan kategori",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "categories",
+            "in": "query",
+            "description": "Filter berdasarkan kategori",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "Cyber Cecurity",
+                "Web Development",
+                "Data Science",
+                "Fullstack",
+                "Mobile Development",
+                "Ui&Ux"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Data populer berhasil diambil",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": "success",
+                  "popular": [
+                    {
+                      "id": 5,
+                      "title": "Cyber Cecurity Recycled Granite Shoes",
+                      "categories": "Cyber Cecurity",
+                      "outhor": "Purnama Febi",
+                      "price": 379,
+                      "rating": 4,
+                      "level": "intermediate",
+                      "duration": "120 mnt",
+                      "modul": 10,
+                      "type": "premium",
+                      "orders": 4,
+                      "image": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/904.jpg",
+                      "rilis": "2023-12-12T15:58:37.815Z",
+                      "pembelian": "tidak terbeli"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/course/{id}": {
+      "get": {
+        "tags": [
+          "Course-Page"
+        ],
+        "summary": "Detail course (token tidak wajib)",
+        "description": "Mendapatkan data mengenai 1 course yang dipilih sesuai id pada parameters",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Id Course",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "success",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": "success",
+                  "course": {
+                    "id": 1,
+                    "title": "Data Science Fantastic Steel Pants",
+                    "author": "Karya Suwarno",
+                    "categories": "Data Science",
+                    "telegram": "https://shocking-consciousness.org",
+                    "modul": 10,
+                    "duration": "80 mnt",
+                    "rating": 3.6666666666666665,
+                    "level": "expert",
+                    "description": "The slim & simple Maple Gaming Keyboard from Dev Byte comes with a sleek body and 7- Color RGB LED Back-lighting for smart functionality",
+                    "pembelian": "tidak terbeli",
+                    "status": "notPaid",
+                    "goals": [
+                      {
+                        "name": "hastily.rar"
+                      }
+                    ],
+                    "chapters": [
+                      {
+                        "id": 1,
+                        "title": "Chapter 1",
+                        "duration": 40,
+                        "sources": [
+                          {
+                            "id": 1,
+                            "name": "Cracklin' Rosie",
+                            "link": "https://www.youtube.com/watch?v=rRSK7n4oeew&pp=ygUNYmluYXIgYWNhZGVteQ%3D%3D"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/course/popup/{id}": {
+      "get": {
+        "tags": [
+          "Course-Page"
+        ],
+        "summary": "Popup detail course (token tidak wajib)",
+        "description": "Popup data course untuk penekanan sebelum membeli course",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Id Course",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "success",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": "success",
+                  "popUpCourse": {
+                    "id": 5,
+                    "title": "Ui&Ux Refined Steel Table",
+                    "image": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/1071.jpg",
+                    "author": "Ahmad Bagya",
+                    "categories": "Ui&Ux",
+                    "level": "beginer",
+                    "price": 374,
+                    "modul": 10,
+                    "duration": "100 mnt",
+                    "rating": 5
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/course/order/{id}": {
+      "post": {
+        "tags": [
+          "Order-Page"
+        ],
+        "summary": "buy order course (button buy)",
+        "description": "membeli course (digunakan saat menekan button beli)",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Id Course",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "success",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": "success",
+                  "message": "Successful! Final step, please complete the payment process to access your course.",
+                  "status": "notPaid",
+                  "MyCourseId": 52
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "Order-Page"
+        ],
+        "summary": "get order course (read)",
+        "description": "mengambil data order untuk tampilan page pembayaran",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "MyCourseId",
+            "in": "path",
+            "description": "Id myCourse",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "success",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": "success",
+                  "myCourse": {
+                    "id": 52,
+                    "status": "notPaid",
+                    "title": "Ui&Ux Modern Wooden Shoes",
+                    "author": "Sari Farida",
+                    "price": 890,
+                    "image": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/985.jpg"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "Order-Page"
+        ],
+        "summary": "pay order course (button pay)",
+        "description": "update data order dari notPaid menjadi paid",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "MyCourseId",
+            "in": "path",
+            "description": "Id myCourse",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "success",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": "success",
+                  "message": "Successful complete the payment procces, enjoy your class :)",
+                  "myCourseId": 52
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/my-course": {
+      "get": {
+        "tags": [
+          "My-Course"
+        ],
+        "summary": "Search MyCourse + Filtering ",
+        "description": "Search course berdasarkan nama dan bisa melakukan beberapa filter ",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "search",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "kategori",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": [
+                  "Cyber Cecurity",
+                  "Web Development",
+                  "Data Science",
+                  "Fullstack",
+                  "Mobile Development",
+                  "Ui&Ux"
+                ]
+              }
+            },
+            "style": "form",
+            "explode": true
+          },
+          {
+            "name": "filter",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "paling-baru",
+                "populer"
+              ]
+            }
+          },
+          {
+            "name": "level",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": [
+                  "beginer",
+                  "intermediate",
+                  "expert"
+                ]
+              }
+            }
+          },
+          {
+            "name": "progress",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "inProgress",
+                "completed"
+              ]
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Data populer berhasil diambil",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": "success",
+                  "MyCourse": [
+                    {
+                      "id": 7,
+                      "title": "Cyber Cecurity Ergonomic Soft Keyboard",
+                      "categories": "Cyber Cecurity",
+                      "outhor": "Zahrah Hesti",
+                      "rating": 3.6,
+                      "level": "beginer",
+                      "duration": "80 mnt",
+                      "modul": 10,
+                      "image": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/688.jpg",
+                      "progres": 0,
+                      "rilis": "2023-12-19T09:33:19.252Z",
+                      "orders": 5,
+                      "status": "paid"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "nullable": true
+      }
+    }
+  }
+  
+}
