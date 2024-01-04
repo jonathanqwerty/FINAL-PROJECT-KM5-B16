@@ -7,29 +7,29 @@ const prisma = new PrismaClient();
 const utils = require("../utils");
 
 async function seed() {
-  await prisma.$transaction([prisma.notifications.deleteMany()]);
-  // await prisma.$executeRaw `ALTER TABLE notifications AUTO_INCREMENT = 1`;
-  await prisma.$executeRaw`ALTER SEQUENCE "notifications_id_seq" RESTART WITH 1`;
+  // await prisma.$transaction([prisma.notifications.deleteMany()]);
+  // // await prisma.$executeRaw `ALTER TABLE notifications AUTO_INCREMENT = 1`;
+  // await prisma.$executeRaw`ALTER SEQUENCE "notifications_id_seq" RESTART WITH 1`;
 
-  await prisma.$transaction([prisma.reviews.deleteMany()]);
-  // await prisma.$executeRaw `ALTER TABLE reviews AUTO_INCREMENT = 1`;
-  await prisma.$executeRaw`ALTER SEQUENCE "reviews_id_seq" RESTART WITH 1`;
+  // await prisma.$transaction([prisma.reviews.deleteMany()]);
+  // // await prisma.$executeRaw `ALTER TABLE reviews AUTO_INCREMENT = 1`;
+  // await prisma.$executeRaw`ALTER SEQUENCE "reviews_id_seq" RESTART WITH 1`;
 
-  await prisma.$transaction([prisma.orders.deleteMany()]);
-  // await prisma.$executeRaw `ALTER TABLE orders AUTO_INCREMENT = 1`;
-  await prisma.$executeRaw`ALTER SEQUENCE "orders_id_seq" RESTART WITH 1`;
+  // await prisma.$transaction([prisma.orders.deleteMany()]);
+  // // await prisma.$executeRaw `ALTER TABLE orders AUTO_INCREMENT = 1`;
+  // await prisma.$executeRaw`ALTER SEQUENCE "orders_id_seq" RESTART WITH 1`;
 
-  await prisma.$transaction([prisma.myCourse.deleteMany()]);
-  // await prisma.$executeRaw `ALTER TABLE my_Course AUTO_INCREMENT = 1`;
-  await prisma.$executeRaw`ALTER SEQUENCE "my_course_id_seq" RESTART WITH 1`;
+  // await prisma.$transaction([prisma.myCourse.deleteMany()]);
+  // // await prisma.$executeRaw `ALTER TABLE my_Course AUTO_INCREMENT = 1`;
+  // await prisma.$executeRaw`ALTER SEQUENCE "my_course_id_seq" RESTART WITH 1`;
 
-  await prisma.$transaction([prisma.profiles.deleteMany()]);
-  // await prisma.$executeRaw `ALTER TABLE profiles AUTO_INCREMENT = 1`;
-  await prisma.$executeRaw`ALTER SEQUENCE "profiles_id_seq" RESTART WITH 1`;
+  // await prisma.$transaction([prisma.profiles.deleteMany()]);
+  // // await prisma.$executeRaw `ALTER TABLE profiles AUTO_INCREMENT = 1`;
+  // await prisma.$executeRaw`ALTER SEQUENCE "profiles_id_seq" RESTART WITH 1`;
 
-  await prisma.$transaction([prisma.users.deleteMany()]);
-  // await prisma.$executeRaw `ALTER TABLE users AUTO_INCREMENT = 1`;
-  await prisma.$executeRaw`ALTER SEQUENCE "users_id_seq" RESTART WITH 1`;
+  // await prisma.$transaction([prisma.users.deleteMany()]);
+  // // await prisma.$executeRaw `ALTER TABLE users AUTO_INCREMENT = 1`;
+  // await prisma.$executeRaw`ALTER SEQUENCE "users_id_seq" RESTART WITH 1`;
 
   //===========================================================
   let data;
