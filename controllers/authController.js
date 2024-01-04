@@ -78,7 +78,6 @@ module.exports = {
               error: "Your email is not registered in our system",
             });
           }
-          console.log("Email sent: " + info.response);
         });
         // await notifications.create({
         //   data: {
@@ -116,7 +115,6 @@ module.exports = {
           error: "Your email is not registered in our system",
         });
       }
-      console.log(findUser.validasi);
       if (findUser && findUser.validasi !== req.body.validasi) {
         return res.status(403).json({
           error: "Your OTP not valid",
@@ -130,7 +128,6 @@ module.exports = {
           id: findUser.id,
         },
       });
-      console.log(req.body.validasi);
 
       // jika OTP sudah valid maka akan membuat token
       const token = jwt.sign(
@@ -199,7 +196,6 @@ module.exports = {
             error: "Your email is not registered in our system",
           });
         }
-        console.log("Email sent: " + info.response);
       });
       return res.status(201).json({
         otp: resetOtp.validasi,
@@ -274,8 +270,6 @@ module.exports = {
         `https://www.googleapis.com/oauth2/v3/userinfo?access_token=${access_token}`,
         { httpsAgent: agent }
       );
-
-      console.log(data);
 
       // melakukan validasi apakah user telah pernah membuat akun
       let user = await users.findFirst({
@@ -383,7 +377,6 @@ module.exports = {
             error: "Your email is not registered in our system",
           });
         }
-        console.log("Email sent: " + info.response);
       });
       // await notifications.create({
       //   data: {
@@ -424,7 +417,6 @@ module.exports = {
         });
       }
 
-      console.log("Password from req.body:", req.body.password);
       const data = await users.update({
         where: {
           id: findUser.id,
