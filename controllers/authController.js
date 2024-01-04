@@ -266,7 +266,7 @@ module.exports = {
     try {
       // menerima access token yang dikirimkan oleh frontendS
       const { access_token } = req.body;
-      const data = await axios.get(
+      const { data } = await axios.get(
         `https://www.googleapis.com/oauth2/v3/userinfo?access_token=${access_token}`,
         { httpsAgent: agent }
       );
