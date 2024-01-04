@@ -22,7 +22,7 @@ module.exports = {
                 courses:{
                   categories: kategori !== null ? Array.isArray(kategori)? { name: { in: kategori }  } : 
                   { name: { contains: kategori } } : {},
-                  title : search !== null ? {contains: search, lte : 'insensitive'}:{},
+                  // title : search !== null ? {contains: search, lte : 'insensitive'}:{},
                   level : level !== null ? Array.isArray(level)? { in: level }: level : {}
                   }
             },
