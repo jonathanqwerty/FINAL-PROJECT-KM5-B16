@@ -288,6 +288,8 @@ module.exports = {
               create: {
                 name: data.name,
                 image: data.picture,
+                country: data.country,
+                city: data.city,
               },
             },
           },
