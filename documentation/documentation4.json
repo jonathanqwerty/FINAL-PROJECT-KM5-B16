@@ -6,7 +6,7 @@
   },
   "servers": [
     {
-      "url": "https://final-project-km5-b16-production.up.railway.app/api/v1"
+      "url": "https://final-project-km5-b16-production-bba0.up.railway.app/api/v1"
     }
   ],
   "components": {
